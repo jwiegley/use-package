@@ -20,7 +20,7 @@ actually gets loaded:
     (use-package foo
       :init
       (progn
-      (setq foo-variable t)
+        (setq foo-variable t)
         (foo-mode 1)))
 
 A very command thing to do when loading a module is to bind a key to
