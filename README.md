@@ -10,15 +10,15 @@ Here is the simplest `use-package` declaration:
     (use-package foo)
 
 This loads in the package foo, but only if foo is available on your system.
-If not, a warning is logged to your `*Messages*` buffer.  If it succeeds a
-message about "Loading foo" is logged, along with the time it took to load,
+If not, a warning is logged to your `*Messages*` buffer.  If it succeeds, a
+message about "Loading foo" is logged -- along with the time it took to load
 if that time is over 0.01s.
 
 Use the :init keywoard to do some stuff to initialize foo, but only if foo
 actually gets loaded:
 
     (use-package foo
-    :init
+      :init
       (progn
       (setq foo-variable t)
         (foo-mode 1)))
@@ -27,7 +27,7 @@ A very command thing to do when loading a module is to bind a key to
 primary commands within that module:
 
     (use-package ace-jump-mode
-    :bind ("C-." . ace-jump-mode))
+      :bind ("C-." . ace-jump-mode))
 
 This does two things: first, it creates autoload for the `ace-jump-mode`
 command, and defers loading of `ace-jump-mode` until you actually use it.
@@ -38,9 +38,9 @@ throughout your Emacs.
 A more literal way to do the exact same thing is:
 
     (use-package ace-jump-mode
-    :commands ace-jump-mode
+      :commands ace-jump-mode
       :init
-    (bind-key "C-." 'ace-jump-mode))
+      (bind-key "C-." 'ace-jump-mode))
 
 When you use the `:commands` keyword, it creates autoloads for those
 commands and defers loading of the module until they are used.  In this
@@ -52,11 +52,11 @@ If you aren't used `:commands` or `:bind` (which implies `:commands`), you
 can still defer loading with `:defer` keyword:
 
     (use-package ace-jump-mode
-    :defer t
+      :defer t
       :init
-    (progn
+      (progn
         (autoload 'ace-jump-mode "ace-jump-mode" nil t)
-      (bind-key "C-." 'ace-jump-mode)))
+        (bind-key "C-." 'ace-jump-mode)))
 
 This does exactly the same thing as the other two commands above.
 
@@ -66,9 +66,9 @@ common kind), `:config` form only run after the module has been loaded by
 Emacs:
 
     (use-package ace-jump-mode
-    :bind ("C-." . ace-jump-mode)
+      :bind ("C-." . ace-jump-mode)
       :config
-    (message "Yay, ace-jump-mode was actually loaded!"))
+      (message "Yay, ace-jump-mode was actually loaded!"))
 
 You will see a "Configured..." message in your `*Messages*` log when a
 package is configured, and a timing if the configuration time was longer
@@ -78,13 +78,13 @@ as much as you can get away with on the `:config` side.
 You can have both `:init` and `:config`:
 
     (use-package haskell-mode
-    :commands haskell-mode
+      :commands haskell-mode
       :init
-    (add-to-list 'auto-mode-alist '("\\.l?hs$" . haskell-mode))
+      (add-to-list 'auto-mode-alist '("\\.l?hs$" . haskell-mode))
       :config
-    (progn
+      (progn
         (use-package inf-haskell)
-      (use-package hs-lint)))
+        (use-package hs-lint)))
 
 In this case, I want to autoload the command `haskell-mode` from
 "haskell-mode.el", add it to `auto-mode-alist` at the time ".emacs" is
@@ -94,9 +94,9 @@ loaded, but wait until after I've opened a Haskell file before loading
 The `:bind` keyword takes either a cons or a list of conses:
 
     (use-package hi-lock
-    :bind (("M-o l" . highlight-lines-matching-regexp)
+      :bind (("M-o l" . highlight-lines-matching-regexp)
              ("M-o r" . highlight-regexp)
-           ("M-o w" . highlight-phrase)))
+             ("M-o w" . highlight-phrase)))
 
 The `:commands` keyword likewise takes either a symbol or a list of
 symbols.
@@ -106,18 +106,18 @@ of a module.  For example, I only want an `edit-server` running for my
 main, graphical Emacs, not for Emacsen I may start at the command line:
 
     (use-package edit-server
-    :if window-system
+      :if window-system
       :init
-    (progn
+      (progn
         (add-hook 'after-init-hook 'server-start t)
-      (add-hook 'after-init-hook 'edit-server-start t)))
+        (add-hook 'after-init-hook 'edit-server-start t)))
 
 The `:disabled` keyword can be used to turn off a module that you're having
 difficulties with, or to stop loading something you're not really using at
 the present time:
 
     (use-package ess-site
-    :disabled t
+      :disabled t
       :commands R)
 
 Another feature of `use-package` is that it always loads every file that it
@@ -130,18 +130,18 @@ use the `:defines` keyword to introduce empty variable definitions solely
 for the sake of the byte-compiler:
 
     (use-package texinfo
-    :defines texinfo-section-list
+      :defines texinfo-section-list
       :commands texinfo-mode
-    :init
+      :init
       (add-to-list 'auto-mode-alist '("\\.texi$" . texinfo-mode)))
 
 If you need to silence a missing function warning, do it with an autoload
 stub in your `:init` block:
 
     (use-package w3m
-    :commands (w3m-browse-url w3m-session-crash-recovery-remove)
+      :commands (w3m-browse-url w3m-session-crash-recovery-remove)
       :init
-    (eval-when-compile
+      (eval-when-compile
         (autoload 'w3m-search-escape-query-string "w3m-search")))
 
 Lastly, `use-package` provides built-in support for the diminish utility,
@@ -151,16 +151,16 @@ information.  It is invoked with the `:diminish` keyword, which is passed
 the minor mode symbol:
 
     (use-package abbrev
-    :diminish abbrev-mode
+      :diminish abbrev-mode
       :init
-    (if (file-exists-p abbrev-file-name)
+      (if (file-exists-p abbrev-file-name)
           (quietly-read-abbrev-file))
 
-    :config
+      :config
       (add-hook 'expand-load-hook
-              (lambda ()
+                (lambda ()
                   (add-hook 'expand-expand-hook 'indent-according-to-mode)
-                (add-hook 'expand-jump-hook 'indent-according-to-mode))))
+                  (add-hook 'expand-jump-hook 'indent-according-to-mode))))
 
 If you noticed that this declaration has neither a `:bind`, `:commands` or
 `:defer` keyword: congratulations, you're an A student!  What it means is
