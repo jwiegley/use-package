@@ -48,8 +48,8 @@ case, the `:init` form is always run -- even if ace-jump-mode might not be
 on your system.  So remember to keep `:init` activities to only those that
 would succeed either way.
 
-If you aren't used `:commands` or `:bind` (which implies `:commands`), you
-can still defer loading with `:defer` keyword:
+If you aren't using `:commands` or `:bind` (which implies `:commands`), you
+can still defer loading with the `:defer` keyword:
 
     (use-package ace-jump-mode
       :defer t
