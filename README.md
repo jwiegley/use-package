@@ -192,7 +192,7 @@ my load time!  `use-package` is designed for performance, so I only want to
 load el-get when it's time to install or update on of my used packages.
 
 Here is the `use-package` declaration I use for setting up el-get, but only
-when I want to install or update.
+when I want to install or update:
 
     (defvar el-get-sources nil)
 
