@@ -1,3 +1,5 @@
+# `use-package`
+
 The `use-package` declaration macro allows you to isolate package
 configuration in your ".emacs" in a way that is performance-oriented and,
 well, just tidy.  I created it because I have over 80 packages that I use
@@ -48,8 +50,17 @@ case, the `:init` form is always run -- even if ace-jump-mode might not be
 on your system.  So remember to keep `:init` activities to only those that
 would succeed either way.
 
-If you aren't using `:commands` or `:bind` (which implies `:commands`), you
-can still defer loading with the `:defer` keyword:
+Similar to `:bind`, you can use `:mode` and `:interpreter` to establish a
+deferred binding within `auto-mode-alist` and `auto-interpreter-alist`.
+The specifier to either keyword can be a single cons or a list:
+
+    (use-package python-mode
+      :mode ("\\.py$" . python-mode)
+      :interpreter ("python" . python-mode))
+
+If you aren't using `:commands`, `:bind`, `:mode`, or `:interpreter` (all
+of which imply `:commands`), you can still defer loading with the `:defer`
+keyword:
 
     (use-package ace-jump-mode
       :defer t
