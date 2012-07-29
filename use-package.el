@@ -389,12 +389,12 @@
          ,@(mapcar
             #'(lambda (path)
                 `(add-to-list 'load-path
-                              ,(if (file-name-absolute-p path)
-                                   path
-                                 (expand-file-name path user-emacs-directory))))
-            (if (stringp pkg-load-path)
-                (list pkg-load-path)
-              pkg-load-path))
+                              (if (file-name-absolute-p ,path)
+                                   ,path
+                                 (expand-file-name ,path user-emacs-directory))))
+            (cond 
+	     ((not (null pkg-load-path)) `(,pkg-load-path))
+	     (t nil)))
 
          (when byte-compile-current-file
            ,@defines-eval
