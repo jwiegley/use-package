@@ -155,7 +155,7 @@ stub in your `:init` block:
       (eval-when-compile
         (autoload 'w3m-search-escape-query-string "w3m-search")))
 
-If your package needs a directory added to the `load-path` in order load, use
+If your package needs a directory added to the `load-path` in order to load, use
 `:load-path`.  It takes a string or a list of strings.  If the path is
 relative, it will be expanded within `user-emacs-directory`:
 
