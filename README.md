@@ -207,7 +207,7 @@ be the same as the name of the package.
 But why would you want to use `use-package` when you have el-get?  My
 answer is that I'd like to use el-get to install and update some packages,
 but I don't want it managing configuration.  Just loading el-get -- without
-call (`el-get 'sync') -- takes a quarter second on my machine.  That's 25% of
+calling `(el-get 'sync)` -- takes a quarter second on my machine.  That's 25% of
 my load time!  `use-package` is designed for performance, so I only want to
 load el-get when it's time to install or update on of my used packages.
 
