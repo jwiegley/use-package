@@ -237,40 +237,11 @@
 ;;
 ;; * For el-get users
 ;;
-;; You can use `use-package' as a way to create source definitions for el-get.
-;; All that's needed is to add a `:type' keyword to your declaration.  When
-;; this is present, certain keywords get translated to what el-get expects in
-;; the `el-get-sources' list:
-;;
-;;   :config   -> :after
-;;   :requires -> :depends
-;;
-;; A `:name' will be added also, if one is not provided explicitly, which will
-;; be the same as the name of the package.
-;;
-;; But why would you want to use `use-package' when you have el-get?  My
-;; answer is that I'd like to use el-get to install and update some packages,
-;; but I don't want it managing configuration.  Just loading el-get -- without
-;; call (el-get 'sync) -- takes a quarter second on my machine.  That's 25% of
-;; my load time!  `use-package' is designed for performance, so I only want to
-;; load el-get when it's time to install or update on of my used packages.
-;;
-;; Here is the `use-package' declaration I use for setting up el-get, but only
-;; when I want to install or update:
-;;
-;;   (defvar el-get-sources nil)
-;;
-;;   (use-package el-get
-;;     :commands (el-get
-;;                el-get-install
-;;                el-get-update
-;;                el-get-list-packages)
-;;     :config
-;;     (defun el-get-read-status-file ()
-;;       (mapcar #'(lambda (entry)
-;;                   (cons (plist-get entry :symbol)
-;;                         `(status "installed" recipe ,entry)))
-;;               el-get-sources)))
+;; If `el-get-sources' is defined and there is an el-get recipe for a
+;; package, `use-package' will add a (:name package-name) entry to
+;; `el-get-sources' if the package is not already listed there.
+;; Furthermore, if :ensure t is passed, `use-package' will invoke
+;; (el-get 'sync package) to install the package.
 
 ;;; Code:
 
@@ -317,28 +288,6 @@
 
 (put 'with-elapsed-timer 'lisp-indent-function 1)
 
-(defun use-package-discover-el-get-type (args)
-  (let* ((pkg-name (plist-get args :name))
-         (git-config  (expand-file-name
-                       (concat pkg-name "/.git/config")
-                       (if (boundp 'user-site-lisp-directory)
-                           user-site-lisp-directory
-                         user-emacs-directory))))
-
-    (catch 'found
-      ;; Look for a readable .git/config with at least one defined remote.
-      (if (file-readable-p git-config)
-          (with-temp-buffer
-            (insert-file-contents-literally git-config)
-            (while (re-search-forward "\\[remote" nil t)
-              (if (re-search-forward "url = \\(.+\\)"
-                                     (save-excursion
-                                       (re-search-forward "\\[remote" nil t)
-                                       (point)) t)
-                  (nconc args (list :type 'git
-                                    :url (match-string 1))))))))
-    args))
-
 (defvar use-package-idle-timer nil)
 (defvar use-package-idle-forms nil)
 
@@ -383,6 +332,9 @@
 (defun use-package-ensure-elpa (package)
   (when (not (package-installed-p package))
     (package-install package)))
+
+(defun use-package-ensure-el-get (package)
+  (el-get 'sync package))
 
 
 (defmacro use-package (name &rest args)
@@ -434,7 +386,8 @@ For full documentation. please see commentary.
                                                         (quote ,requires))))
                             `(featurep (quote ,requires)))))
          (name-string (if (stringp name) name (symbol-name name)))
-         (name-symbol (if (stringp name) (intern name) name)))
+         (name-symbol (if (stringp name) (intern name) name))
+         (use-el-get (boundp 'el-get-sources)))
 
     ;; force this immediately -- one off cost
     (unless (plist-get args :disabled)
@@ -445,7 +398,9 @@ For full documentation. please see commentary.
                   ensure)))
 
         (when package-name
-          (use-package-ensure-elpa package-name)))
+          (if use-el-get
+              (use-package-ensure-el-get name)
+            (use-package-ensure-elpa package-name))))
 
 
       (if diminish-var
@@ -525,42 +480,18 @@ For full documentation. please see commentary.
                 `(load ,name t)
               `(require ',name nil t)))
 
-         ,(when (boundp 'el-get-sources)
+         ,(when use-el-get
             (require 'el-get)
 
             (let ((recipe (ignore-errors
-                            (el-get-read-recipe name-symbol))))
+                            (el-get-package-def name-symbol))))
               (if (null recipe)
                   (if use-package-debug
                       (message "No el-get recipe found for package `%s'"
                                name-symbol))
-                (setq args
-                      (mapcar #'(lambda (arg)
-                                  (cond
-                                   ((eq arg :config)
-                                    :after)
-                                   ((eq arg :requires)
-                                    :depends)
-                                   (t
-                                    arg)))
-                              args))
-
-                (nconc args (list :symbol (intern name-string)))
-
-                (let ((elem args))
-                  (while elem
-                    (unless (plist-get recipe (car elem))
-                      (plist-put recipe (car elem) (cadr elem)))
-                    (setq elem (cddr elem))))
-
-                (unless (plist-get recipe :name)
-                  (nconc recipe (list :name name-string)))
-
-                (unless (plist-get recipe :type)
-                  (setq recipe (use-package-discover-el-get-type recipe)))
-
-                (ignore
-                 (setq el-get-sources (cons recipe el-get-sources))))))
+                (ignore (add-to-list 'el-get-sources `(:name ,name-symbol)
+                                     (lambda (src1 src2)
+                                       (eq (plist-get src1 :name) (plist-get src2 :name))))))))
 
          ,(if (or commands (plist-get args :defer))
               (let (form)
