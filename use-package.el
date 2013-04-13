@@ -240,8 +240,12 @@
 ;; If `el-get-sources' is defined and there is an el-get recipe for a
 ;; package, `use-package' will add a (:name package-name) entry to
 ;; `el-get-sources' if the package is not already listed there.
-;; Furthermore, if :ensure t is passed, `use-package' will invoke
-;; (el-get 'sync package) to install the package.
+;;
+;; If :ensure t is passed, `use-package' will invoke (el-get 'sync
+;; package) to install the package.
+;;
+;; If there is no :load-path argument to `use-package' it will be
+;; filled in according to the el-get recipe.
 
 ;;; Code:
 
@@ -460,6 +464,21 @@ For full documentation. please see commentary.
                                              (quote ,interpreter)))
                            (plist-get args :interpreter)))
 
+      (when use-el-get
+        (require 'el-get)
+
+        (let ((recipe (ignore-errors
+                        (el-get-package-def name-symbol))))
+          (if (null recipe)
+              (if use-package-debug
+                  (message "No el-get recipe found for package `%s'"
+                           name-symbol))
+            (ignore (unless pkg-load-path
+                      (setq pkg-load-path
+                            (el-get-load-path name-symbol)))
+                    (add-to-list 'el-get-sources `(:name ,name-symbol)
+                                 (lambda (src1 src2)
+                                   (eq (plist-get src1 :name) (plist-get src2 :name))))))))
       `(progn
          ,@(mapcar
             #'(lambda (path)
@@ -479,19 +498,6 @@ For full documentation. please see commentary.
            ,(if (stringp name)
                 `(load ,name t)
               `(require ',name nil t)))
-
-         ,(when use-el-get
-            (require 'el-get)
-
-            (let ((recipe (ignore-errors
-                            (el-get-package-def name-symbol))))
-              (if (null recipe)
-                  (if use-package-debug
-                      (message "No el-get recipe found for package `%s'"
-                               name-symbol))
-                (ignore (add-to-list 'el-get-sources `(:name ,name-symbol)
-                                     (lambda (src1 src2)
-                                       (eq (plist-get src1 :name) (plist-get src2 :name))))))))
 
          ,(if (or commands (plist-get args :defer))
               (let (form)

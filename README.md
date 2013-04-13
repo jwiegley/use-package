@@ -196,5 +196,9 @@ there would be no difference.
 If `el-get-sources` is defined and there is an el-get recipe for a
 package, `use-package` will add a `(:name package-name)` entry to
 `el-get-sources` if the package is not already listed there.
-Furthermore, if `:ensure t` is passed, `use-package` will invoke
-`(el-get 'sync package)` to install the package.
+
+If :ensure t is passed, `use-package` will invoke `(el-get 'sync
+package)` to install the package.
+
+If there is no `:load-path` argument to `use-package` it will be
+filled in according to the el-get recipe.
