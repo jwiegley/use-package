@@ -5,6 +5,7 @@
 ;; Author: John Wiegley <jwiegley@gmail.com>
 ;; Created: 17 Jun 2012
 ;; Version: 1.0
+;; Package-Requires: ((bind-key "1.0") (diminish "0.44"))
 ;; Keywords: dotemacs startup speed config package
 ;; X-URL: https://github.com/jwiegley/use-package
 
@@ -212,7 +213,9 @@
 ;; if you have that installed.  It's purpose is to remove strings from your
 ;; mode-line that would otherwise always be there and provide no useful
 ;; information.  It is invoked with the `:diminish' keyword, which is passed
-;; either the minor mode symbol, or a cons of the symbol and a replacement string:
+;; either the minor mode symbol, a cons of the symbol and a replacement string,
+;; or just a replacement string in which case the minor mode symbol is guessed
+;; to be the package name with "-mode" at the end:
 ;;
 ;;   (use-package abbrev
 ;;     :diminish abbrev-mode
@@ -256,8 +259,11 @@
 (eval-when-compile
   (require 'cl))
 
+(declare-function package-installed-p 'package)
+(declare-function el-get-read-recipe 'el-get)
+
 (defgroup use-package nil
-  "A use-package declaration for simplifying your .emacs"
+  "A use-package declaration for simplifying your `.emacs'."
   :group 'startup)
 
 (defcustom use-package-verbose t
@@ -266,15 +272,14 @@
   :group 'use-package)
 
 (defcustom use-package-debug nil
-  "Whether to report more information, mostly regarding el-get"
+  "Whether to report more information, mostly regarding el-get."
   :type 'boolean
   :group 'use-package)
 
 (defcustom use-package-minimum-reported-time 0.01
   "Minimal load time that will be reported"
   :type 'number
-  :group 'use-package
-  )
+  :group 'use-package)
 
 (defmacro with-elapsed-timer (text &rest forms)
   `(let ((now ,(if use-package-verbose
@@ -296,7 +301,7 @@
 (defvar use-package-idle-forms nil)
 
 (defun use-package-start-idle-timer ()
-  "Ensure that the idle timer is running"
+  "Ensure that the idle timer is running."
   (unless use-package-idle-timer
     (setq use-package-idle-timer
           (run-with-idle-timer
@@ -304,16 +309,15 @@
            'use-package-idle-eval))))
 
 (defun use-package-init-on-idle (form)
-  "Add a new form to the idle queue"
+  "Add a new form to the idle queue."
   (use-package-start-idle-timer)
   (if use-package-idle-forms
       (add-to-list 'use-package-idle-forms
                    form t)
-    (setq use-package-idle-forms (list form))
-    ))
+    (setq use-package-idle-forms (list form))))
 
 (defun use-package-idle-eval()
-  "Start to eval idle-commands from the idle queue"
+  "Start to eval idle-commands from the idle queue."
   (let ((next (pop use-package-idle-forms)))
     (if next
         (progn
@@ -326,14 +330,15 @@
              (message
               "Failure on use-package idle. Form: %s, Error: %s"
               next e)))
-	  ;; recurse after a bit
+          ;; recurse after a bit
           (when (sit-for 3)
-	    (use-package-idle-eval)))
+            (use-package-idle-eval)))
       ;; finished (so far!)
       (cancel-timer use-package-idle-timer)
       (setq use-package-idle-timer nil))))
 
 (defun use-package-ensure-elpa (package)
+  (require 'package)
   (when (not (package-installed-p package))
     (package-install package)))
 
@@ -363,8 +368,7 @@ For full documentation. please see commentary.
 :defines Define vars to silence byte-compiler.
 :load-path Add to `load-path' before loading.
 :diminish Support for diminish package (if it's installed).
-:idle adds a form to run on an idle timer
-"
+:idle adds a form to run on an idle timer"
   (let* ((commands (plist-get args :commands))
          (pre-init-body (plist-get args :pre-init))
          (init-body (plist-get args :init))
@@ -412,16 +416,20 @@ For full documentation. please see commentary.
                 `(progn
                    ,config-body
                    (ignore-errors
-                     ,@(if (listp diminish-var)
-                           (if (listp (cdr diminish-var))
-                               (mapcar (lambda (var)
-                                           (if (listp var)
-                                               `(diminish (quote ,(car var)) ,(cdr var))
-                                               `(diminish (quote ,var))))
-                                diminish-var)
-                               `((diminish (quote ,(car diminish-var)) ,(cdr diminish-var)))
-                           )
-                         `((diminish (quote ,diminish-var))))))))
+                     ,@(cond
+                        ((stringp diminish-var)
+                         `((diminish (quote ,(intern (concat name-string "-mode")))
+                                     ,diminish-var)))
+                        ((symbolp diminish-var)
+                         `((diminish (quote ,diminish-var))))
+                        ((and (consp diminish-var) (stringp (cdr diminish-var)))
+                         `((diminish (quote ,(car diminish-var)) ,(cdr diminish-var))))
+                        (t ; list of symbols or (symbol . "string") pairs
+                         (mapcar (lambda (var)
+                                   (if (listp var)
+                                       `(diminish (quote ,(car var)) ,(cdr var))
+                                     `(diminish (quote ,var))))
+                                 diminish-var)))))))
 
       (if (and commands (symbolp commands))
           (setq commands (list commands)))
@@ -434,35 +442,38 @@ For full documentation. please see commentary.
                    ,init-body)))
 
 
-      (flet ((init-for-commands
-              (func sym-or-list)
-              (let ((cons-list (if (and (consp sym-or-list)
-                                        (stringp (car sym-or-list)))
-                                   (list sym-or-list)
-                                 sym-or-list)))
-                (if cons-list
-                    (setq init-body
-                          `(progn
-                             ,init-body
-                             ,@(mapcar #'(lambda (elem)
-                                           (push (cdr elem) commands)
-                                           (funcall func elem))
-                                       cons-list)))))))
+      (let ((init-for-commands
+             (lambda (func sym-or-list)
+               (let ((cons-list (if (and (consp sym-or-list)
+                                         (stringp (car sym-or-list)))
+                                    (list sym-or-list)
+                                  sym-or-list)))
+                 (if cons-list
+                     (setq init-body
+                           `(progn
+                              ,init-body
+                              ,@(mapcar #'(lambda (elem)
+                                            (push (cdr elem) commands)
+                                            (funcall func elem))
+                                        cons-list))))))))
 
-        (init-for-commands #'(lambda (binding)
-                               `(bind-key ,(car binding)
-                                          (quote ,(cdr binding))))
-                           (plist-get args :bind))
+        (funcall init-for-commands
+                 #'(lambda (binding)
+                     `(bind-key ,(car binding)
+                                (quote ,(cdr binding))))
+                 (plist-get args :bind))
 
-        (init-for-commands #'(lambda (mode)
-                               `(add-to-list 'auto-mode-alist
-                                             (quote ,mode)))
-                           (plist-get args :mode))
+        (funcall init-for-commands
+                 #'(lambda (mode)
+                     `(add-to-list 'auto-mode-alist
+                                   (quote ,mode)))
+                 (plist-get args :mode))
 
-        (init-for-commands #'(lambda (interpreter)
-                               `(add-to-list 'interpreter-mode-alist
-                                             (quote ,interpreter)))
-                           (plist-get args :interpreter)))
+        (funcall init-for-commands
+                 #'(lambda (interpreter)
+                     `(add-to-list 'interpreter-mode-alist
+                                   (quote ,interpreter)))
+                 (plist-get args :interpreter)))
 
       (when use-el-get
         (require 'el-get)
@@ -534,6 +545,15 @@ For full documentation. please see commentary.
 
 (put 'use-package 'lisp-indent-function 1)
 
-(provide 'use-package)
+(defconst use-package-font-lock-keywords
+  '(("(\\(use-package\\)\\> *\\(\\sw+\\)?"
+     (1 font-lock-keyword-face)
+     (2 font-lock-constant-face))))
 
+(font-lock-add-keywords 'emacs-lisp-mode use-package-font-lock-keywords)
+
+(provide 'use-package)
+;; Local Variables:
+;; indent-tabs-mode: nil
+;; End:
 ;;; use-package.el ends here

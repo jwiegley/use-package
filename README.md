@@ -168,7 +168,9 @@ Lastly, `use-package` provides built-in support for the diminish utility,
 if you have that installed.  It's purpose is to remove strings from your
 mode-line that would otherwise always be there and provide no useful
 information.  It is invoked with the `:diminish` keyword, which is passed
-the minor mode symbol:
+the minor mode symbol, a cons of the symbol and a replacement string, or
+just a replacement string in which case the minor mode symbol is guessed
+to be the package name with "-mode" at the end:
 
     (use-package abbrev
       :diminish abbrev-mode
