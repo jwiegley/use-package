@@ -274,6 +274,41 @@
 ;;                   (cons (plist-get entry :symbol)
 ;;                         `(status "installed" recipe ,entry)))
 ;;               el-get-sources)))
+;;
+;; * For bleeding edge code from git
+;;
+;; While it is possible to use MELPA to load bleeding edge code, directly from
+;; the developers repository package.el does not allow you to specify which
+;; repository code comes from. So, if MELPA is added, packages may be loaded
+;; from here, when really you want ELPA or Marmalade. With `use-package', it is
+;; possible to clone directly from git. By example, this form loads
+;; `clojure-mode'.
+;;
+;;  (use-package clojure-mode
+;;    :git "git://github.com/technomancy/clojure-mode.git"
+;;    :mode ("\\.clj$" . clojure-mode)
+;;    :defer t)
+;;
+;; Git commands happen during the initial load -- they are not defered as the
+;; clone time costs are (nearly) a one-off cost. This also means `use-package'
+;; statements can be ordered. For example, `clojure-test-mode' is in the same
+;; repository as `clojure-mode'
+;;
+;;   (use-package clojure-test-mode
+;;     :commands 'clojure-test-maybe-enable
+;;     :defer t)
+;;
+;; `use-package' will perform a pull every `use-package-git-update-frequency'
+;; days on each repository. A simple "git pull" is used, so if the default
+;; pull location is altered this will be used.
+;;
+;; By default, `use-package' pulls into `use-package-git-install-root'.
+;; However, you may alter this on a per-package basis with the
+;; `:git-location', directive. Unless you specify `:load-path' explicitly,
+;; this will be set for you.
+;;
+;; Unlike use of MELPA, this does require that git be installed and
+;; accessible, and only works from git.
 
 ;;; Code:
 
@@ -303,6 +338,11 @@
 
 (defcustom use-package-minimum-reported-time 0.01
   "Minimal load time that will be reported"
+  :type 'number
+  :group 'use-package)
+
+(defcustom use-package-git-update-frequency 7
+  "Length in days between pulls to remote git repositories"
   :type 'number
   :group 'use-package)
 
@@ -389,6 +429,73 @@
     (package-install package)))
 
 
+(defvar use-package-git-install-root (concat user-emacs-directory "git-packages"))
+(defvar use-package-git-update-buffer (get-buffer-create "*git-update*"))
+
+(defun use-package-git-check (repo location)
+  "Check if the repo has been cloned into
+LOCATION. If not then run git clone. If not
+check whether the file .git/FETCH_HEAD is older than
+`use-package-git-update-frequency' days old. If it is run git
+pull. Otherwise, do nothing"
+  (let ((project-dir
+         (concat location "/"
+                 (use-package-git-dir-from-git repo))))
+    (if (file-exists-p project-dir)
+        (use-package-git-update-maybe project-dir)
+      (use-package-git-clone repo location))
+    project-dir))
+
+(defun use-package-git-dir-from-git (git-location)
+  (first
+   (last
+    (split-string
+     (substring git-location 0 -4) "/" ))))
+
+(defun use-package-git-clone (repo location)
+  (display-buffer use-package-git-update-buffer)
+  (set-buffer use-package-git-update-buffer)
+  (goto-char (point-max))
+  (insert (format "Clone: %s...\n" repo))
+  (cd location)
+  ;; currently, this reports no progress because git knows we are not in TTY.
+  ;; --progress adds this but then we get a lot of spam
+  (call-process "git" nil use-package-git-update-buffer t "clone"
+                repo)
+  (insert (format "Clone: %s...done\n" repo)))
+
+(defun use-package-git-update-maybe (git-location)
+  ;; after a clone, FETCH_HEAD doesn't exist. So, we can't tell when the clone
+  ;; happened. So, do a pull anyway.
+  (if (not
+       (file-exists-p
+        (concat git-location "/.git/FETCH_HEAD")))
+      (use-package-git-update git-location)
+    (let ((age
+           (-
+            (nth 1
+                 (current-time))
+            (nth 1
+                 (nth 5
+                      (file-attributes
+                       (concat git-location "/.git/FETCH_HEAD" )))))))
+      (if (> age (* use-package-git-update-frequency 60 60 24))
+          (use-package-git-update git-location location)
+        (save-excursion
+          (set-buffer use-package-git-update-buffer)
+          (goto-char (point-max))
+          (insert (format "Not updating %s\n" git-location)))))))
+
+(defun use-package-git-update (git-location)
+  (display-buffer use-package-git-update-buffer)
+  (set-buffer use-package-git-update-buffer)
+  (goto-char (point-max))
+  (insert (format "Updating: %s...\n" git-location))
+  (goto-char (point-max))
+  (cd git-location)
+  (call-process "git" nil use-package-git-update-buffer t "pull")
+  (insert (format "Updating: %s...done\n" git-location)))
+
 (defmacro use-package (name &rest args)
 "Use a package with configuration options.
 
@@ -411,7 +518,11 @@ For full documentation. please see commentary.
 :defines Define vars to silence byte-compiler.
 :load-path Add to `load-path' before loading.
 :diminish Support for diminish package (if it's installed).
-:idle adds a form to run on an idle timer"
+:idle adds a form to run on an idle timer
+:git Clone/pull from git on a regular basis
+:git-location Where to put git clones.
+"
+
   (let* ((commands (plist-get args :commands))
          (pre-init-body (plist-get args :pre-init))
          (init-body (plist-get args :init))
@@ -439,8 +550,9 @@ For full documentation. please see commentary.
          (name-string (if (stringp name) name (symbol-name name)))
          (name-symbol (if (stringp name) (intern name) name)))
 
-    ;; force this immediately -- one off cost
     (unless (plist-get args :disabled)
+      ;; force these immediately -- one off cost
+      ;; ensure ELPA packages
       (let* ((ensure (plist-get args :ensure))
              (package-name
               (or (and (eq ensure t)
@@ -451,6 +563,16 @@ For full documentation. please see commentary.
           (require 'package)
           (use-package-ensure-elpa package-name)))
 
+      ;; ensure git packages
+      (let ((git (plist-get args :git))
+            (location (or (plist-get args :git-location)
+                          use-package-git-install-root)))
+        (when git
+          (unless (file-exists-p location)
+            (make-directory location))
+          (let ((dir (use-package-git-check git location)))
+            (unless pkg-load-path
+              (setq pkg-load-path dir)))))
 
       (if diminish-var
           (setq config-body
