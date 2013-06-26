@@ -229,3 +229,38 @@ when I want to install or update:
                     (cons (plist-get entry :symbol)
                           `(status "installed" recipe ,entry)))
                 el-get-sources)))
+
+# For bleeding edge code from git
+
+While it is possible to use MELPA to load bleeding edge code, directly from
+the developers repository package.el does not allow you to specify which
+repository code comes from. So, if MELPA is added, packages may be loaded
+from here, when really you want ELPA or Marmalade. With `use-package`, it is
+possible to clone directly from git. By example, this form loads
+`clojure-mode`.
+
+    (use-package clojure-mode
+      :git "git://github.com/technomancy/clojure-mode.git"
+      :mode ("\\.clj$" . clojure-mode)
+      :defer t)
+
+Git commands happen during the initial load -- they are not defered as the
+clone time costs are (nearly) a one-off cost. This also means `use-package`
+statements can be ordered. For example, `clojure-test-mode` is in the same
+repository as `clojure-mode`
+
+    (use-package clojure-test-mode
+      :commands 'clojure-test-maybe-enable
+      :defer t)
+
+`use-package` will perform a pull every `use-package-git-update-frequency`
+days on each repository. A simple "git pull" is used, so if the default
+pull location is altered this will be used.
+
+By default, `use-package` pulls into `use-package-git-install-root`.
+However, you may alter this on a per-package basis with the
+`:git-location`, directive. Unless you specify `:load-path` explicitly,
+this will be set for you.
+
+Unlike use of MELPA, this does require that git be installed and
+accessible, and only works from git.
