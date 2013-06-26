@@ -443,7 +443,10 @@ pull. Otherwise, do nothing"
                  (use-package-git-dir-from-git repo))))
     (if (file-exists-p project-dir)
         (use-package-git-update-maybe project-dir)
-      (use-package-git-clone repo location))
+      ;; clone and them immediately update. Cloning doesn't create the
+      ;; FETCH_HEAD file, so without this we will get a check next load.
+      (use-package-git-clone repo location)
+      (use-package-git-update-maybe project-dir))
     project-dir))
 
 (defun use-package-git-dir-from-git (git-location)
@@ -466,26 +469,23 @@ pull. Otherwise, do nothing"
   (message (format "Clone: %s...done" repo)))
 
 (defun use-package-git-update-maybe (git-location)
-  ;; after a clone, FETCH_HEAD doesn't exist. So, we can't tell when the clone
-  ;; happened. So, do a pull anyway.
-  (if (not
-       (file-exists-p
-        (concat git-location "/.git/FETCH_HEAD")))
-      (use-package-git-update git-location)
-    (let ((age
-           (-
-            (nth 1
-                 (current-time))
-            (nth 1
-                 (nth 5
-                      (file-attributes
-                       (concat git-location "/.git/FETCH_HEAD" )))))))
-      (if (> age (* use-package-git-update-frequency 60 60 24))
-          (use-package-git-update git-location location)
-        (save-excursion
-          (set-buffer use-package-git-update-buffer)
-          (goto-char (point-max))
-          (insert (format "Not updating %s\n" git-location)))))))
+  (let ((fetch-head (concat git-location "/.git/FETCH_HEAD")))
+    (if (not (file-exists-p fetch-head))
+        (use-package-git-update git-location)
+      (let ((age
+             (-
+              (nth 1
+                   (current-time))
+              (nth 1
+                   (nth 5
+                        (file-attributes
+                         (concat git-location "/.git/FETCH_HEAD" )))))))
+        (if (> age (* use-package-git-update-frequency 60 60 24))
+            (use-package-git-update git-location)
+          (save-excursion
+            (set-buffer use-package-git-update-buffer)
+            (goto-char (point-max))
+            (insert (format "Not updating %s\n" git-location))))))))
 
 (defun use-package-git-update (git-location)
   (display-buffer use-package-git-update-buffer)
