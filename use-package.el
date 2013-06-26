@@ -456,13 +456,14 @@ pull. Otherwise, do nothing"
   (display-buffer use-package-git-update-buffer)
   (set-buffer use-package-git-update-buffer)
   (goto-char (point-max))
-  (insert (format "Clone: %s...\n" repo))
+  (message (format "Clone: %s..." repo))
+  (insert (format "Clone: %s\n" repo))
   (cd location)
   ;; currently, this reports no progress because git knows we are not in TTY.
   ;; --progress adds this but then we get a lot of spam
   (call-process "git" nil use-package-git-update-buffer t "clone"
                 repo)
-  (insert (format "Clone: %s...done\n" repo)))
+  (message (format "Clone: %s...done" repo)))
 
 (defun use-package-git-update-maybe (git-location)
   ;; after a clone, FETCH_HEAD doesn't exist. So, we can't tell when the clone
@@ -490,11 +491,12 @@ pull. Otherwise, do nothing"
   (display-buffer use-package-git-update-buffer)
   (set-buffer use-package-git-update-buffer)
   (goto-char (point-max))
-  (insert (format "Updating: %s...\n" git-location))
+  (message (format "Updating: %s..." git-location))
+  (insert (format "Updating: %s\n" git-location))
   (goto-char (point-max))
   (cd git-location)
   (call-process "git" nil use-package-git-update-buffer t "pull")
-  (insert (format "Updating: %s...done\n" git-location)))
+  (message (format "Updating: %s...done" git-location)))
 
 (defmacro use-package (name &rest args)
 "Use a package with configuration options.
