@@ -1,4 +1,4 @@
-;;; use-package --- A use-package declaration for simplifying your .emacs
+;;; use-package.el --- A use-package declaration for simplifying your .emacs
 
 ;; Copyright (C) 2012 John Wiegley
 
@@ -238,6 +238,17 @@
 ;; actual load.  In this case, everything could be put inside `:init' and
 ;; there would be no difference.
 ;;
+;; * For package.el user
+;;
+;; You can use `use-package' to load packages from ELPA with package.el. This
+;; is particularly useful if you share your .emacs between several machines;
+;; the relevant packages will download automatically once placed in your
+;; .emacs. The `:ensure' key will install the package automatically if it is
+;; not already present.
+;;
+;; (use-package tex-site
+;;  :ensure auctex)
+;;
 ;; * For el-get users
 ;;
 ;; If `el-get-sources' is defined and there is an el-get recipe for a
@@ -345,6 +356,44 @@
 (defun use-package-ensure-el-get (package)
   (el-get 'sync package))
 
+(defvar use-package-keywords
+  '(
+     :bind
+     :commands
+     :config
+     :defer
+     :defines
+     :diminish
+     :disabled
+     :ensure
+     :idle
+     :if
+     :init
+     :interpreter
+     :load-path
+     :mode
+     :pre-init
+     :requires
+  )
+  "Keywords recognized by `use-package'.")
+
+(defun plist-keys (plist)
+  "Return a list containing all the keys in PLIST."
+  (when plist
+    (cons
+      (car plist)
+      (plist-keys
+        (cddr plist)))))
+
+(defun use-package-validate-keywords (args)
+  "Error if any keyword given in ARGS is not recognized.
+Return the list of recognized keywords."
+  (mapc
+    (function
+      (lambda (keyword)
+        (unless (memq keyword use-package-keywords)
+          (error "Unrecognized keyword: %s" keyword))))
+    (plist-keys args)))
 
 (defmacro use-package (name &rest args)
 "Use a package with configuration options.
@@ -368,7 +417,9 @@ For full documentation. please see commentary.
 :defines Define vars to silence byte-compiler.
 :load-path Add to `load-path' before loading.
 :diminish Support for diminish package (if it's installed).
-:idle adds a form to run on an idle timer"
+:idle adds a form to run on an idle timer
+:ensure loads package using package.el if necessary."
+  (use-package-validate-keywords args) ; error if any bad keyword, ignore result
   (let* ((commands (plist-get args :commands))
          (pre-init-body (plist-get args :pre-init))
          (init-body (plist-get args :init))
