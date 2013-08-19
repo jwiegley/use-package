@@ -539,6 +539,7 @@ For full documentation. please see commentary.
                       (setq pkg-load-path
                             (el-get-load-path name-symbol)))
                     (add-to-list 'el-get-sources `(:name ,name-symbol)
+                                 nil; don't append
                                  (lambda (src1 src2)
                                    (eq (plist-get src1 :name) (plist-get src2 :name))))))))
       `(progn
