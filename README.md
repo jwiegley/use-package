@@ -52,10 +52,16 @@ would succeed either way.
 
 Similar to `:bind`, you can use `:mode` and `:interpreter` to establish a
 deferred binding within `auto-mode-alist` and `auto-interpreter-alist`.
-The specifier to either keyword can be a single cons or a list:
+The specifier to either keyword can be a single cons, or a list, or just a 
+string:
 
-    (use-package python-mode
-      :mode ("\\.py$" . python-mode)
+    (use-package ruby-mode
+      :mode "\\.rb\\'"
+      :interpreter "ruby")
+
+    ;; The package is "python" but the mode is "python-mode":
+    (use-package python
+      :mode ("\\.py\\'" . python-mode)
       :interpreter ("python" . python-mode))
 
 If you aren't using `:commands`, `:bind`, `:mode`, or `:interpreter` (all
