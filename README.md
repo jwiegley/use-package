@@ -114,7 +114,7 @@ load. This is particularly useful for convienience minor modes which can be
 slow to load. For instance, in this case, I want Emacs to always use
 `global-pabbrev-mode`. `:commands` creates an appropriate autoload; `:idle`
 will run this command at some point in the future. If you start Emacs and
-beginning typing straight-away, loading will happen eventually.
+begin typing straight away, loading will happen eventually.
 
 (use-package pabbrev
   :commands global-pabbrev-mode
