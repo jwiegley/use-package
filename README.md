@@ -220,7 +220,7 @@ If you noticed that this declaration has neither a `:bind`, `:commands` or
 that both the `:init` and `:config` forms will be executed when ".emacs" is
 loaded, with no delays until later.  Is this useful?  Not really.  I just
 happen to like separating my configuration into things that must happen at
-startup time, and things that could potentioally wait until after the
+startup time, and things that could potentially wait until after the
 actual load.  In this case, everything could be put inside `:init` and
 there would be no difference.
 
