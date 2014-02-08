@@ -79,6 +79,8 @@ keyword:
 
 This does exactly the same thing as the other two commands above.
 
+You can also override deferring with the `:demand` keyword.
+
 A companion to the `:init` keyword is `:config`.  Although `:init` always
 happens in the case of deferred modules (which are likely to be the most
 common kind), `:config` form only run after the module has been loaded by
