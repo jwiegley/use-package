@@ -16,8 +16,10 @@ If not, a warning is logged to your `*Messages*` buffer.  If it succeeds a
 message about "Loading foo" is logged, along with the time it took to load,
 if that time is over 0.01s.
 
-Use the :init keywoard to do some stuff to initialize foo, but only if foo
-actually gets loaded:
+Use the :init keywoard to do some stuff to initialize foo. If loading
+was deferred, the code is run immediately ; otherwise the package is
+required before running the code. See below for options that defer
+loading of the package.
 
     (use-package foo
       :init
@@ -76,6 +78,8 @@ keyword:
         (bind-key "C-." 'ace-jump-mode)))
 
 This does exactly the same thing as the other two commands above.
+
+You can also override deferring with the `:demand` keyword.
 
 A companion to the `:init` keyword is `:config`.  Although `:init` always
 happens in the case of deferred modules (which are likely to be the most
