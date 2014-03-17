@@ -120,16 +120,19 @@ slow to load. For instance, in this case, I want Emacs to always use
 will run this command at some point in the future. If you start Emacs and
 begin typing straight away, loading will happen eventually.
 
-(use-package pabbrev
-  :commands global-pabbrev-mode
-  :idle (global-pabbrev-mode))
+    (use-package pabbrev
+      :commands global-pabbrev-mode
+      :idle (global-pabbrev-mode)
+      :idle-priority 3)
 
-Idle functions are run in the order in which they are evaluated. If you
-have many, it may take sometime for all to run. `use-package` will always
-tell you if there is an error in the form which can otherwise be difficult
-to debug. It may tell you about functions being eval'd, depending on the
-value of `use-package-verbose`. Other good candidates for `:idle` are
-`yasnippet`, `auto-complete` and `autopair`.
+Idle functions are run in the order in which they are evaluated, unless you
+specify a priority using `:idle-priority`, in which case lower priority
+functions are run first (the default priority is 5). If you have many idle
+functions, it may take sometime for all to run. `use-package` will always tell
+you if there is an error in the form which can otherwise be difficult to
+debug. It may tell you about functions being eval'd, depending on the value of
+`use-package-verbose`. Other good candidates for `:idle` are `yasnippet`,
+`auto-complete` and `autopair`.
 
 Finally, you may wish to use `:pre-load`. This form runs before everything
 else whenever the `use-package` form evals; the package in question will
