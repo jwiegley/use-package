@@ -112,13 +112,14 @@ In this case, I want to autoload the command `haskell-mode` from
 loaded, but wait until after I've opened a Haskell file before loading
 "inf-haskell.el" and "hs-lint.el".
 
-Another similar option to `:init` is `:idle`. Like `:init` this always run,
-however, it does so when Emacs is idle at some time in the future after
-load. This is particularly useful for convienience minor modes which can be
-slow to load. For instance, in this case, I want Emacs to always use
-`global-pabbrev-mode`. `:commands` creates an appropriate autoload; `:idle`
-will run this command at some point in the future. If you start Emacs and
-begin typing straight away, loading will happen eventually.
+Another similar option to `:init` is `:idle`. Like `:init` this always
+run, however, it does so when Emacs is idle at some time in the future
+(see variable `use-package-idle-interval`) after load. This is
+particularly useful for convienience minor modes which can be slow to
+load. For instance, in this case, I want Emacs to always use
+`global-pabbrev-mode`. `:commands` creates an appropriate autoload;
+`:idle` will run this command at some point in the future. If you start
+Emacs and begin typing straight away, loading will happen eventually.
 
     (use-package pabbrev
       :commands global-pabbrev-mode
