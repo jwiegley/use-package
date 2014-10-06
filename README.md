@@ -9,7 +9,9 @@ functionality!
 
 Here is the simplest `use-package` declaration:
 
-    (use-package foo)
+``` elisp
+(use-package foo)
+```
 
 This loads in the package foo, but only if foo is available on your system.
 If not, a warning is logged to your `*Messages*` buffer.  If it succeeds a
@@ -21,16 +23,20 @@ was deferred, the code is run immediately; otherwise the package is
 required before running the code.  See below for options that defer
 loading of the package.
 
-    (use-package foo
-      :init
-      (setq foo-variable t)
-      (foo-mode 1))
+``` elisp
+(use-package foo
+  :init
+  (setq foo-variable t)
+  (foo-mode 1))
+```
 
 A very common thing to do when loading a module is to bind a key to primary
 commands within that module:
 
-    (use-package ace-jump-mode
-      :bind ("C-." . ace-jump-mode))
+``` elisp
+(use-package ace-jump-mode
+  :bind ("C-." . ace-jump-mode))
+```
 
 This does two things: first, it creates autoload for the `ace-jump-mode`
 command, and defers loading of `ace-jump-mode` until you actually use it.
@@ -40,10 +46,12 @@ throughout your Emacs.
 
 A more literal way to do the exact same thing is:
 
-    (use-package ace-jump-mode
-      :commands ace-jump-mode
-      :init
-      (bind-key "C-." 'ace-jump-mode))
+``` elisp
+(use-package ace-jump-mode
+  :commands ace-jump-mode
+  :init
+  (bind-key "C-." 'ace-jump-mode))
+```
 
 When you use the `:commands` keyword, it creates autoloads for those
 commands and defers loading of the module until they are used.  In this
@@ -56,24 +64,28 @@ deferred binding within `auto-mode-alist` and `interpreter-mode-alist`.
 The specifier to either keyword can be a single cons, or a list, or just
 a string:
 
-    (use-package ruby-mode
-      :mode "\\.rb\\'"
-      :interpreter "ruby")
+``` elisp
+(use-package ruby-mode
+  :mode "\\.rb\\'"
+  :interpreter "ruby")
 
-    ;; The package is "python" but the mode is "python-mode":
-    (use-package python
-      :mode ("\\.py\\'" . python-mode)
-      :interpreter ("python" . python-mode))
+;; The package is "python" but the mode is "python-mode":
+(use-package python
+  :mode ("\\.py\\'" . python-mode)
+  :interpreter ("python" . python-mode))
+```
 
 If you aren't using `:commands`, `:bind`, `:mode`, or `:interpreter` (all
 of which imply `:commands`), you can still defer loading with the `:defer`
 keyword:
 
-    (use-package ace-jump-mode
-      :defer t
-      :init
-      (autoload 'ace-jump-mode "ace-jump-mode" nil t)
-      (bind-key "C-." 'ace-jump-mode))
+``` elisp
+(use-package ace-jump-mode
+  :defer t
+  :init
+  (autoload 'ace-jump-mode "ace-jump-mode" nil t)
+  (bind-key "C-." 'ace-jump-mode))
+```
 
 This does exactly the same thing as the other two commands above.
 
@@ -84,10 +96,12 @@ happens in the case of deferred modules (which are likely to be the most
 common kind), `:config` form only run after the module has been loaded by
 Emacs:
 
-    (use-package ace-jump-mode
-      :bind ("C-." . ace-jump-mode)
-      :config
-      (message "Yay, ace-jump-mode was actually loaded!"))
+``` elisp
+(use-package ace-jump-mode
+  :bind ("C-." . ace-jump-mode)
+  :config
+  (message "Yay, ace-jump-mode was actually loaded!"))
+```
 
 You will see a "Configured..." message in your `*Messages*` log when a
 package is configured, and a timing if the configuration time was longer
@@ -96,13 +110,15 @@ as much as you can get away with on the `:config` side.
 
 You can have both `:init` and `:config`:
 
-    (use-package haskell-mode
-      :commands haskell-mode
-      :init
-      (add-to-list 'auto-mode-alist '("\\.l?hs$" . haskell-mode))
-      :config
-      (use-package inf-haskell)
-      (use-package hs-lint))
+``` elisp
+(use-package haskell-mode
+  :commands haskell-mode
+  :init
+  (add-to-list 'auto-mode-alist '("\\.l?hs$" . haskell-mode))
+  :config
+  (use-package inf-haskell)
+  (use-package hs-lint))
+```
 
 In this case, I want to autoload the command `haskell-mode` from
 "haskell-mode.el", add it to `auto-mode-alist` at the time ".emacs" is
@@ -118,10 +134,12 @@ load. For instance, in this case, I want Emacs to always use
 `:idle` will run this command at some point in the future. If you start
 Emacs and begin typing straight away, loading will happen eventually.
 
-    (use-package pabbrev
-      :commands global-pabbrev-mode
-      :idle (global-pabbrev-mode)
-      :idle-priority 3)
+``` elisp
+(use-package pabbrev
+  :commands global-pabbrev-mode
+  :idle (global-pabbrev-mode)
+  :idle-priority 3)
+```
 
 Idle functions are run in the order in which they are evaluated, unless you
 specify a priority using `:idle-priority`, in which case lower priority
@@ -140,10 +158,12 @@ keeping this form as simple as possible makes sense.
 
 The `:bind` keyword takes either a cons or a list of conses:
 
-    (use-package hi-lock
-      :bind (("M-o l" . highlight-lines-matching-regexp)
-             ("M-o r" . highlight-regexp)
-             ("M-o w" . highlight-phrase)))
+``` elisp
+(use-package hi-lock
+  :bind (("M-o l" . highlight-lines-matching-regexp)
+         ("M-o r" . highlight-regexp)
+         ("M-o w" . highlight-phrase)))
+```
 
 The `:commands` keyword likewise takes either a symbol or a list of
 symbols.
@@ -152,19 +172,23 @@ You can use the `:if` keyword to predicate the loading and initialization
 of a module.  For example, I only want an `edit-server` running for my
 main, graphical Emacs, not for Emacsen I may start at the command line:
 
-    (use-package edit-server
-      :if window-system
-      :init
-      (add-hook 'after-init-hook 'server-start t)
-      (add-hook 'after-init-hook 'edit-server-start t))
+``` elisp
+(use-package edit-server
+  :if window-system
+  :init
+  (add-hook 'after-init-hook 'server-start t)
+  (add-hook 'after-init-hook 'edit-server-start t))
+```
 
 The `:disabled` keyword can be used to turn off a module that you're having
 difficulties with, or to stop loading something you're not really using at
 the present time:
 
-    (use-package ess-site
-      :disabled t
-      :commands R)
+``` elisp
+(use-package ess-site
+  :disabled t
+  :commands R)
+```
 
 Another feature of `use-package` is that it always loads every file that it
 can when your ".emacs" is being byte-compiled (if you do that, which I
@@ -175,29 +199,35 @@ However, there are times when this is just not enough.  For those times,
 use the `:defines` keyword to introduce empty variable definitions solely
 for the sake of the byte-compiler:
 
-    (use-package texinfo
-      :defines texinfo-section-list
-      :commands texinfo-mode
-      :init
-      (add-to-list 'auto-mode-alist '("\\.texi$" . texinfo-mode)))
+``` elisp
+(use-package texinfo
+  :defines texinfo-section-list
+  :commands texinfo-mode
+  :init
+  (add-to-list 'auto-mode-alist '("\\.texi$" . texinfo-mode)))
+```
 
 If you need to silence a missing function warning, do it with an autoload
 stub in your `:init` block:
 
-    (use-package w3m
-      :commands (w3m-browse-url w3m-session-crash-recovery-remove)
-      :init
-      (eval-when-compile
-        (autoload 'w3m-search-escape-query-string "w3m-search")))
+``` elisp
+(use-package w3m
+  :commands (w3m-browse-url w3m-session-crash-recovery-remove)
+  :init
+  (eval-when-compile
+    (autoload 'w3m-search-escape-query-string "w3m-search")))
+```
 
 If your package needs a directory added to the `load-path` in order to load,
 use `:load-path`.  It takes a string or a list of strings.  If the path is
 relative, it will be expanded within `user-emacs-directory`:
 
-    (use-package ess-site
-      :disabled t
-      :load-path "site-lisp/ess/lisp/"
-      :commands R)
+``` elisp
+(use-package ess-site
+  :disabled t
+  :load-path "site-lisp/ess/lisp/"
+  :commands R)
+```
 
 Lastly, `use-package` provides built-in support for the diminish utility,
 if you have that installed.  It's purpose is to remove strings from your
@@ -207,17 +237,19 @@ either the minor mode symbol, a cons of the symbol and a replacement string,
 or just a replacement string in which case the minor mode symbol is guessed
 to be the package name with "-mode" at the end:
 
-    (use-package abbrev
-      :diminish abbrev-mode
-      :init
-      (if (file-exists-p abbrev-file-name)
-          (quietly-read-abbrev-file))
+``` elisp
+(use-package abbrev
+  :diminish abbrev-mode
+  :init
+  (if (file-exists-p abbrev-file-name)
+      (quietly-read-abbrev-file))
 
-      :config
-      (add-hook 'expand-load-hook
-                (lambda ()
-                  (add-hook 'expand-expand-hook 'indent-according-to-mode)
-                  (add-hook 'expand-jump-hook 'indent-according-to-mode))))
+  :config
+  (add-hook 'expand-load-hook
+            (lambda ()
+              (add-hook 'expand-expand-hook 'indent-according-to-mode)
+              (add-hook 'expand-jump-hook 'indent-according-to-mode))))
+```
 
 If you noticed that this declaration has neither a `:bind`, `:commands` or
 `:defer` keyword: congratulations, you're an A student!  What it means is
@@ -236,5 +268,7 @@ the relevant packages will download automatically once placed in your
 .emacs. The `:ensure` key will install the package automatically if it is
 not already present:
 
-    (use-package tex-site
-      :ensure auctex)
+``` elisp
+(use-package tex-site
+  :ensure auctex)
+```
