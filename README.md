@@ -26,8 +26,9 @@ loading of the package.
 ``` elisp
 (use-package foo
   :init
-  (setq foo-variable t)
-  (foo-mode 1))
+  (progn
+    (setq foo-variable t)
+    (foo-mode 1)))
 ```
 
 A very common thing to do when loading a module is to bind a key to primary
@@ -83,8 +84,9 @@ keyword:
 (use-package ace-jump-mode
   :defer t
   :init
-  (autoload 'ace-jump-mode "ace-jump-mode" nil t)
-  (bind-key "C-." 'ace-jump-mode))
+  (progn
+    (autoload 'ace-jump-mode "ace-jump-mode" nil t)
+    (bind-key "C-." 'ace-jump-mode)))
 ```
 
 This does exactly the same thing as the other two commands above.
@@ -116,8 +118,9 @@ You can have both `:init` and `:config`:
   :init
   (add-to-list 'auto-mode-alist '("\\.l?hs$" . haskell-mode))
   :config
-  (use-package inf-haskell)
-  (use-package hs-lint))
+  (progn
+    (use-package inf-haskell)
+    (use-package hs-lint)))
 ```
 
 In this case, I want to autoload the command `haskell-mode` from
@@ -176,8 +179,9 @@ main, graphical Emacs, not for Emacsen I may start at the command line:
 (use-package edit-server
   :if window-system
   :init
-  (add-hook 'after-init-hook 'server-start t)
-  (add-hook 'after-init-hook 'edit-server-start t))
+  (progn
+    (add-hook 'after-init-hook 'server-start t)
+    (add-hook 'after-init-hook 'edit-server-start t)))
 ```
 
 The `:disabled` keyword can be used to turn off a module that you're having
