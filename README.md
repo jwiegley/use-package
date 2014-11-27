@@ -18,7 +18,7 @@ If not, a warning is logged to your `*Messages*` buffer.  If it succeeds a
 message about "Loading foo" is logged, along with the time it took to load,
 if that time is over 0.01s.
 
-Use the :init keywoard to do some stuff to initialize foo. If loading
+Use the :init keyword to do some stuff to initialize foo. If loading
 was deferred, the code is run immediately; otherwise the package is
 required before running the code.  See below for options that defer
 loading of the package.
