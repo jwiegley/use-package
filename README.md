@@ -233,7 +233,7 @@ relative, it will be expanded within `user-emacs-directory`:
   :commands R)
 ```
 
-Lastly, `use-package` provides built-in support for the diminish utility,
+`use-package` also provides built-in support for the diminish utility,
 if you have that installed.  It's purpose is to remove strings from your
 mode-line that would otherwise always be there and provide no useful
 information.  It is invoked with the `:diminish` keyword, which is passed
@@ -276,3 +276,43 @@ not already present:
 (use-package tex-site
   :ensure auctex)
 ```
+
+Lastly, when running on Emacs 24.4 or later, use-package can pin a
+package to a certain archive, which allows you to mix and match
+packages from different archives.
+
+The primary use-case is preferring packages from the melpa-stable and
+gnu archives, but with certain packages from melpa when you need to
+track newer versions than what is available in the stable archives.
+
+By default package.el will prefer melpa over melpa-stable due to the
+versioning (> evil-20141208.623 evil-1.0.9) so even if you are
+tracking only a single package from melpa, you will need to tag all
+the non-melpa packages with the appropriate archive.
+
+Example:
+
+``` elisp
+(use-package company
+  :ensure t
+  :pin "melpa-stable")
+
+(use-package evil
+  :ensure t)
+  ;; no :pin needed, as package.el will choose the version in melpa
+
+(use-package adaptive-wrap
+  :ensure t
+  ;; as this package is available only in the gnu archive, this is
+  ;; technically not needed, but it helps to highlight where it
+  ;; comes from
+  :pin "gnu")
+```
+
+NOTE: the :pin argument has no effect on emacs versions < 24.4.
+
+NOTE: if you pin a lot of packages, it will be slightly slower to
+start emacs compared to manually adding all packages to the
+`package-pinned-packages` variable, however should you do it that way,
+you will need to keep track of when (package-initialize) is called, so
+just let use-package handle it for you.
