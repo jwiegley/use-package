@@ -290,12 +290,24 @@ versioning (> evil-20141208.623 evil-1.0.9) so even if you are
 tracking only a single package from melpa, you will need to tag all
 the non-melpa packages with the appropriate archive.
 
+If you want to manually keep a package updated and ignore upstream
+updates, you can pin it to "manual" which as long as there is no
+repository by that name will Just Work(tm).
+
+`use-package` will throw an error if you try to pin a package to an
+archive that has not been configured via `package-archives` (apart
+from the magic "manual" archive mentioned above):
+
+```
+Archive 'foo' requested for package 'bar' is not available.
+```
+
 Example:
 
 ``` elisp
 (use-package company
   :ensure t
-  :pin "melpa-stable")
+  :pin melpa-stable)
 
 (use-package evil
   :ensure t)
@@ -306,7 +318,12 @@ Example:
   ;; as this package is available only in the gnu archive, this is
   ;; technically not needed, but it helps to highlight where it
   ;; comes from
-  :pin "gnu")
+  :pin gnu)
+
+(use-package org
+  :ensure t
+  ;; ignore org-mode from upstream and use a manually installed version
+  :pin manual)
 ```
 
 NOTE: the :pin argument has no effect on emacs versions < 24.4.
