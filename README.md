@@ -273,6 +273,14 @@ the relevant packages will download automatically once placed in your
 not already present:
 
 ``` elisp
+(use-package magit
+  :ensure t)
+```
+
+If you need to install a different package from the one named by
+`use-package`, you can specify it like this:
+
+``` elisp
 (use-package tex-site
   :ensure auctex)
 ```
