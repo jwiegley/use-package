@@ -358,7 +358,7 @@ For full documentation. please see commentary.
          (name-symbol (if (stringp name) (intern name) name)))
 
     ;; force this immediately -- one off cost
-    (unless (use-package-plist-get args :disabled)
+    (unless (eval (use-package-plist-get args :disabled))
 
       (when archive-name
         (use-package-pin-package name archive-name))
