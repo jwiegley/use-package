@@ -199,9 +199,9 @@ can when your ".emacs" is being byte-compiled (if you do that, which I
 recommend).  This helps to silence spurious warnings about unknown
 variables and functions.
 
-However, there are times when this is just not enough.  For those times,
-use the `:defines` keyword to introduce empty variable definitions solely
-for the sake of the byte-compiler:
+However, there are times when this is just not enough.  For those times, use
+the `:defines` and `:functions' keywords to introduce empty variable and
+function declarations solely for the sake of the byte-compiler:
 
 ``` elisp
 (use-package texinfo
