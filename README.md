@@ -2,8 +2,8 @@
 
 The meaning of `:init` has been changed: It now *always* happens before
 package load, whether `:config` has been deferred or not.  This means that
-some uses of `:init` in your configuration may need to be moved to `:config`
-(it the non-deferred case).  For the deferred case, the behavior is unchanged
+some uses of `:init` in your configuration may need to be changed to `:config`
+(in the non-deferred case).  For the deferred case, the behavior is unchanged
 from before.
 
 # `use-package`
