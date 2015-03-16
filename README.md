@@ -50,15 +50,10 @@ timer to fire, this is the sequence of events:
 It's possible that the user could use `featurep` in their idle to test for
 this case, but that's a subtlety I'd rather avoid.
 
-What I would consider is this: `:idle [N]` is a keyword that simply implies
-`:defer`, with an optional number `N` to specify a number of seconds.  After
-that many seconds, if the package has not yet been loaded by autoloading, it
-will be loaded via the idle timer.
+## :defer now accepts an optional integer argument
 
-This approach has the benefit of complete consistency for both the idle and
-the autoloaded cases.  Additionally, the fact that it implies `:defer` means
-we don't have to consider what it means to add `:idle` behavior to a
-demand-loaded configuration.
+`:defer [N]` causes the package to be loaded -- if it has not already been --
+after `N` seconds of idle time.
 
 ## Add :preface, occurring before everything except :disabled
 
