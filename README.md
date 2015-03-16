@@ -1,10 +1,75 @@
 # Note to users upgrading to 2.0
 
+## Semantics of :init is now consistent
+
 The meaning of `:init` has been changed: It now *always* happens before
 package load, whether `:config` has been deferred or not.  This means that
 some uses of `:init` in your configuration may need to be changed to `:config`
 (in the non-deferred case).  For the deferred case, the behavior is unchanged
 from before.
+
+Also, because `:init` and `:config` now mean "before" and "after", the `:pre-`
+and `:post-` keywords are gone, as they should no longer be necessary.
+
+Lastly, an effort has been made to make your Emacs start even in the presence
+of use-package configuration failures.  So after this change, be sure to check
+your `*Messages*` buffer.  Most likely, you will have several instances where
+you are using `:init`, but should be using `:config` (this was the case for me
+in a number of places).
+
+## :idle has been removed
+
+I am removing this feature for now because it can result in a nasty
+inconsistency.  Consider the following definition:
+
+``` elisp
+(use-package vkill
+  :commands vkill
+  :idle (some-important-configuration-here)
+  :bind ("C-x L" . vkill-and-helm-occur)
+  :init
+  (defun vkill-and-helm-occur ()
+    (interactive)
+    (vkill)
+    (call-interactively #'helm-occur))
+
+  :config
+  (setq vkill-show-all-processes t))
+```
+
+If I load my Emacs and wait until the idle timer fires, then this is the
+sequence of events:
+
+    :init :idle <load> :config
+
+But if I load Emacs and immediately type C-x L without waiting for the idle
+timer to fire, this is the sequence of events:
+
+    :init <load> :config :idle
+
+It's possible that the user could use `featurep` in their idle to test for
+this case, but that's a subtlety I'd rather avoid.
+
+What I would consider is this: `:idle [N]` is a keyword that simply implies
+`:defer`, with an option number of N to specify a second count.  After that
+many seconds, if the package has not yet been loaded by autoloading, it will
+be loaded via the idle timer.
+
+This approach has the benefit of complete consistency for both the idle and
+the autoloaded cases.  Although, the fact that it implies `:defer` means we
+don't have to consider what it means to add `:idle` behavior to a
+demand-loaded configuration.
+
+## Add :preface, occurring before everything except :disabled
+
+This can be used to establish function and variable definitions that will 1)
+make the byte-compiler happy (it won't complain about functions whose
+definitions are unknown because you have them within a guard block), and 2)
+allow you to define code that can be used in an `:if` test.
+
+## Add :functions, for declaring functions to the byte-compiler
+
+What `:defines` does for variables, `:functions` does for functions.
 
 # `use-package`
 
@@ -161,38 +226,6 @@ Additionally, if an error occurs while initializing or configuring a package,
 this will not stop your Emacs from loading.  Rather, the error will be
 captured by `use-package`, and reported to a special `*Warnings*` popup
 buffer, so that you can debug the situation in an otherwise functional Emacs.
-
-## Idle loads
-
-Another similar option to `:init` and `:config` is `:idle`.  Like `:init`,
-this form is always run, however, it does so when Emacs has been idle for some
-length of time after loading your Emacs (see the variable
-`use-package-idle-interval`).  This is particularly useful for convienience
-minor modes which can be slow to load.
-
-For example, consider the following package declaration for `pabbrev`:
-`:commands` creates an appropriate autoload, and defers loading of the package
-until that command has been used; `:idle` run this command at some point after
-Emacs has finished loading.  But if you start Emacs and start typing straight
-away, loading will happen immediately due to the autoload for
-`global-pabbrev-mode`.  This way, `pabbrev` is either loaded on-demand, or in
-the background if you leave Emacs idle.
-
-``` elisp
-(use-package pabbrev
-  :commands global-pabbrev-mode
-  :idle (global-pabbrev-mode)
-  :idle-priority 3)
-```
-
-Idle functions are run in the order in which they are evaluated, unless you
-specify a priority using `:idle-priority`.  Lower priority functions are run
-first (the default is 5).  If you have many idle functions, it may take
-sometime for all of them to run.  `use-package` will always indicate if there
-is an error in the form.  It may even tell you about the functions being
-eval'd, depending on the value of `use-package-verbose` (and so, enabling this
-can be helpful for debugging).  Other good candidates for `:idle` are
-`yasnippet`, `auto-complete` and `autopair`.
 
 ## Conditional loading
 
