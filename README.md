@@ -66,6 +66,18 @@ allow you to define code that can be used in an `:if` test.
 
 What `:defines` does for variables, `:functions` does for functions.
 
+## use-package.el is no longer needed at runtime
+
+This means you should put the following at the top of your Emacs, to further
+reduce load time:
+
+``` elisp
+(eval-when-compile
+  (require 'use-package))
+(require 'diminish)                ;; if you use :diminish
+(require 'bind-key)                ;; if you use any :bind variant
+```
+
 # `use-package`
 
 The `use-package` macro allows you to isolate package configuration in your
