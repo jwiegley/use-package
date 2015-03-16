@@ -206,13 +206,20 @@ still defer loading with the `:defer` keyword:
 
 This does exactly the same thing as the other two commands above.
 
-## Overriding lazy loading
+## Notes about lazy loading
+
+In almost all cases you don't need to manually specify `:defer t`.  This is
+implied whenever `:bind` or `:mode` or `:interpreter` is used.  Typically, you
+only need to specify `:defer` if you know for a fact that some other package
+will do something to cause your package to load at the appropriate time, and
+thus you would like to defer loading even though use-package isn't creating
+any autoloads for you.
 
 You can override package deferral with the `:demand` keyword.  Thus, even if
 you use `:bind`, using `:demand` will force loading to occur immediately and
 not establish an autoload for the bound key.
 
-## Information about package loading
+## Information about package loads
 
 When a package is loaded, and if you have `use-package-verbose` set t or if
 the package takes longer than 0.1s to load, you will see a message to indicate
