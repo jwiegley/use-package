@@ -51,13 +51,13 @@ It's possible that the user could use `featurep` in their idle to test for
 this case, but that's a subtlety I'd rather avoid.
 
 What I would consider is this: `:idle [N]` is a keyword that simply implies
-`:defer`, with an option number of N to specify a second count.  After that
-many seconds, if the package has not yet been loaded by autoloading, it will
-be loaded via the idle timer.
+`:defer`, with an optional number `N` to specify a number of seconds.  After
+that many seconds, if the package has not yet been loaded by autoloading, it
+will be loaded via the idle timer.
 
 This approach has the benefit of complete consistency for both the idle and
-the autoloaded cases.  Although, the fact that it implies `:defer` means we
-don't have to consider what it means to add `:idle` behavior to a
+the autoloaded cases.  Additionally, the fact that it implies `:defer` means
+we don't have to consider what it means to add `:idle` behavior to a
 demand-loaded configuration.
 
 ## Add :preface, occurring before everything except :disabled
