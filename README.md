@@ -300,6 +300,22 @@ If you need to silence a missing function warning, you can use `:functions`:
   (add-hook 'ruby-mode-hook 'my-ruby-mode-hook))
 ```
 
+### Prevent a package from loading at compile-time
+
+Normally, `use-package` will load each package at compile time before
+compiling the configuration, to ensure that any necessary symbols are in scope
+to satisfy the byte-compiler.  At times this can cause problems, since a
+package may have special loading requirements, and all that you want to use
+`use-package` for is to add a configuration to the `eval-after-load` hook.  In
+such cases, use the `:no-require` keyword, which implies `:defer`:
+
+``` elisp
+(use-package foo
+  :no-require t
+  :config
+  (message "This is evaluated when `foo' is loaded"))
+```
+
 ## Extending the load-path
 
 If your package needs a directory added to the `load-path` in order to load,
