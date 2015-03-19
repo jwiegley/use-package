@@ -57,10 +57,16 @@ after `N` seconds of idle time.
 
 ## Add :preface, occurring before everything except :disabled
 
-This can be used to establish function and variable definitions that will 1)
-make the byte-compiler happy (it won't complain about functions whose
+`:preface` can be used to establish function and variable definitions that
+will 1) make the byte-compiler happy (it won't complain about functions whose
 definitions are unknown because you have them within a guard block), and 2)
 allow you to define code that can be used in an `:if` test.
+
+Note that whatever is specified within `:preface` is evaluated both at load
+time and at byte-compilation time, in order to ensure that definitions are
+seen by both the Lisp evaluator and the byte-compiler, so you should avoid
+having any side-effects in your preface, and restrict it merely to symbol
+declarations and definitions.
 
 ## Add :functions, for declaring functions to the byte-compiler
 
