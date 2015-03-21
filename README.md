@@ -462,8 +462,8 @@ you a framework within which to decide when your keyword should fire.
 
 ### Second step: Create a normalizer
 
-Next, define a normalizer for your keyword, but defining a function named
-after the keyword, for example:
+Define a normalizer for your keyword by defining a function named after the
+keyword, for example:
 
 ``` elisp
 (defun use-package-normalize/:pin (name-symbol keyword args)
