@@ -446,3 +446,78 @@ Emacs compared to manually adding all packages to the
 `package-pinned-packages` variable.  However, should you do it this way, you
 need to keep track of when `(package-initialize)` is called, so letting
 `use-package` handle it for you is arguably worth the cost.
+
+## Extending use-package with new or modified keywords
+
+Starting with version 2.0, `use-package` is based on an extensible framework
+that makes it easy for package authors to add new keywords, or modify the
+behavior of existing keywords.
+
+### First step: Add the keyword
+
+The first step is to add your keyword at the right place in
+`use-package-keywords`.  This list determines the order in which things will
+happen in the expanded code.  You should never change this order, but it gives
+you a framework within which to decide when your keyword should fire.
+
+### Second step: Create a normalizer
+
+Next, define a normalizer for your keyword, but defining a function named
+after the keyword, for example:
+
+``` elisp
+(defun use-package-normalize/:pin (name-symbol keyword args)
+  (use-package-only-one (symbol-name keyword) args
+    (lambda (label arg)
+      (cond
+       ((stringp arg) arg)
+       ((symbolp arg) (symbol-name arg))
+       (t
+        (use-package-error
+         ":pin wants an archive name (a string)"))))))
+```
+
+The job of the normalizer is take a list of arguments (possibly nil), and turn
+it into the single argument (which could still be a list) that should appear
+in the final property list used by `use-package`.
+
+### Third step: Create a handler
+
+Once you have a normalizer, you must create a handler for the keyword:
+
+``` elisp
+(defun use-package-handler/:pin (name-symbol keyword archive-name rest state)
+  (let ((body (use-package-process-keywords name-symbol rest state)))
+    ;; This happens at macro expansion time, not when the expanded code is
+    ;; compiled or evaluated.
+    (if (null archive-name)
+        body
+      (use-package-pin-package name-symbol archive-name)
+      (use-package-concat
+       body
+       `((push '(,name-symbol . ,archive-name)
+               package-pinned-packages))))))
+```
+
+Handlers can effect on the handling of keywords in two ways.  First, it can
+modify the `state` plist before recursively processing the remaining keywords,
+to influence keywords that pay attention to the state (one example is the
+state keyword `:deferred`, not to be confused with the `use-package` keyword
+`:defer`).  Then, once the remaining keywords have been handled and their
+resulting forms returned, the handler may manipulate, extend, or just ignore
+those forms.
+
+The task of each handler is to return a *list of forms* representing code to
+be inserted.  It does not need to be a `progn` list, as this is handled
+automatically in other places.  Thus it is very common to see the idiom of
+using `use-package-concat` to add new functionality before or after a code
+body, so that only the minimum code necessary is emitted as the result of a
+`use-package` expansion.
+
+### Fourth step: Test it out
+
+After the keyword has been inserted into `use-package-keywords`, and a
+normalizer and a handler defined, you can now test it by seeing how usages of
+the keyword will expand.  For this, temporarily set `use-package-debug` to
+`t`, and just evaluate the `use-package` declaration.  The expansion will be
+shown in a special buffer called `*use-package*`.
