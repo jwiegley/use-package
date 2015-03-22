@@ -521,3 +521,23 @@ normalizer and a handler defined, you can now test it by seeing how usages of
 the keyword will expand.  For this, temporarily set `use-package-debug` to
 `t`, and just evaluate the `use-package` declaration.  The expansion will be
 shown in a special buffer called `*use-package*`.
+
+## Some timing results
+
+On my Retina iMac, the "Mac port" variant of Emacs 24.4 loads in 0.57s, with
+around 218 packages configured (nearly all of them lazy-loaded).  However, I
+experience no loss of functionality, just a bit of latency when I'm first
+starting to use Emacs (due to the autoloading).  Since I also use idle-loading
+for many packages, perceived latency is typically reduced overall.
+
+On Linux, the same configuration loads in 0.32s.
+
+If I don't use Emacs graphically, I can test the absolute minimum times.  This
+is done by running:
+
+``` bash
+time emacs -l init.elc -batch --eval '(message "Hello, world!")'
+```
+
+On the Mac I see an average of 0.36s for the same configuration, and on Linux
+0.26s.
