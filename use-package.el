@@ -956,6 +956,8 @@ deferred until the prefix key sequence is pressed."
 ;; The main macro
 ;;
 
+(defvar use-package--packages nil)
+
 (defmacro use-package (name &rest args)
   "Declare an Emacs package by specifying a group of configuration options.
 
@@ -1042,10 +1044,36 @@ this file.  Usage:
                    (emacs-lisp-mode)
                    (insert (pp-to-string body)))
                  buf))))
-        body))))
-
+        (list
+         'progn body
+         `(let ((name (symbol-name ',name-symbol)))
+            (unless (assoc-string name use-package--packages)
+              (if ,load-file-name
+                  (add-to-list 'use-package--packages
+                               (cons name ,load-file-name))))))))))
 
 (put 'use-package 'lisp-indent-function 'defun)
+
+(defun use-package-locate (name)
+  "Locate package configuration by name."
+  (interactive
+   (list (funcall (if (fboundp 'ido-completing-read)
+                      'ido-completing-read 'completing-read)
+                  "Locate package: " use-package--packages)))
+  (let ((section (assoc-string name use-package--packages))
+        done)
+    (if (and section
+             (cdr section)
+             (file-exists-p (cdr section)))
+        (progn
+          (find-file (cdr section))
+          (goto-char (point-min))
+          (setq done t)
+          (re-search-forward
+           (concat "(\\s-*use-package\\s-+" (regexp-quote  (car section))))
+          (recenter-top-bottom 0)))
+    (unless done
+      (message "Failed to locate package %s." name))))
 
 (provide 'use-package)
 
