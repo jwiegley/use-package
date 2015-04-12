@@ -108,6 +108,7 @@ the user specified."
   '(:disabled
     :pin
     :ensure
+    :el-get
     :if
     :when
     :unless
@@ -446,6 +447,36 @@ manually updated package."
       (when package-name
         (require 'package)
         (use-package-ensure-elpa package-name)))
+    body))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; :el-get
+;;
+
+(defun use-package-normalize/:el-get (name-symbol keyword args)
+  (if (null args)
+      t
+    (use-package-only-one (symbol-name keyword) args
+      (lambda (label arg)
+        (if (symbolp arg)
+            arg
+          (use-package-error
+           (concat ":el-get wants an optional package name "
+                   "(an unquoted symbol name)")))))))
+
+(defun use-package-el-get (package)
+  (when (not (el-get-package-is-installed package))
+    (el-get-install package)))
+
+(defun use-package-handler/:el-get (name-symbol keyword ensure rest state)
+  (let ((body (use-package-process-keywords name-symbol rest state)))
+    ;; This happens at macro expansion time, not when the expanded code is
+    ;; compiled or evaluated.
+    (let ((package-name (or (and (eq ensure t) name-symbol) ensure)))
+      (when package-name
+        (require 'package)
+        (use-package-el-get package-name)))
     body))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
