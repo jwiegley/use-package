@@ -933,9 +933,14 @@ deferred until the prefix key sequence is pressed."
 (defun use-package-normalize/:delight (name-symbol keyword args)
   "Normalize arguments to delight."
   (cond
-   ((and (= (length args) 1)
-         (symbolp (car args)))
-    (list (car args) nil name-symbol))
+   ((= (length args) 1)
+    (cond
+     ((eq (car args) t)
+      (list (intern (concat (symbol-name name-symbol) "-mode")) nil name-symbol))
+     ((stringp (car args) )
+      (list (intern (concat (symbol-name name-symbol) "-mode")) (car args) name-symbol))
+     ((symbolp (car args))
+      (list (car args) nil name-symbol))))
    ((and (= (length args) 2)
          (symbolp (car args)))
     (list (car args) (cadr args) name-symbol))
@@ -943,7 +948,7 @@ deferred until the prefix key sequence is pressed."
          (symbolp (car args)))
     args)
    (t
-    (use-package-error ":delight expects same args as delight function"))))
+    (use-package-error ":delight expects same args as delight function, or only a single string or t"))))
 
 (defun use-package-handler/:delight (name-symbol keyword args rest state)
   (let ((body (use-package-process-keywords name-symbol rest state)))
