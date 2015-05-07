@@ -55,6 +55,20 @@ this case, but that's a subtlety I'd rather avoid.
 `:defer [N]` causes the package to be loaded -- if it has not already been --
 after `N` seconds of idle time.
 
+```
+(use-package back-button
+  :ensure t
+  :commands (back-button-mode)
+  :diminish ""
+  :defer 2
+  :init
+  (progn
+    (setq back-button-show-toolbar-buttons nil))
+  :config
+  (progn
+    (back-button-mode 1)))
+```
+
 ## Add :preface, occurring before everything except :disabled
 
 `:preface` can be used to establish function and variable definitions that
