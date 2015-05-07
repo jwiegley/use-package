@@ -57,16 +57,12 @@ after `N` seconds of idle time.
 
 ```
 (use-package back-button
-  :ensure t
   :commands (back-button-mode)
-  :diminish ""
   :defer 2
   :init
-  (progn
-    (setq back-button-show-toolbar-buttons nil))
+  (setq back-button-show-toolbar-buttons nil)
   :config
-  (progn
-    (back-button-mode 1)))
+  (back-button-mode 1))
 ```
 
 ## Add :preface, occurring before everything except :disabled
