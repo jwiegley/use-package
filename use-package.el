@@ -882,7 +882,7 @@ deferred until the prefix key sequence is pressed."
             (use-package-concat
              (list `(require ',name-symbol))
              config-body)
-          `((if (not (require ',name-symbol nil t))
+          `((if (not (eval-and-compile (require ',name-symbol nil t)))
                 (ignore
                  (message (format "Could not load %s" ',name-symbol)))
               ,@config-body)))))))
