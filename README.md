@@ -116,7 +116,7 @@ succeeds, a message about `"Loading foo"` is logged, along with the time it
 took to load, if it took over 0.1s.
 
 Use the `:init` keyword to execute code before a package is loaded.  It
-accepts one or more form, up until the next keyword:
+accepts one or more forms, up until the next keyword:
 
 ``` elisp
 (use-package foo
