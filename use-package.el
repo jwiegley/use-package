@@ -636,16 +636,19 @@ manually updated package."
      (concat label " wants a string, (string . symbol) or list of these")))))
 
 (defun use-package-normalize-binder (name-symbol keyword args)
-  (use-package-as-one (symbol-name keyword) args
-    (lambda (label arg)
-      (use-package-normalize-pairs name-symbol label arg nil t))))
+  args)
 
 (defalias 'use-package-normalize/:bind 'use-package-normalize-binder)
 (defalias 'use-package-normalize/:bind* 'use-package-normalize-binder)
 
 (defun use-package-handler/:bind
     (name-symbol keyword arg rest state &optional override)
-  (let ((commands (mapcar #'cdr arg)))
+  (let ((commands (if (eq (caar arg) ':map)
+                      (mapcar #'cdr (cddar arg))
+                    (mapcar #'cdr arg)))
+        (arg (if (eq (caar arg) :map)
+                 (car arg)
+               arg)))
     (use-package-concat
      (use-package-process-keywords name-symbol
        (use-package-sort-keywords
