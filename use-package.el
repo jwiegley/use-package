@@ -406,12 +406,13 @@ manually updated package."
     (package-initialize t)))
 
 (defun use-package-handler/:pin (name-symbol keyword archive-name rest state)
+  (when archive-name
+    (use-package-pin-package name-symbol archive-name))
   (let ((body (use-package-process-keywords name-symbol rest state)))
     ;; This happens at macro expansion time, not when the expanded code is
     ;; compiled or evaluated.
     (if (null archive-name)
         body
-      (use-package-pin-package name-symbol archive-name)
       (use-package-concat
        body
        `((push '(,name-symbol . ,archive-name)
