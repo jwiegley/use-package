@@ -1,99 +1,3 @@
-# Note to users upgrading to 2.0
-
-## Semantics of :init is now consistent
-
-The meaning of `:init` has been changed: It now *always* happens before
-package load, whether `:config` has been deferred or not.  This means that
-some uses of `:init` in your configuration may need to be changed to `:config`
-(in the non-deferred case).  For the deferred case, the behavior is unchanged
-from before.
-
-Also, because `:init` and `:config` now mean "before" and "after", the `:pre-`
-and `:post-` keywords are gone, as they should no longer be necessary.
-
-Lastly, an effort has been made to make your Emacs start even in the presence
-of use-package configuration failures.  So after this change, be sure to check
-your `*Messages*` buffer.  Most likely, you will have several instances where
-you are using `:init`, but should be using `:config` (this was the case for me
-in a number of places).
-
-## :idle has been removed
-
-I am removing this feature for now because it can result in a nasty
-inconsistency.  Consider the following definition:
-
-``` elisp
-(use-package vkill
-  :commands vkill
-  :idle (some-important-configuration-here)
-  :bind ("C-x L" . vkill-and-helm-occur)
-  :init
-  (defun vkill-and-helm-occur ()
-    (interactive)
-    (vkill)
-    (call-interactively #'helm-occur))
-
-  :config
-  (setq vkill-show-all-processes t))
-```
-
-If I load my Emacs and wait until the idle timer fires, then this is the
-sequence of events:
-
-    :init :idle <load> :config
-
-But if I load Emacs and immediately type C-x L without waiting for the idle
-timer to fire, this is the sequence of events:
-
-    :init <load> :config :idle
-
-It's possible that the user could use `featurep` in their idle to test for
-this case, but that's a subtlety I'd rather avoid.
-
-## :defer now accepts an optional integer argument
-
-`:defer [N]` causes the package to be loaded -- if it has not already been --
-after `N` seconds of idle time.
-
-```
-(use-package back-button
-  :commands (back-button-mode)
-  :defer 2
-  :init
-  (setq back-button-show-toolbar-buttons nil)
-  :config
-  (back-button-mode 1))
-```
-
-## Add :preface, occurring before everything except :disabled
-
-`:preface` can be used to establish function and variable definitions that
-will 1) make the byte-compiler happy (it won't complain about functions whose
-definitions are unknown because you have them within a guard block), and 2)
-allow you to define code that can be used in an `:if` test.
-
-Note that whatever is specified within `:preface` is evaluated both at load
-time and at byte-compilation time, in order to ensure that definitions are
-seen by both the Lisp evaluator and the byte-compiler, so you should avoid
-having any side-effects in your preface, and restrict it merely to symbol
-declarations and definitions.
-
-## Add :functions, for declaring functions to the byte-compiler
-
-What `:defines` does for variables, `:functions` does for functions.
-
-## use-package.el is no longer needed at runtime
-
-This means you should put the following at the top of your Emacs, to further
-reduce load time:
-
-``` elisp
-(eval-when-compile
-  (require 'use-package))
-(require 'diminish)                ;; if you use :diminish
-(require 'bind-key)                ;; if you use any :bind variant
-```
-
 # `use-package`
 
 The `use-package` macro allows you to isolate package configuration in your
@@ -101,6 +5,8 @@ The `use-package` macro allows you to isolate package configuration in your
 created it because I have over 80 packages that I use in Emacs, and things
 were getting difficult to manage.  Yet with this utility my total load time is
 around 2 seconds, with no loss of functionality!
+
+Notes for users upgrading to 2.0 are located [at the bottom](README.md#note-to-users-upgrading-to-20).
 
 ## The basics
 
@@ -551,3 +457,99 @@ time emacs -l init.elc -batch --eval '(message "Hello, world!")'
 
 On the Mac I see an average of 0.36s for the same configuration, and on Linux
 0.26s.
+
+# Upgrading to 2.0
+
+## Semantics of :init is now consistent
+
+The meaning of `:init` has been changed: It now *always* happens before
+package load, whether `:config` has been deferred or not.  This means that
+some uses of `:init` in your configuration may need to be changed to `:config`
+(in the non-deferred case).  For the deferred case, the behavior is unchanged
+from before.
+
+Also, because `:init` and `:config` now mean "before" and "after", the `:pre-`
+and `:post-` keywords are gone, as they should no longer be necessary.
+
+Lastly, an effort has been made to make your Emacs start even in the presence
+of use-package configuration failures.  So after this change, be sure to check
+your `*Messages*` buffer.  Most likely, you will have several instances where
+you are using `:init`, but should be using `:config` (this was the case for me
+in a number of places).
+
+## :idle has been removed
+
+I am removing this feature for now because it can result in a nasty
+inconsistency.  Consider the following definition:
+
+``` elisp
+(use-package vkill
+  :commands vkill
+  :idle (some-important-configuration-here)
+  :bind ("C-x L" . vkill-and-helm-occur)
+  :init
+  (defun vkill-and-helm-occur ()
+    (interactive)
+    (vkill)
+    (call-interactively #'helm-occur))
+
+  :config
+  (setq vkill-show-all-processes t))
+```
+
+If I load my Emacs and wait until the idle timer fires, then this is the
+sequence of events:
+
+    :init :idle <load> :config
+
+But if I load Emacs and immediately type C-x L without waiting for the idle
+timer to fire, this is the sequence of events:
+
+    :init <load> :config :idle
+
+It's possible that the user could use `featurep` in their idle to test for
+this case, but that's a subtlety I'd rather avoid.
+
+## :defer now accepts an optional integer argument
+
+`:defer [N]` causes the package to be loaded -- if it has not already been --
+after `N` seconds of idle time.
+
+```
+(use-package back-button
+  :commands (back-button-mode)
+  :defer 2
+  :init
+  (setq back-button-show-toolbar-buttons nil)
+  :config
+  (back-button-mode 1))
+```
+
+## Add :preface, occurring before everything except :disabled
+
+`:preface` can be used to establish function and variable definitions that
+will 1) make the byte-compiler happy (it won't complain about functions whose
+definitions are unknown because you have them within a guard block), and 2)
+allow you to define code that can be used in an `:if` test.
+
+Note that whatever is specified within `:preface` is evaluated both at load
+time and at byte-compilation time, in order to ensure that definitions are
+seen by both the Lisp evaluator and the byte-compiler, so you should avoid
+having any side-effects in your preface, and restrict it merely to symbol
+declarations and definitions.
+
+## Add :functions, for declaring functions to the byte-compiler
+
+What `:defines` does for variables, `:functions` does for functions.
+
+## use-package.el is no longer needed at runtime
+
+This means you should put the following at the top of your Emacs, to further
+reduce load time:
+
+``` elisp
+(eval-when-compile
+  (require 'use-package))
+(require 'diminish)                ;; if you use :diminish
+(require 'bind-key)                ;; if you use any :bind variant
+```
