@@ -292,7 +292,8 @@ You can use `use-package` to load packages from ELPA with `package.el`. This
 is particularly useful if you share your `.emacs` among several machines; the
 relevant packages are download automatically once declared in your `.emacs`.
 The `:ensure` keyword causes the package(s) to be installed automatically if
-not already present on your system:
+not already present on your system (set `(setq use-package-always-ensure t)`
+if you wish this behavior to be global for all packages):
 
 ``` elisp
 (use-package magit
