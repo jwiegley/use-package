@@ -58,7 +58,7 @@ As you might expect, you can use `:init` and `:config` together:
 In this case, I want to autoload the commands `isearch-moccur` and
 `isearch-all` from `color-moccur.el`, and bind keys both at the global level
 and within the `isearch-mode-map` (see next section).  When the package is
-actually loaded (by using one of these commands), `moccur-edit` is also be
+actually loaded (by using one of these commands), `moccur-edit` is also
 loaded, to allow editing of the `moccur` buffer.
 
 ## Key-binding
@@ -150,13 +150,14 @@ not establish an autoload for the bound key.
 
 ## Information about package loads
 
-When a package is loaded, and if you have `use-package-verbose` set t or if
-the package takes longer than 0.1s to load, you will see a message to indicate
-this loading activity in the `*Messages*` buffer.  The same will happen for
-configuration, or `:config` blocks that take longer than 0.1s to execute.  In
-general, you should keep `:init` forms as simple and quick as possible, and
-put as much as you can get away with into the `:config` block.  This way,
-deferred loading can help your Emacs to start as quickly as possible.
+When a package is loaded, and if you have `use-package-verbose` set to `t`, or
+if the package takes longer than 0.1s to load, you will see a message to
+indicate this loading activity in the `*Messages*` buffer.  The same will
+happen for configuration, or `:config` blocks that take longer than 0.1s to
+execute.  In general, you should keep `:init` forms as simple and quick as
+possible, and put as much as you can get away with into the `:config` block.
+This way, deferred loading can help your Emacs to start as quickly as
+possible.
 
 Additionally, if an error occurs while initializing or configuring a package,
 this will not stop your Emacs from loading.  Rather, the error will be
@@ -178,7 +179,7 @@ graphical Emacs, not for other Emacsen I may start at the command line:
 ```
 
 The `:disabled` keyword can turn off a module you're having difficulties with,
-or to stop loading something you're not using at the present time:
+or stop loading something you're not using at the present time:
 
 ``` elisp
 (use-package ess-site
@@ -290,7 +291,7 @@ end:
 
 You can use `use-package` to load packages from ELPA with `package.el`. This
 is particularly useful if you share your `.emacs` among several machines; the
-relevant packages are download automatically once declared in your `.emacs`.
+relevant packages are downloaded automatically once declared in your `.emacs`.
 The `:ensure` keyword causes the package(s) to be installed automatically if
 not already present on your system (set `(setq use-package-always-ensure t)`
 if you wish this behavior to be global for all packages):
@@ -313,7 +314,7 @@ a specific archive, allowing you to mix and match packages from different
 archives.  The primary use-case for this is preferring packages from the
 `melpa-stable` and `gnu` archives, but using specific packages from `melpa`
 when you need to track newer versions than what is available in the `stable`
-archives.
+archives is also a valid use-case.
 
 By default `package.el` prefers `melpa` over `melpa-stable` due to the
 versioning `(> evil-20141208.623 evil-1.0.9)`, so even if you are tracking
@@ -416,7 +417,7 @@ Once you have a normalizer, you must create a handler for the keyword:
                package-pinned-packages))))))
 ```
 
-Handlers can effect on the handling of keywords in two ways.  First, it can
+Handlers can affect the handling of keywords in two ways.  First, it can
 modify the `state` plist before recursively processing the remaining keywords,
 to influence keywords that pay attention to the state (one example is the
 state keyword `:deferred`, not to be confused with the `use-package` keyword
