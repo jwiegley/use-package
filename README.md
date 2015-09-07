@@ -460,6 +460,10 @@ time emacs -l init.elc -batch --eval '(message "Hello, world!")'
 On the Mac I see an average of 0.36s for the same configuration, and on Linux
 0.26s.
 
+## Error handling
+
+You may override `use-package-require-error-handler` function to handle errors
+
 # Upgrading to 2.0
 
 ## Semantics of :init is now consistent
