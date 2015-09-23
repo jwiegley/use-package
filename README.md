@@ -287,6 +287,20 @@ end:
       (quietly-read-abbrev-file)))
 ```
 
+## Key-chord binding
+
+If you use [`key-chord`](http://www.emacswiki.org/emacs/key-chord.el), 
+you can define chords using the `:chords` keyword in the same manner
+as `:bind` and related keywords, using the same format of a cons or a
+list of conses:
+
+``` elisp
+(use-package ace-jump-mode
+  :chords (("jj" . ace-jump-char-mode)
+           ("jk" . ace-jump-word-mode)
+           ("jl" . ace-jump-line-mode)))
+```
+
 ## For `package.el` users
 
 You can use `use-package` to load packages from ELPA with `package.el`. This
@@ -554,4 +568,5 @@ reduce load time:
   (require 'use-package))
 (require 'diminish)                ;; if you use :diminish
 (require 'bind-key)                ;; if you use any :bind variant
+(require 'key-chord)               ;; if you use :chords
 ```

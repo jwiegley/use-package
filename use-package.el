@@ -129,7 +129,8 @@ the user specified."
     :init
     :config
     :diminish
-    :delight)
+    :delight
+    :chords)
   "Establish which keywords are valid, and the order they are processed in.
 
 Note that `:disabled' is special, in that it causes nothing at all to happen,
@@ -663,7 +664,7 @@ manually updated package."
 (defalias 'use-package-normalize/:bind* 'use-package-normalize-binder)
 
 (defun use-package-handler/:bind
-    (name keyword arg rest state &optional override)
+    (name keyword arg rest state &optional bind-macro)
   (let ((commands (remq nil (mapcar #'(lambda (arg)
                                         (if (listp arg)
                                             (cdr arg)
@@ -673,10 +674,10 @@ manually updated package."
        (use-package-sort-keywords
         (use-package-plist-maybe-put rest :defer t))
        (use-package-plist-append state :commands commands))
-     `((ignore (,(if override 'bind-keys* 'bind-keys) ,@arg))))))
+     `((ignore (,(if bind-macro bind-macro 'bind-keys) ,@arg))))))
 
 (defun use-package-handler/:bind* (name keyword arg rest state)
-  (use-package-handler/:bind name keyword arg rest state t))
+  (use-package-handler/:bind name keyword arg rest state 'bind-keys*))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -734,6 +735,16 @@ deferred until the prefix key sequence is pressed."
 
 (defun use-package-handler/:bind-keymap* (name keyword arg rest state)
   (use-package-handler/:bind-keymap name keyword arg rest state t))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; :chords
+;;
+
+(defalias 'use-package-normalize/:chords 'use-package-normalize-binder)
+
+(defun use-package-handler/:chords (name keyword arg rest state)
+  (use-package-handler/:bind name keyword arg rest state 'bind-chords))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

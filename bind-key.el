@@ -236,6 +236,35 @@ function symbol (unquoted)."
 (defmacro bind-keys* (&rest args)
   `(bind-keys :map override-global-map ,@args))
 
+;;;###autoload
+(defun bind-chord (chord command &optional keymap)
+  (let ((key1 (logand 255 (aref chord 0)))
+        (key2 (logand 255 (aref chord 1))))
+    (if (eq key1 key2)
+        (bind-key (vector 'key-chord key1 key2) command keymap)
+      (bind-key (vector 'key-chord key1 key2) command keymap)
+      (bind-key (vector 'key-chord key2 key1) command keymap))))
+
+;;;###autoload
+(defmacro bind-chords (&rest args)
+  (let* ((map (plist-get args :map))
+         (maps (if (listp map) map (list map)))
+         (key-bindings (progn
+                         (while (keywordp (car args))
+                           (pop args)
+                           (pop args))
+                         args)))
+    (macroexp-progn
+     (apply
+      #'nconc
+      (mapcar (lambda (form)
+                (if maps
+                    (mapcar
+                     #'(lambda (m)
+                         `(bind-chord ,(car form) ',(cdr form) ,m)) maps)
+                  `((bind-chord ,(car form) ',(cdr form)))))
+              key-bindings)))))
+
 (defun get-binding-description (elem)
   (cond
    ((listp elem)
