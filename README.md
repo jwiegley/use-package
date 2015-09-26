@@ -6,7 +6,7 @@ created it because I have over 80 packages that I use in Emacs, and things
 were getting difficult to manage.  Yet with this utility my total load time is
 around 2 seconds, with no loss of functionality!
 
-Notes for users upgrading to 2.0 are located [at the bottom](README.md#note-to-users-upgrading-to-20).
+Notes for users upgrading to 2.x are located [at the bottom](README.md#note-to-users-upgrading-to-20).
 
 ## The basics
 
@@ -460,7 +460,7 @@ time emacs -l init.elc -batch --eval '(message "Hello, world!")'
 On the Mac I see an average of 0.36s for the same configuration, and on Linux
 0.26s.
 
-# Upgrading to 2.0
+# Upgrading to 2.x
 
 ## Semantics of :init is now consistent
 
