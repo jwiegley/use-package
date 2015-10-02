@@ -43,7 +43,6 @@
 (require 'bytecomp)
 (require 'diminish nil t)
 (require 'bytecomp)
-(eval-when-compile (require 'cl))
 
 (declare-function package-installed-p 'package)
 
@@ -271,12 +270,12 @@ This is in contrast to merely setting it to 0."
     (cons (cdr ys) (cdr zs))))
 
 (defun use-package-keyword-index (keyword)
-  (loop named outer
-        with index = 0
-        for k in use-package-keywords do
-        (if (eq k keyword)
-            (return-from outer index))
-        (incf index)))
+  (catch 'outer
+    (let ((index 0))
+      (dolist (k use-package-keywords)
+        (when (eq k keyword)
+          (throw 'outer index))
+        (setq index (1+ index))))))
 
 (defun use-package-sort-keywords (plist)
   (let (plist-grouped)
