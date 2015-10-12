@@ -6,7 +6,7 @@ created it because I have over 80 packages that I use in Emacs, and things
 were getting difficult to manage.  Yet with this utility my total load time is
 around 2 seconds, with no loss of functionality!
 
-Notes for users upgrading to 2.x are located [at the bottom](README.md#note-to-users-upgrading-to-20).
+Notes for users upgrading to 2.x are located [at the bottom](#upgrading-to-2x).
 
 ## The basics
 
