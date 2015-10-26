@@ -102,6 +102,9 @@ The `:bind` keyword takes either a cons or a list of conses:
 
 The `:commands` keyword likewise takes either a symbol or a list of symbols.
 
+Special keys like `tab` or `F1`-`Fn` are written in square brackets, i.e. `[tab]` instead of `"tab"`.
+
+
 ## Modes and interpreters
 
 Similar to `:bind`, you can use `:mode` and `:interpreter` to establish a
