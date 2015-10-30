@@ -904,7 +904,7 @@ deferred until the prefix key sequence is pressed."
           `((eval-after-load ,(if (symbolp name) `',name name)
               ',(macroexp-progn config-body))))
       (use-package--with-elapsed-timer
-          (format "Loading package %s" name)
+          (format "    Loading package %s" name)
         (if use-package-expand-minimally
             (use-package-concat
              (list (use-package-load-name name))
