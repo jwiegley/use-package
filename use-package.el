@@ -1052,8 +1052,6 @@ this file.  Usage:
                               (plist-get args* :defines))
                     (with-demoted-errors
                         ,(format "Cannot load %s: %%S" name)
-                      ,(if use-package-verbose
-                           `(message "Compiling package %s" ',name-symbol))
                       ,(unless (plist-get args* :no-require)
                          (use-package-load-name name)))))))
 
