@@ -142,36 +142,37 @@ KEY-NAME may be a vector, in which case it is passed straight to
 `define-key'. Or it may be a string to be interpreted as
 spelled-out keystrokes, e.g., \"C-c C-z\". See documentation of
 `edmacro-mode' for details."
-  (let ((namevar (make-symbol "name"))
-        (keyvar (make-symbol "key"))
-        (kdescvar (make-symbol "kdesc"))
-        (bindingvar (make-symbol "binding")))
-    `(let* ((,namevar ,key-name)
-            (,keyvar (if (vectorp ,namevar) ,namevar
-                       (read-kbd-macro ,namevar)))
-            (,kdescvar (cons (if (stringp ,namevar) ,namevar
-                               (key-description ,namevar))
-                             (quote ,keymap)))
-            (,bindingvar (lookup-key (or ,keymap global-map)
-                                     ,keyvar)))
-       (add-to-list 'personal-keybindings
-                    (list ,kdescvar ,command
-                          (unless (numberp ,bindingvar) ,bindingvar)))
-       (define-key (or ,keymap global-map) ,keyvar ,command))))
+  `(bind-key-fun ,key-name ,command ',keymap))
+
+(defun bind-key-fun (key-name command &optional keymap)
+  "Function version of `bind-key'."
+  (let* ((key (if (vectorp key-name) key-name
+                (read-kbd-macro key-name)))
+         (kdesc (cons (if (stringp key-name) key-name
+                        (key-description key-name))
+                      keymap))
+         (map (or (symbol-value keymap) global-map))
+         (old-binding (lookup-key map key)))
+    (add-to-list 'personal-keybindings
+                 (list kdesc command
+                       (unless (numberp old-binding) old-binding)))
+    (define-key map key command)))
 
 ;;;###autoload
 (defmacro unbind-key (key-name &optional keymap)
-  `(progn
-     (bind-key ,key-name nil ,keymap)
-     (setq personal-keybindings
-           (cl-delete-if #'(lambda (k)
-                             ,(if keymap
-                                  `(and (consp (car k))
-                                        (string= (caar k) ,key-name)
-                                        (eq (cdar k) ',keymap))
-                                `(and (stringp (car k))
-                                      (string= (car k) ,key-name))))
-                         personal-keybindings))))
+  `(unbind-key-fun ,key-name ',keymap))
+
+(defun unbind-key-fun (key-name &optional keymap)
+  (bind-key-fun key-name nil keymap)
+  (setq personal-keybindings
+        (cl-delete-if #'(lambda (k)
+                          (if keymap
+                              (and (consp (car k))
+                                   (string= (caar k) key-name)
+                                   (eq (cdar k) keymap))
+                            (and (stringp (car k))
+                                 (string= (car k) key-name))))
+                      personal-keybindings)))
 
 ;;;###autoload
 (defmacro bind-key* (key-name command)
