@@ -151,7 +151,8 @@ spelled-out keystrokes, e.g., \"C-c C-z\". See documentation of
                        (read-kbd-macro ,namevar)))
             (,kdescvar (cons (if (stringp ,namevar) ,namevar
                                (key-description ,namevar))
-                             (quote ,keymap)))
+                             (when ,keymap
+                               (quote ,keymap))))
             (,bindingvar (lookup-key (or ,keymap global-map)
                                      ,keyvar)))
        (add-to-list 'personal-keybindings
