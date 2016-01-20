@@ -319,7 +319,8 @@ archives is also a valid use-case.
 By default `package.el` prefers `melpa` over `melpa-stable` due to the
 versioning `(> evil-20141208.623 evil-1.0.9)`, so even if you are tracking
 only a single package from `melpa`, you will need to tag all the non-`melpa`
-packages with the appropriate archive.
+packages with the appropriate archive. If this really annoys you, then you can
+set `use-package-always-pin` to set a default.
 
 If you want to manually keep a package updated and ignore upstream updates,
 you can pin it to `manual`, which as long as there is no repository by that
