@@ -360,12 +360,6 @@ Example:
 
 **NOTE**: the `:pin` argument has no effect on emacs versions < 24.4.
 
-**NOTE**: if you pin a lot of packages, it will be slightly slower to start
-Emacs compared to manually adding all packages to the
-`package-pinned-packages` variable.  However, should you do it this way, you
-need to keep track of when `(package-initialize)` is called, so letting
-`use-package` handle it for you is arguably worth the cost.
-
 ## Extending use-package with new or modified keywords
 
 Starting with version 2.0, `use-package` is based on an extensible framework
