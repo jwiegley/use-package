@@ -123,10 +123,9 @@ just a string:
   :interpreter ("python" . python-mode))
 ```
 
-If you aren't using `:commands`, `:bind`, `:bind*`, `:bind-keymap`,
-`:bind-keymap*`, `:mode`, or `:interpreter` (all of which imply `:defer`; see
-the docstring for `use-package` for a brief description of each), you can
-still defer loading with the `:defer` keyword:
+If you aren't using `:commands`, `:bind`, `:bind*`, `:mode`, or `:interpreter`
+(all of which imply `:defer`; see the docstring for `use-package` for a brief
+description of each), you can still defer loading with the `:defer` keyword:
 
 ``` elisp
 (use-package ace-jump-mode
