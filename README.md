@@ -47,10 +47,12 @@ As you might expect, you can use `:init` and `:config` together:
 ``` elisp
 (use-package color-moccur
   :commands (isearch-moccur isearch-all)
-  :bind ("M-s O" . moccur)
+  :bind ("M-s O" . moccur
+         :map isearch-mode-map
+         ("M-o" . isearch-moccur)
+         ("M-O" . isearch-moccur-all))
   :init
-  (bind-key "M-o" 'isearch-moccur isearch-mode-map)
-  (bind-key "M-O" 'isearch-moccur-all isearch-mode-map)
+  (setq isearch-lazy-highlight t)
   :config
   (use-package moccur-edit))
 ```
@@ -102,8 +104,53 @@ The `:bind` keyword takes either a cons or a list of conses:
 
 The `:commands` keyword likewise takes either a symbol or a list of symbols.
 
-Special keys like `tab` or `F1`-`Fn` are written in square brackets, i.e. `[tab]` instead of `"tab"`.
+NOTE: special keys like `tab` or `F1`-`Fn` are written in square brackets,
+i.e. `[tab]` instead of `"tab"`.
 
+### Binding to keymaps
+
+Normally `:bind` expects that commands are functions that will be autoloaded
+from the given package. However, this does not work if one of those commands
+is actually a keymap, since keymaps are not functions, and cannot be
+autoloaded using Emacs' `autoload` mechanism.
+
+To handle this case, `use-package` offers a special, limited variant of
+`:bind` called `:bind-keymap`. The only difference is that the "commands"
+bound to by `:bind-keymap` must be keymaps defined in the package, rather than
+command functions. This is handled behind the scenes by generating custom code
+that loads the package containing the keymap, and then re-executes your
+keypress after the first load, to reinterpret that keypress as a prefix key.
+
+### Binding within local keymaps
+
+Slightly different from binding a key to a keymap, is binding a key *within* a
+local keymap that only exists after the package is loaded.  `use-package`
+supports this with a `:map` modifier, taking the local keymap to bind to:
+
+``` elisp
+(use-package helm
+  :bind (:map helm-mode-map
+         ("C-c h" . helm-execute-persistent-action)))
+```
+
+The effect of this statement is to wait until `helm` has loaded, and then to
+bind the key `C-c h` to `helm-execute-persistent-action` within Helm's local
+keymap, `helm-mode-map`.
+
+Multiple uses of `:map` may be specified. Any binding occurring before the
+first use of `:map` are applied to the global keymap:
+
+``` elisp
+(use-package term
+  :bind (("C-c t" . term)
+         :map term-mode-map
+         ("M-p" . term-send-up)
+         ("M-n" . term-send-down)
+         :map term-raw-map
+         ("M-o" . other-window)
+         ("M-p" . term-send-up)
+         ("M-n" . term-send-down)))
+```
 
 ## Modes and interpreters
 
@@ -136,7 +183,12 @@ still defer loading with the `:defer` keyword:
   (bind-key "C-." 'ace-jump-mode))
 ```
 
-This does exactly the same thing as the other two commands above.
+This does exactly the same thing as the following:
+
+``` elisp
+(use-package ace-jump-mode
+  :bind ("C-." . ace-jump-mode))
+```
 
 ## Notes about lazy loading
 
