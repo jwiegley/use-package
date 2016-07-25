@@ -486,6 +486,10 @@ manually updated package."
 ;; :ensure
 ;;
 (defvar package-archive-contents)
+(defvar package-alist)
+(declare-function package-desc-status "package")
+(declare-function package-read-all-archive-contents "package")
+
 (defun use-package-normalize/:ensure (name keyword args)
   (if (null args)
       t
@@ -498,13 +502,14 @@ manually updated package."
                    "(an unquoted symbol name)")))))))
 
 (defun use-package-ensure-elpa (package &optional no-refresh)
-  (if (package-installed-p package)
-      t
-    (if (and (not no-refresh) (assoc package package-pinned-packages))
+  (let ((pkg (assq package package-alist)))
+    (if pkg
+        t
+      (when (and (not no-refresh) (assoc package package-pinned-packages))
         (package-read-all-archive-contents))
-    (if (or (assoc package package-archive-contents) no-refresh)
-        (package-install package)
-      (progn
+      (setq pkg (assq package package-archive-contents))
+      (if (or pkg no-refresh)
+          (package-install (cadr pkg))
         (package-refresh-contents)
         (use-package-ensure-elpa package t)))))
 
