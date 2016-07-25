@@ -498,15 +498,18 @@ manually updated package."
                    "(an unquoted symbol name)")))))))
 
 (defun use-package-ensure-elpa (package &optional no-refresh)
-  (if (package-installed-p package)
-      t
-    (if (and (not no-refresh) (assoc package package-pinned-packages))
-        (package-read-all-archive-contents))
-    (if (or (assoc package package-archive-contents) no-refresh)
-        (package-install package)
-      (progn
-        (package-refresh-contents)
-        (use-package-ensure-elpa package t)))))
+  (let* ((pkg (assq package package-archive-contents))
+         (pkg-desc (cadr pkg)))
+    (if (member (package-desc-status pkg-desc)
+                '("installed" "dependency"))
+        t
+      (if (and (not no-refresh) (assoc package package-pinned-packages))
+          (package-read-all-archive-contents))
+      (if (or pkg no-refresh)
+          (package-install pkg-desc)
+        (progn
+          (package-refresh-contents)
+          (use-package-ensure-elpa package t))))))
 
 (defun use-package-handler/:ensure (name keyword ensure rest state)
   (let* ((body (use-package-process-keywords name rest state))
