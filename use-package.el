@@ -501,14 +501,18 @@ manually updated package."
                    "(an unquoted symbol name)")))))))
 
 (defun use-package-ensure-elpa (package &optional no-refresh)
-  (let ((pkg-desc (cadr (assq package package-archive-contents))))
-    (if (member (package-desc-status pkg-desc)
-                '("installed" "dependency"))
+  (let* ((pkg       (assq package package-archive-contents))
+         (installed (and pkg (member (package-desc-status (cadr pkg))
+                                     '("installed" "dependency")))))
+    (if installed
         t
-      (if (and (not no-refresh) (assoc package package-pinned-packages))
-          (package-read-all-archive-contents))
-      (if (or (assq package package-archive-contents) no-refresh)
-          (package-install pkg-desc)
+      (when (and (not no-refresh) (assoc package package-pinned-packages))
+        (package-read-all-archive-contents)
+        (setq pkg (assq package package-archive-contents))
+        (setq installed (member (package-desc-status (cadr pkg))
+                                '("installed" "dependency"))))
+      (if (or (and pkg (not installed)) no-refresh)
+          (package-install (cadr pkg))
         (progn
           (package-refresh-contents)
           (use-package-ensure-elpa package t))))))
