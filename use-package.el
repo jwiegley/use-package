@@ -505,7 +505,9 @@ manually updated package."
   (let ((pkg (assq package package-alist)))
     (if pkg
         t
-      (when (and (not no-refresh) (assoc package package-pinned-packages))
+      (when (and (not no-refresh)
+                 (assoc package
+                        (bound-and-true-p 'package-pinned-packages)))
         (package-read-all-archive-contents))
       (setq pkg (assq package package-archive-contents))
       (if (or pkg no-refresh)
