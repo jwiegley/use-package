@@ -360,7 +360,7 @@ If you need to install a different package from the one named by
 `use-package`, you can specify it like this:
 
 ``` elisp
-(use-package tex-site
+(use-package tex
   :ensure auctex)
 ```
 
