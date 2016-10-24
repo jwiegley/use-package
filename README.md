@@ -142,7 +142,7 @@ supports this with a `:map` modifier, taking the local keymap to bind to:
 
 ``` elisp
 (use-package helm
-  :bind (:map helm-mode-map
+  :bind (:map helm-command-map
          ("C-c h" . helm-execute-persistent-action)))
 ```
 
