@@ -251,7 +251,7 @@ or stop loading something you're not using at the present time:
 
 ``` elisp
 (use-package ess-site
-  :disabled t
+  :disabled
   :commands R)
 ```
 
