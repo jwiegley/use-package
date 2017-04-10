@@ -235,7 +235,9 @@ buffer, so that you can debug the situation in an otherwise functional Emacs.
 ## Conditional loading
 
 You can use the `:if` keyword to predicate the loading and initialization of
-modules.  For example, I only want `edit-server` running for my main,
+modules.  
+
+For example, I only want `edit-server` running for my main,
 graphical Emacs, not for other Emacsen I may start at the command line:
 
 ``` elisp
@@ -244,6 +246,15 @@ graphical Emacs, not for other Emacsen I may start at the command line:
   :init
   (add-hook 'after-init-hook 'server-start t)
   (add-hook 'after-init-hook 'edit-server-start t))
+```
+In another example, we can load things conditional on the operating system:
+
+```
+(use-package exec-path-from-shell
+  :if (eq system-type 'darwin)
+  :ensure t
+  :config
+  (exec-path-from-shell-initialize))
 ```
 
 The `:disabled` keyword can turn off a module you're having difficulties with,
