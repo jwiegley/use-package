@@ -251,7 +251,7 @@ In another example, we can load things conditional on the operating system:
 
 ```
 (use-package exec-path-from-shell
-  :if (string-equal system-type "darwin")
+  :if (eq system-type 'darwin)
   :ensure t
   :config
   (exec-path-from-shell-initialize))
