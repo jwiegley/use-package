@@ -418,7 +418,7 @@ Example:
 ``` elisp
 (use-package company
   :ensure t
-  :pin melpa-stable)
+  :pin "melpa-stable")
 
 (use-package evil
   :ensure t)
@@ -429,12 +429,12 @@ Example:
   ;; as this package is available only in the gnu archive, this is
   ;; technically not needed, but it helps to highlight where it
   ;; comes from
-  :pin gnu)
+  :pin "gnu")
 
 (use-package org
   :ensure t
   ;; ignore org-mode from upstream and use a manually installed version
-  :pin manual)
+  :pin "manual")
 ```
 
 **NOTE**: the `:pin` argument has no effect on emacs versions < 24.4.
