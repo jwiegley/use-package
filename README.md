@@ -1,5 +1,7 @@
 # `use-package`
 
+[![Build Status](https://travis-ci.org/jwiegley/use-package.svg?branch=master)](https://travis-ci.org/jwiegley/use-package)
+
 The `use-package` macro allows you to isolate package configuration in your
 `.emacs` file in a way that is both performance-oriented and, well, tidy.  I
 created it because I have over 80 packages that I use in Emacs, and things
@@ -235,7 +237,7 @@ buffer, so that you can debug the situation in an otherwise functional Emacs.
 ## Conditional loading
 
 You can use the `:if` keyword to predicate the loading and initialization of
-modules.  
+modules.
 
 For example, I only want `edit-server` running for my main,
 graphical Emacs, not for other Emacsen I may start at the command line:
