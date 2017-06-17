@@ -1,4 +1,4 @@
-;;; use-package-tests.el --- Tests for use-package.el
+;;; use-package-test.el --- Tests for use-package.el
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -17,18 +17,15 @@
 
 ;;; Commentary:
 
-;; 
+;;
 
 
 ;;; Code:
 
-(require 'ert)
-(require 'use-package)
-
 (ert-deftest use-package-normalize-binder ()
   (let ((good-values '(:map map-sym
-                       ("str" . sym) ("str" . "str")
-                       ([vec] . sym) ([vec] . "str"))))
+                            ("str" . sym) ("str" . "str")
+                            ([vec] . sym) ([vec] . "str"))))
     (should (equal (use-package-normalize-binder
                     'foopkg :bind good-values)
                    good-values)))
@@ -56,4 +53,4 @@
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
 ;; End:
-;;; use-package-tests.el ends here
+;;; use-package-test.el ends here
