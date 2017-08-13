@@ -320,6 +320,69 @@ such cases, use the `:no-require` keyword, which implies `:defer`:
   (message "This is evaluated when `foo' is loaded"))
 ```
 
+### Byte-compiling with `package.el`
+
+For general discussion on `package.el`, please first read the "For
+package.el users" section.
+
+If you would like to byte-compile your init file, and in the
+byte-compiled version would like to avoid the `package-initialize`
+call (which is quite expensive), then you can use the
+`use-package-with-elpa` helper function.
+
+A fully working `.emacs` example:
+```elisp
+(setq package-user-dir "~/my-new-elpa-dir"
+      package-archives '(("melpa" . "http://melpa.milkbox.net/packages/")
+                         ("gnu" . "http://elpa.gnu.org/packages/")))
+
+;; Install use-package if not yet installed.
+(eval-when-compile
+  (package-initialize)
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package)))
+
+(use-package-with-elpa)
+
+(use-package bind-key)
+(use-package diminish)
+
+(use-package magit
+  :bind ("C-c s" . magit-status))
+
+(use-package yaml-mode
+  :mode ("\\.yaml\\'"))
+```
+
+The `use-package-with-elpa` call provides the following functionality
+in case of an interpreted init file:
+
+  - `use-package-always-ensure` is set to `t`,
+  - `use-package-verbose` logging is enabled.
+
+These settings together with the `eval-when-compile` initialization
+block mean that you can just start Emacs with the init file above.
+Even if your elpa directory is completely empty, everything will be
+installed automatically with dependencies.
+
+Byte compilation of your init file can be done with a command like this:
+```
+rm -f ~/.emacs.elc; emacs -Q --batch -l ~/.emacs -f batch-byte-compile ~/.emacs
+```
+
+Once your init file is byte-compiled, this configuration provides the
+following functionality:
+
+  - `package.el` initialization is completely disabled,
+  - the `load-path` variable is set the same way as it was in the
+    interpreted init file,
+  - `use-package-verbose` is set to nil.
+
+Using `use-package` this way together with `package.el` provides very
+quick startup times even with a lot of packages, once your init file
+is byte-compiled.
+
 ## Extending the load-path
 
 If your package needs a directory added to the `load-path` in order to load,
