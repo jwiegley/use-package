@@ -220,6 +220,16 @@ The `:custom` keyword allows customization of package custom variables.
 
 The documentation string is not mandatory.
 
+### Customizing faces
+
+The `:custom-face` keyword allows customization of package custom faces.
+
+``` elisp
+(use-package eruby-mode
+  :custom-face
+  (eruby-standard-face ((t (:slant italic)))))
+```
+
 ## Notes about lazy loading
 
 In almost all cases you don't need to manually specify `:defer t`.  This is
