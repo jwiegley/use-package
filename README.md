@@ -205,6 +205,21 @@ This does exactly the same thing as the following:
   :bind ("C-." . ace-jump-mode))
 ```
 
+## Package customization
+
+### Customizing variables.
+
+The `:custom` keyword allows customization of package custom variables.
+
+``` elisp
+(use-package comint
+  :custom
+  (comint-buffer-maximum-size 20000 "Increase comint buffer size.")
+  (comint-prompt-read-only t "Make the prompt read only."))
+```
+
+The documentation string is not mandatory.
+
 ## Notes about lazy loading
 
 In almost all cases you don't need to manually specify `:defer t`.  This is
