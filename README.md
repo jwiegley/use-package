@@ -268,7 +268,7 @@ or stop loading something you're not using at the present time:
   :commands R)
 ```
 
-When byte-compiling your `.emacs` file, disabled declarations are ommitted
+When byte-compiling your `.emacs` file, disabled declarations are omitted
 from the output entirely, to accelerate startup times.
 
 ## Byte-compiling your .emacs
