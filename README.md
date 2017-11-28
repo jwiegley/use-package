@@ -205,6 +205,50 @@ This does exactly the same thing as the following:
   :bind ("C-." . ace-jump-mode))
 ```
 
+## Hooks
+
+The `:hook` keyword allows adding functions onto hooks, here only the basename
+of the hook is required. Thus, all of the following are equivalent:
+
+``` elisp
+(use-package ace-jump-mode
+  :hook prog-mode)
+
+(use-package ace-jump-mode
+  :hook (prog-mode . ace-jump-mode))
+
+(use-package ace-jump-mode
+  :commands ace-jump-mode
+  :init
+  (add-hook 'prog-mode-hook #'ace-jump-mode))
+```
+
+And likewise, when multiple hooks should be applied, the following are also
+equivalent:
+
+``` elisp
+(use-package ace-jump-mode
+  :hook (prog-mode text-mode))
+
+(use-package ace-jump-mode
+  :hook ((prog-mode text-mode) . ace-jump-mode))
+
+(use-package ace-jump-mode
+  :hook ((prog-mode . ace-jump-mode)
+         (text-mode . ace-jump-mode)))
+
+(use-package ace-jump-mode
+  :commands ace-jump-mode
+  :init
+  (add-hook 'prog-mode-hook #'ace-jump-mode)
+  (add-hook 'text-mode-hook #'ace-jump-mode))
+```
+
+The use of `:hook`, as with `:bind`, `:mode`, `:interpreter`, etc., causes the
+functions being hooked to implicitly be read as `:commands` (meaning they will
+establish interactive `autoload` definitions for that module, if not already
+defined as functions), and so `:defer t` is also implied by `:hook`.
+
 ## Package customization
 
 ### Customizing variables.
