@@ -296,6 +296,46 @@ or stop loading something you're not using at the present time:
 When byte-compiling your `.emacs` file, disabled declarations are omitted
 from the output entirely, to accelerate startup times.
 
+### Loading packages in sequence
+
+Sometimes it only makes sense to configure a package after another has been
+loaded, because certain variables or functions are not in scope until that
+time. This can achieved using an `:after` keyword that allows a fairly rich
+description of the exact conditions when loading should occur. Here is an
+example:
+
+``` elisp
+(use-package hydra
+  :load-path "site-lisp/hydra")
+
+(use-package ivy
+  :load-path "site-lisp/swiper")
+
+(use-package ivy-hydra
+  :after (ivy hydra))
+```
+
+In this case, because all of these packages are demand-loaded in the order
+they occur, the use of `:after` is not strictly necessary. By using it,
+however, the above code becomes order-independent, without an implicit
+depedence on the nature of your init file.
+
+By default, `:after (foo bar)` is the same as `:after (:all foo bar)`, meaning
+that loading of the given package will not happen until both `foo` and `bar`
+have been loaded. Here are some of the other possibilities:
+
+``` elisp
+:after (foo bar)
+:after (:all foo bar)
+:after (:any foo bar)
+:after (:all (:any foo bar) (:any baz quux))
+:after (:any (:all foo bar) (:all baz quux))
+```
+
+When you nest selectors, such as `(:any (:all foo bar) (:all baz quux))`, it
+means that the package will be loaded when either both `foo` and `bar` have
+been loaded, or both `baz` and `quux` have been loaded.
+
 ## Byte-compiling your .emacs
 
 Another feature of `use-package` is that it always loads every file that it
