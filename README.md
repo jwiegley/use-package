@@ -10,16 +10,27 @@ around 2 seconds, with no loss of functionality!
 
 Notes for users upgrading to 2.x are located [at the bottom](#upgrading-to-2x).
 
-## The basics
+## Installing use-package
+
+Either clone from this GitHub repository or install from
+[MELPA](http://melpa.milkbox.net/) (recommended).
+
+## Getting started
 
 Here is the simplest `use-package` declaration:
 
 ``` elisp
+;; This is only needed once, near the top of the file
+(eval-when-compile
+  ;; Following line is not needed if use-package.el is in ~/.emacs.d
+  (add-to-list 'load-path "<path where use-package is installed>")
+  (require 'use-package))
+
 (use-package foo)
 ```
 
 This loads in the package `foo`, but only if `foo` is available on your
-system.  If not, a warning is logged to the `*Messages*` buffer.  If it
+system. If not, a warning is logged to the `*Messages*` buffer. If it
 succeeds, a message about `"Loading foo"` is logged, along with the time it
 took to load, if it took over 0.1s.
 
