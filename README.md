@@ -420,7 +420,7 @@ compiling the configuration, to ensure that any necessary symbols are in scope
 to satisfy the byte-compiler.  At times this can cause problems, since a
 package may have special loading requirements, and all that you want to use
 `use-package` for is to add a configuration to the `eval-after-load` hook.  In
-such cases, use the `:no-require` keyword, which implies `:defer`:
+such cases, use the `:no-require` keyword:
 
 ``` elisp
 (use-package foo
