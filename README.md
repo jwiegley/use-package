@@ -136,6 +136,14 @@ command functions. This is handled behind the scenes by generating custom code
 that loads the package containing the keymap, and then re-executes your
 keypress after the first load, to reinterpret that keypress as a prefix key.
 
+For example:
+
+``` elisp
+(use-package projectile
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+```
+
 ### Binding within local keymaps
 
 Slightly different from binding a key to a keymap, is binding a key *within* a
@@ -340,6 +348,9 @@ or stop loading something you're not using at the present time:
 When byte-compiling your `.emacs` file, disabled declarations are omitted
 from the output entirely, to accelerate startup times.
 
+Note that `:when` is provided as an alias for `:if`, and `:unless foo` means
+the same thing as `:if (not foo)`.
+
 ### Loading packages in sequence
 
 Sometimes it only makes sense to configure a package after another has been
@@ -379,6 +390,36 @@ have been loaded. Here are some of the other possibilities:
 When you nest selectors, such as `(:any (:all foo bar) (:all baz quux))`, it
 means that the package will be loaded when either both `foo` and `bar` have
 been loaded, or both `baz` and `quux` have been loaded.
+
+### Prevent loading if dependencies are missing
+
+While the `:after` keyword delays loading until the dependencies are loaded,
+the somewhat simpler `:requires` keyword simply never load the package if the
+dependencies are available at the time the `use-package` declaration is
+encountered. By "available" in this context it means that `foo` is available
+of `(featurep 'foo)` evaulates to a non-nil value.  For example:
+
+``` elisp
+(use-package abbrev
+  :requires foo)
+```
+
+This is the same as:
+
+``` elisp
+(use-package abbrev
+  :if (featurep 'foo))
+```
+
+As a convenience, a list of such packages may be specified:
+
+``` elisp
+(use-package abbrev
+  :requires (foo bar baz))
+```
+
+For more complex logic, such as that supported by `:after`, simply use `:if`
+and the appropriate Lisp expression.
 
 ## Byte-compiling your .emacs
 
