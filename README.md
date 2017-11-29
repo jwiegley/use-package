@@ -171,8 +171,8 @@ first use of `:map` are applied to the global keymap:
 
 Similar to `:bind`, you can use `:mode` and `:interpreter` to establish a
 deferred binding within the `auto-mode-alist` and `interpreter-mode-alist`
-variables.  The specifier to either keyword can be a cons cell, a list, or
-just a string:
+variables. The specifier to either keyword can be a cons cell, a list of cons
+cells, or a string or regexp:
 
 ``` elisp
 (use-package ruby-mode
