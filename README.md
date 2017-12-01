@@ -224,6 +224,25 @@ This does exactly the same thing as the following:
   :bind ("C-." . ace-jump-mode))
 ```
 
+## Magic handlers
+
+Similar to `:mode` and `:interpreter`, you can also use `:magic` and
+`:magic-fallback` to cause certain function to be run if the beginning of a
+file matches a given regular expression. The difference between the two is
+that `:magic-fallback` has a lower priority than `:mode`. For example:
+
+``` elisp
+(use-package pdf-tools
+  :load-path "site-lisp/pdf-tools/lisp"
+  :magic ("%PDF" . pdf-view-mode)
+  :config
+  (pdf-tools-install))
+```
+
+This registers an autoloaded command for `pdf-view-mode`, defers loading of
+`pdf-tools`, and runs `pdf-view-mode` if the beginning of a buffer matches the
+string `"%PDF"`.
+
 ## Hooks
 
 The `:hook` keyword allows adding functions onto hooks, here only the basename
