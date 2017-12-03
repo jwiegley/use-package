@@ -8,6 +8,7 @@ script: >
   emacs -batch
   -l bind-key.el
   -l use-package.el
+  -l up-core.el
   -l up-ensure.el
   -l up-diminish.el
   -l up-delight.el
