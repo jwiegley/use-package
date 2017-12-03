@@ -6,6 +6,7 @@ addons:
       - emacs
 script: >
   emacs -batch
+  -L .
   -l bind-key.el
   -l use-package.el
   -l up-core.el
