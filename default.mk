@@ -47,6 +47,7 @@ PDFFILES  = $(addsuffix .pdf,$(filter-out git-commit,$(PACKAGES)))
 ELS  = use-package.el
 ELS += bind-key.el
 ELS += bind-chord.el
+ELS += up-bind-key.el
 ELS += up-core.el
 ELS += up-delight.el
 ELS += up-diminish.el
