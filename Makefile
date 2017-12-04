@@ -105,12 +105,12 @@ install-info: info
 
 test:
 	@$(BATCH) --eval "(progn\
-	(load-file \"up-tests.el\")\
+	(load-file \"use-package-tests.el\")\
 	(ert-run-tests-batch-and-exit))"
 
 test-interactive:
 	@$(EMACSBIN) -Q $(LOAD_PATH) --eval "(progn\
-	(load-file \"up-tests.el\")\
+	(load-file \"use-package-tests.el\")\
 	(ert t))"
 
 emacs-Q: clean-lisp
