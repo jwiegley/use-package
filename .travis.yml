@@ -7,11 +7,16 @@ addons:
 script: >
   emacs -batch
   -L .
+  -l bind-chord.el
   -l bind-key.el
+  -l use-package-bind-key.el
+  -l use-package-chords.el
+  -l use-package-core.el
+  -l use-package-delight.el
+  -l use-package-diminish.el
+  -l use-package-ensure-system-package.el
+  -l use-package-ensure.el
+  -l use-package-jump.el
+  -l use-package-tests.el
   -l use-package.el
-  -l up-core.el
-  -l up-ensure.el
-  -l up-diminish.el
-  -l up-delight.el
-  -l up-tests.el
   -f ert-run-tests-batch-and-exit
