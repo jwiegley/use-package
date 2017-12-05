@@ -1,6 +1,8 @@
 # `use-package`
 
 [![Build Status](https://travis-ci.org/jwiegley/use-package.svg?branch=master)](https://travis-ci.org/jwiegley/use-package)
+[![MELPA](http://melpa.milkbox.net/packages/use-package-badge.svg)](http://melpa.milkbox.net/#/use-package)
+[![MELPA Stable](https://stable.melpa.org/packages/use-package-badge.svg)](https://stable.melpa.org/#/use-package)
 
 The `use-package` macro allows you to isolate package configuration in your
 `.emacs` file in a way that is both performance-oriented and, well, tidy.  I
