@@ -19,4 +19,5 @@ script: >
   -l use-package-jump.el
   -l use-package-tests.el
   -l use-package.el
+  --eval '(defvar running-on-travis t)'
   -f ert-run-tests-batch-and-exit
