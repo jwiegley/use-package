@@ -706,7 +706,7 @@ is [`straight.el`](https://github.com/raxod502/straight.el).
 
 Starting with version 2.0, `use-package` is based on an extensible
 framework that makes it easy for package authors to add new keywords,
-or modify the behavior of existing keywords. 
+or modify the behavior of existing keywords.
 
 Some keyword extensions are now included in the `use-package`
 distribution and can be optionally installed.
