@@ -21,3 +21,10 @@ script: >
   -l use-package.el
   --eval '(defvar running-on-travis t)'
   -f ert-run-tests-batch-and-exit
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/848b93e13f8e6ab0cc86
+    on_success: change
+    on_failure: always
+    on_start: never
