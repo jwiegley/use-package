@@ -304,6 +304,12 @@ The `:custom` keyword allows customization of package custom variables.
 
 The documentation string is not mandatory.
 
+**NOTE**: These are only for people who wish to keep customizations with their
+accompanying use-package declarations. Functionally, the only benefit over
+using `setq` in a `:config` block is that customizations might execute code
+when values are assigned. If you currently use `M-x customize-option` and save
+to a settings file, you do not want to use this option.
+
 ### Customizing faces
 
 The `:custom-face` keyword allows customization of package custom faces.
