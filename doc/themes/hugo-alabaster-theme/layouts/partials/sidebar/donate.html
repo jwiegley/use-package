@@ -1,0 +1,7 @@
+{{ with .Site.Params.sidebar.gratipay -}}
+<h3>Donate</h3>
+<p>
+Consider supporting the authors on <a href="https://www.gratipay.com/">Gratipay</a>:
+<script src="//grtp.co/v1.js" data-gratipay-username="{{ . }}" data-gratipay-widget="button" async></script>
+</p>
+{{- end }}

@@ -1,8 +1,12 @@
 #+TITLE: use-package User Manual
 #+AUTHOR: John Wiegley
 #+EMAIL: johnw@newartisans.com
-#+DATE: 2012-2017
+# #+DATE: 2012-2017
 #+LANGUAGE: en
+
+#+HUGO_BASE_DIR: ./doc
+#+HUGO_SECTION: /
+#+HUGO_MENU: :menu main
 
 #+TEXINFO_DIR_CATEGORY: Emacs
 #+TEXINFO_DIR_TITLE: use-package: (use-package).
@@ -10,7 +14,7 @@
 #+SUBTITLE: for version 2.4
 
 #+TEXINFO_DEFFN: t
-#+OPTIONS: H:4 num:3 toc:2
+#+OPTIONS: H:4 num:3 toc:2 creator:t
 
 use-package is...
 
@@ -27,10 +31,17 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #+END_QUOTE
 
 * Introduction
+:PROPERTIES:
+:EXPORT_FILE_NAME: _index
+:EXPORT_HUGO_TYPE: homepage
+:END:
 
 TODO
 
 * Installation
+:PROPERTIES:
+:EXPORT_FILE_NAME: installation
+:END:
 ** _ :ignore:
 
 use-package can be installed using Emacs' package manager or manually from
@@ -144,6 +155,9 @@ should display something like
 #+BEGIN_EXAMPLE
   use-package-version’s value is "2.4"
 #+END_EXAMPLE
+*** COMMENT
+FIXME: Figure out how to get the "outside page" links work the same
+way in ox-texinfo and ox-hugo.
 
 If you are completely new to use-package then see [[*Getting Started]].
 
@@ -151,10 +165,22 @@ If you run into problems, then please see the [[*FAQ]].  Also see the
 [[*Debugging Tools]].
 
 * Getting Started
+:PROPERTIES:
+:EXPORT_FILE_NAME: getting-started
+:END:
 
 TODO. For now, see ~README.md~.
 
+* Issues/Requests
+:PROPERTIES:
+:EXPORT_HUGO_SECTION: issues
+:EXPORT_FILE_NAME: _index
+:END:
+
 * Keywords
+:PROPERTIES:
+:EXPORT_FILE_NAME: keywords
+:END:
 ** ~:after~
 
 Sometimes it only makes sense to configure a package after another has been
@@ -776,10 +802,11 @@ and the appropriate Lisp expression.
 * FAQ
 :PROPERTIES:
 :APPENDIX:   t
+:EXPORT_FILE_NAME: faq
 :END:
 
 The next two nodes lists frequently asked questions.
-
+** COMMENT Fix outside page link
 Please also use the [[*Debugging Tools]].
 
 ** FAQ - How to ...?
@@ -793,9 +820,12 @@ This is an answer.
 This is a description.
 
 * Debugging Tools
+:PROPERTIES:
+:EXPORT_FILE_NAME: debugging-tools
+:END:
 
 TODO
-
+** COMMENT Fix outside page link
 Please also see the [[*FAQ]].
 
 * Command Index
