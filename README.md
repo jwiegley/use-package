@@ -706,8 +706,10 @@ is [`straight.el`](https://github.com/raxod502/straight.el).
 
 Starting with version 2.0, `use-package` is based on an extensible
 framework that makes it easy for package authors to add new keywords,
-or modify the behavior of existing keywords. Some keyword extensions
-are now included with `use-package` distribution.
+or modify the behavior of existing keywords. 
+
+Some keyword extensions are now included in the `use-package`
+distribution and can be optionally installed.
 
 ### `(use-package-ensure-system-package)`
 
@@ -722,7 +724,8 @@ is often a good way to do this.
 To enable the extension after you've loaded `use-package`:
 
 ``` elisp
-(use-package use-package-ensure-system-package)
+(use-package use-package-ensure-system-package
+  :ensure t)
 ```
 
 Here’s an example of usage:
@@ -771,6 +774,7 @@ To enable the extension:
 
 ``` elisp
 (use-package use-package-chords
+  :ensure t
   :config (key-chord-mode 1))
 ```
 
