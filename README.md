@@ -723,6 +723,16 @@ By overriding `use-package-ensure-function` and/or
 the only package manager that does this
 is [`straight.el`](https://github.com/raxod502/straight.el).
 
+## Gathering Statistics
+
+If you'd like to see how many packages you've loaded, what stage of
+initialization they've reached, and how much aggregate time they've spent
+(roughly), you can enable `use-package-compute-statistics` after loading
+`use-package` but before any `use-package` forms, and then run the command
+`M-x use-package-report` to see the results. The buffer displayed is an Org
+table for now, so just type `M-x orgtbl-mode` and then use `C-c C-c` to
+reformat the table. You can also use `C-c ^` in a column to sort it.
+
 ## Keyword Extensions
 
 Starting with version 2.0, `use-package` is based on an extensible
