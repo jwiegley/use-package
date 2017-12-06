@@ -199,10 +199,11 @@ manually updated package."
     body))
 
 (add-to-list 'use-package-defaults
-             '(:ensure (list use-package-always-ensure)
-                       (lambda (args)
-                         (and use-package-always-ensure
-                              (not (plist-member args :load-path))))) t)
+             '(:ensure use-package-always-ensure
+               (lambda (args)
+                 (and use-package-always-ensure
+                      (not (plist-member args :load-path)))))
+             t)
 
 (add-to-list 'use-package-defaults
              '(:pin use-package-always-pin use-package-always-pin) t)
