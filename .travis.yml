@@ -7,14 +7,18 @@ env:
   - EMACS_VERSION=24.3
   - EMACS_VERSION=24.4
   - EMACS_VERSION=24.5
-  - EMACS_VERSION=25
+  - EMACS_VERSION=25.3
   - EMACS_VERSION=26
   - EMACS_VERSION=master
+install:
+  - $CURL -O https://github.com/npostavs/emacs-travis/releases/download/bins/emacs-bin-${EMACS_VERSION}.tar.gz
+  - tar xf emacs-bin-${EMACS_VERSION}.tar.gz -C /
+  - export EMACS=/tmp/emacs/bin/emacs
+  - $EMACS --version
 dist: trusty
 addons:
   apt:
     packages:
-      - emacs
       - texinfo
 script:
   - make
