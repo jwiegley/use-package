@@ -1,8 +1,9 @@
 language: generic
 dist: trusty
 env:
-  - CURL="curl -fsSkL --retry 9 --retry-delay 9"
-  - EMACS_VERSION=25
+  global:
+    - CURL="curl -fsSkL --retry 9 --retry-delay 9"
+    - EMACS_VERSION=25
 install:
   - $CURL -O https://github.com/npostavs/emacs-travis/releases/download/bins/emacs-bin-${EMACS_VERSION}.tar.gz
   - tar xf emacs-bin-${EMACS_VERSION}.tar.gz -C /
