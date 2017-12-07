@@ -1,4 +1,4 @@
-;; Time-stamp: <2017-12-07 11:58:00 kmodi>
+;; Time-stamp: <2017-12-07 16:58:38 kmodi>
 
 ;; Setup to test ox-hugo using emacs -Q and the latest stable version
 ;; of Org.
@@ -190,14 +190,3 @@ to be installed.")
   (with-eval-after-load 'ox
     (setq org-export-headline-levels 4) ;default is 3
     (add-to-list 'org-export-exclude-tags "ignore")))
-
-;; Wed Sep 20 13:37:06 EDT 2017 - kmodi
-;; Below does not get applies when running emacs --batch.. need to
-;; figure out a solution.
-(custom-set-variables
- '(safe-local-variable-values
-   (quote
-    ((org-hugo-footer . "
-
-[//]: # \"Exported with love from a post written in Org mode\"
-[//]: # \"- https://github.com/kaushalmodi/ox-hugo\"")))))

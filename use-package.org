@@ -26,7 +26,7 @@
 # FIXME: This is just a workaround.. hope to get a better solution in
 # the future.
 
-#+MACRO: link-jump @@texinfo:@ref{$1}@@@@hugo:[[$2][$1]]@@
+#+MACRO: link-jump @@texinfo:@ref{$1}@@@@hugo:[$1]($2)@@
 
 use-package is...
 
