@@ -1,0 +1,88 @@
+baseURL = "http://example.org/"
+
+Title = "use-package"
+theme = "hugo-alabaster-theme"
+
+contentdir = "content"
+layoutdir = "layouts"
+publishdir = "public"
+
+# Remove files from destination not found in static directories
+cleandestinationdir = true
+
+# Needed for relative references like in the below image link
+#   ![Example PNG image](/images/org-mode-unicorn-logo.png)
+canonifyURLs = true
+enableGitInfo = true
+
+# https://gohugo.io/extras/highlighting/
+
+# Syntax highlighting using Pygments
+# $ python
+# >>> from pygments.styles import STYLE_MAP
+# >>> STYLE_MAP.keys()
+# ['manni', 'igor', 'lovelace', 'xcode', 'vim', 'autumn', 'vs', 'rrt', 'native',
+# 'perldoc', 'borland', 'tango', 'emacs', 'friendly', 'monokai', 'paraiso-dark',
+# 'colorful', 'murphy', 'bw', 'pastie', 'algol_nu', 'paraiso-light', 'trac',
+# 'default', 'algol', 'fruity']
+# pygmentsStyle = "native"
+# pygmentsStyle = "trac"        # This is not needed as the theme is set using external CSS -- Tue Sep 26 13:26:59 EDT 2017 - kmodi
+pygmentsCodeFences = true       # This applies to Chroma too.
+# Use pygmentize generated CSS file instead of inlining the code codes in the HTML.
+# See https://gohugo.io/tools/syntax-highlighting/#pygments and
+# https://github.com/richleland/pygments-css
+pygmentsUseClasses = true       # This applies to Chroma too.
+pygmentsUseClassic = false      # Needs Hugo 0.28+, default=false => Use Chroma for syntax highlighting
+
+enableEmoji = true
+
+LanguageCode = "en-us" # Used in RSS generation
+
+disableFastRender = true        # Hugo 0.30
+
+# [Permalinks]
+#   # post = "/:year/:month/:title/"
+#   # Below, we have
+#   #   foo = "bar"
+#   # where foo = section name without double quotes for which we want to have
+#   # the custom permalinks. If foo is 'posts', it will apply to content in
+#   # content/posts/ dir. The "bar" portion is how you want the links to look.
+#   # https://gohugo.io/content-management/urls/#permalink-configuration-values
+#   doc = "/doc/:filename/"
+#   test = "/test/:slug/"
+
+[params]
+  name = "use-package"
+  description = "A use-package declaration for simplifying your .emacs"
+
+  # Go date formats: https://golang.org/pkg/time/#pkg-constants
+  dateform = "Mon Jan 2, 2006"
+
+  github_user = "jwiegley"
+  github_repo = "use-package"
+  github_banner = true
+
+  custom_css = [ # Chroma GitHub theme
+                 "css/github_chroma.css" # Needs pygmentsUseClasses to be true
+                 , "css/style.css"
+               ]
+  custom_css_absolute = [ # Iosevka fonts
+                          "https://cdn.rawgit.com/kaushalmodi/iosevka-mirror/v1.13.2/iosevka.css"
+                        ]
+  custom_js  = []
+
+[params.sidebar]
+  logo = "favicon.ico"
+
+  github_button  = true
+  travis_button  = true
+  codecov_button = false
+
+[params.footer]
+  copyright = ""
+  show_powered_by = true
+
+# Blackfriday is Hugo's markdown engine.
+# https://gohugo.io/overview/configuration/#configure-blackfriday-rendering
+[blackfriday]
+  hrefTargetBlank = true # open external links in a new window or tab
