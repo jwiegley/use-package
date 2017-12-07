@@ -19,6 +19,7 @@ addons:
 script:
   - make
   - make test
+  - make info
 notifications:
   webhooks:
     urls:
