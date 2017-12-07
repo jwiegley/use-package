@@ -15,7 +15,7 @@ deploy:
   provider: pages
   skip_cleanup: true
   github_token: $GITHUB_TOKEN
-  local_dir: doc/public
+  local_dir: public
   on:
     branch: doc-site-cd
 notifications:
