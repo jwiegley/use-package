@@ -2,3 +2,4 @@
 *~
 *.elc
 /dir
+/doc/content/*
