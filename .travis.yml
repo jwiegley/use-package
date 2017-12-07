@@ -1,10 +1,24 @@
 language: generic
+sudo: false
+env:
+  global:
+    - CURL="curl -fsSkL --retry 9 --retry-delay 9"
+  matrix:
+  - EMACS_VERSION=24.3
+  - EMACS_VERSION=24.4
+  - EMACS_VERSION=24.5
+  - EMACS_VERSION=25
+  - EMACS_VERSION=26
+  - EMACS_VERSION=master
 dist: trusty
 addons:
   apt:
     packages:
       - emacs
-script: make test
+      - texinfo
+script:
+  - make
+  - make test
 notifications:
   webhooks:
     urls:
@@ -12,3 +26,7 @@ notifications:
     on_success: always
     on_failure: always
     on_start: always
+  email:
+    on_success: change
+    on_failure: always
+    on_start: never
