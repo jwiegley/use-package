@@ -99,7 +99,6 @@ emacs-batch:
 	(setq-default make-backup-files nil)\
 	(load-file (expand-file-name \"setup-ox-hugo.el\" \"$(USE_PACKAGE_DOC_DIR)\"))\
 	)" $(ORG_FILE) \
-	-f toggle-debug-on-error
 	-f $(FUNC) \
 	--kill
 
