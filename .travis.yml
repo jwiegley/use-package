@@ -5,6 +5,12 @@ addons:
     packages:
       - emacs
 script: make test
+before_deploy: cd doc && make doc HUGO_BASE_URL=https://jwiegley.github.io/use-package/
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  local_dir: doc/public
 notifications:
   webhooks:
     urls:
