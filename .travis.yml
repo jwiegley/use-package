@@ -5,7 +5,7 @@ addons:
     packages:
       - emacs
 script: make test
-before_deploy: cd doc && make doc
+before_deploy: cd doc && make vtest doc
 deploy:
   provider: pages
   skip_cleanup: true
