@@ -3,6 +3,8 @@ dist: trusty
 env:
   global:
     - CURL="curl -fsSkL --retry 9 --retry-delay 9"
+  matrix:
+    - EMACS_VERSION=24.3
     - EMACS_VERSION=25
 install:
   - $CURL -O https://github.com/npostavs/emacs-travis/releases/download/bins/emacs-bin-${EMACS_VERSION}.tar.gz
@@ -18,6 +20,7 @@ deploy:
   local_dir: public
   on:
     branch: doc-site-cd
+    condition: $EMACS_VERSION = 25
 notifications:
   webhooks:
     urls:
