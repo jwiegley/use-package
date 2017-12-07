@@ -24,6 +24,15 @@ script:
   - make
   - make test
   - make info
+before_deploy: cd doc && make doc
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  local_dir: public
+  on:
+    branch: master
+    condition: $EMACS_VERSION = 25.3
 notifications:
   webhooks:
     urls:
