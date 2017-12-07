@@ -1,4 +1,4 @@
-# Time-stamp: <2017-12-06 17:13:42 kmodi>
+# Time-stamp: <2017-12-06 23:06:24 kmodi>
 
 # Makefile to generate use-package doc site
 
@@ -13,16 +13,39 @@ endif
 EMACS_BIN_SOURCE ?= https://github.com/npostavs/emacs-travis/releases/download/bins
 EMACS_VERSION ?= 25.2
 
+# Directory where the required elisp packages are auto-installed
+TMPDIR ?= /tmp
+OX_HUGO_ELPA=$(TMPDIR)/$(USER)/ox-hugo-dev/
+
 HUGO ?= hugo
 HUGO_exists := $(shell command -v $(HUGO) 2> /dev/null)
 ifeq ("$(HUGO_exists)","")
-	HUGO := /tmp/hugo/bin/hugo
+	HUGO := $(OX_HUGO_ELPA)hugo
 endif
 
-# HUGO_BIN_SOURCE and HUGO_VERSION are used later in the vcheck rule
-# only if HUGO_exists has evaluated to "".
-HUGO_BIN_SOURCE ?= https://gitlab.com/kaushalmodi/unofficial-hugo-dev-builds.git
-HUGO_VERSION ?= DEV
+# HUGO_VERSION and HUGO_OS are used later in the vcheck rule only if
+# HUGO_exists has evaluated to "".
+HUGO_VERSION ?= 0.31.1
+# |--------------------|
+# | HUGO_OS            |
+# |--------------------|
+# | DragonFlyBSD-64bit |
+# | FreeBSD-32bit      |
+# | FreeBSD-64bit      |
+# | FreeBSD-ARM        |
+# | Linux-32bit        |
+# | Linux-64bit        |
+# | Linux-ARM          |
+# | Linux-ARM64        |
+# | NetBSD-32bit       |
+# | NetBSD-64bit       |
+# | NetBSD-ARM         |
+# | OpenBSD-32bit      |
+# | OpenBSD-64bit      |
+# | macOS-32bit        |
+# | macOS-64bit        |
+# |--------------------|
+HUGO_OS ?= Linux-64bit
 
 # Directory containing the Hugo site's config.toml
 HUGO_BASE_DIR=./
@@ -42,10 +65,6 @@ PORT=1337
 
 USE_PACKAGE_DOC_DIR=$(shell pwd)
 USE_PACKAGE_DOC_SITE_DIR=$(shell pwd)
-
-# Directory where the required elisp packages are auto-installed
-TMPDIR ?= /tmp
-OX_HUGO_ELPA=$(TMPDIR)/$(USER)/ox-hugo-dev/
 
 # https://stackoverflow.com/a/3774731/1219634
 # Note that the use of immediate assignment := rather than recursive
@@ -100,10 +119,9 @@ endif
 	)" \
 	--kill
 ifeq ("$(HUGO_exists)","")
-	@mkdir -p /tmp/hugo
-	@find /tmp/hugo -maxdepth 1 -type d -name bin -exec rm -rf "{}" \;
-	@git clone $(HUGO_BIN_SOURCE) /tmp/hugo/bin
-	@tar xf /tmp/hugo/bin/hugo_DEV-Linux-64bit.tar.xz -C /tmp/hugo/bin
+	@wget https://github.com/gohugoio/hugo/releases/download/v$(HUGO_VERSION)/hugo_$(HUGO_VERSION)_$(HUGO_OS).tar.gz -P $(OX_HUGO_ELPA)
+	@tar xf $(OX_HUGO_ELPA)hugo_$(HUGO_VERSION)_$(HUGO_OS).tar.gz -C $(OX_HUGO_ELPA)
+	@rm -f $(OX_HUGO_ELPA)hugo_$(HUGO_VERSION)_$(HUGO_OS).tar.gz
 endif
 	@$(HUGO) version
 
