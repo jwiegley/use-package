@@ -5,7 +5,7 @@ addons:
     packages:
       - emacs
 script: make test
-before_deploy: cd doc && make doc HUGO_BASE_URL=https://jwiegley.github.io/use-package/
+before_deploy: cd doc && make doc
 deploy:
   provider: pages
   skip_cleanup: true
