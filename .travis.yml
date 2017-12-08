@@ -32,7 +32,7 @@ deploy:
   local_dir: public
   on:
     branch: master
-    condition: $EMACS_VERSION = 25.3
+    condition: $EMACS_VERSION = 26
 notifications:
   webhooks:
     urls:
