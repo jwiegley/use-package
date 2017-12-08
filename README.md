@@ -33,12 +33,10 @@ Here is the simplest `use-package` declaration:
 ```
 
 This loads in the package `foo`, but only if `foo` is available on your
-system. If not, a warning is logged to the `*Messages*` buffer. If it
-succeeds, a message about `"Loading foo"` is logged, along with the time it
-took to load, if it took over 0.1s.
+system. If not, a warning is logged to the `*Messages*` buffer.
 
 Use the `:init` keyword to execute code before a package is loaded.  It
-accepts one or more forms, up until the next keyword:
+accepts one or more forms, up to the next keyword:
 
 ``` elisp
 (use-package foo
