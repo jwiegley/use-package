@@ -1,4 +1,4 @@
-;; Time-stamp: <2017-12-07 16:58:38 kmodi>
+;; Time-stamp: <2017-12-08 16:24:36 kmodi>
 
 ;; Setup to test ox-hugo using emacs -Q and the latest stable version
 ;; of Org.
@@ -7,7 +7,12 @@
 (setq-default require-final-newline t)
 (setq-default indent-tabs-mode nil)
 
-(defvar ox-hugo-test-setup-verbose nil)
+(defvar ox-hugo-test-setup-verbose nil
+  "When non-nil, enable printing more messages from setup-ox-hugo.el.")
+
+(defconst ox-hugo-install-org-from-elpa nil
+  "When non-nil, install Org from Org Elpa.
+Else use the Emacs built-in version.")
 
 (defvar ox-hugo-elpa (let ((dir (getenv "OX_HUGO_ELPA")))
                        (unless dir
@@ -60,14 +65,19 @@ Emacs installation.  If Emacs is installed using
 (when ox-hugo-test-setup-verbose
   (message "my/default-lisp-directory: %S" my/default-lisp-directory))
 
-;; `org' will always be detected as installed, so use `org-plus-contrib'.
-;; Fri Sep 22 18:24:19 EDT 2017 - kmodi
-;; Install the packages in the specified order. We do not want
-;; `toc-org' to be installed first. If that happens, `org' will be
-;; required before the newer version of Org gets installed and we will
-;; end up with mixed Org version.
-(defvar my/packages '(org-plus-contrib toc-org ox-hugo))
-
+;; Fri Dec 08 15:51:13 EST 2017 - kmodi
+;; No need to install Org from Elpa as now the doc site is built using
+;; emacs 26 which comes with at least Org 9.1.4.
+(defvar my/packages '(toc-org ox-hugo))
+(when ox-hugo-install-org-from-elpa
+  ;; `org' will always be detected as installed, so use
+  ;; `org-plus-contrib'.
+  ;; Fri Sep 22 18:24:19 EDT 2017 - kmodi
+  ;; Install the packages in the specified order. We do not want
+  ;; `toc-org' to be installed first. If that happens, `org' will be
+  ;; required before the newer version of Org gets installed and we
+  ;; will end up with mixed Org version.
+  (add-to-list 'my/packages 'org-plus-contrib))
 (defvar use-package-git-root (progn
                                (require 'vc-git)
                                (file-truename (vc-git-root "."))))
@@ -75,8 +85,7 @@ Emacs installation.  If Emacs is installed using
   (message "use-package-git-root: %S" use-package-git-root))
 
 ;; Below will prevent installation of `org' package as a dependency
-;; when installing ox-hugo from Melpa; we are already installing
-;; `org-plus-contrib', so we don't need to install `org' too.
+;; when installing `ox-hugo' from Melpa.
 (defun modi/package-dependency-check-ignore (orig-ret)
   "Remove the `black listed packages' from ORIG-RET.
 
@@ -114,8 +123,11 @@ even if they are found as dependencies."
                           (not (gnutls-available-p))))
              (url (concat (if no-ssl "http" "https") "://melpa.org/packages/")))
         (add-to-list 'package-archives (cons "melpa" url) :append))
-      (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") :append) ;For latest `org'
-      (add-to-list 'load-path (concat use-package-git-root "doc/")) ;For ox-hugo-export-gh-doc.el
+
+      ;; Need to add Org Elpa in `package-archives' to prevent the
+      ;; "Package ‘org-9.0’ is unavailable" error.
+      (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") :append) ;For latest stable `org'
+      ;; (add-to-list 'load-path (concat use-package-git-root "doc/")) ;For ox-hugo-export-gh-doc.el
 
       ;; Load emacs packages and activate them.
       ;; Don't delete this line.
@@ -142,16 +154,18 @@ to be installed.")
         (setq my/missing-packages '())))
   (error "The environment variable OX_HUGO_ELPA needs to be set"))
 
-(with-eval-after-load 'package
-  ;; Remove Org that ships with Emacs from the `load-path'.
-  (when (stringp my/default-lisp-directory)
-    (dolist (path load-path)
-      (when (string-match-p (expand-file-name "org" my/default-lisp-directory) path)
-        (setq load-path (delete path load-path))))))
+(when ox-hugo-install-org-from-elpa
+  (with-eval-after-load 'package
+    ;; Remove Org that ships with Emacs from the `load-path'.
+    (when (stringp my/default-lisp-directory)
+      (dolist (path load-path)
+        (when (string-match-p (expand-file-name "org" my/default-lisp-directory) path)
+          (setq load-path (delete path load-path))))))
 
-;; (message "`load-path': %S" load-path)
-;; (message "`load-path' Shadows:")
-;; (message (list-load-path-shadows :stringp))
+  ;; (message "`load-path': %S" load-path)
+  ;; (message "`load-path' Shadows:")
+  ;; (message (list-load-path-shadows :stringp))
+  )
 
 (require 'ox-hugo)
 (defun org-hugo-export-all-wim-to-md ()
