@@ -261,6 +261,13 @@ When you nest selectors, such as ~(:any (:all foo bar) (:all baz quux))~, it
 means that the package will be loaded when either both ~foo~ and ~bar~ have
 been loaded, or both ~baz~ and ~quux~ have been loaded.
 
+*NOTE*: Pay attention if you set ~use-package-always-defer~ to t, and also use
+the ~:after~ keyword, as you will need to specify how the declared package is
+to be loaded: e.g., by some ~:bind~. If you're not using one of tho mechanisms
+that registers autoloads, such as ~:bind~ or ~:hook~, and your package manager
+does not provide autoloads, it's possible that without adding ~:demand t~ to
+those declarations, your package will never be loaded.
+
 ** ~:bind-keymap~, ~:bind-keymap*~
 
 Normally ~:bind~ expects that commands are functions that will be autoloaded
@@ -776,22 +783,22 @@ This does exactly the same thing as the following:
 
 ** ~:magic~, ~:magic-fallback~
 
-Similar to `:mode` and `:interpreter`, you can also use `:magic` and
-`:magic-fallback` to cause certain function to be run if the beginning of a
+Similar to ~:mode~ and ~:interpreter~, you can also use ~:magic~ and
+~:magic-fallback~ to cause certain function to be run if the beginning of a
 file matches a given regular expression. The difference between the two is
-that `:magic-fallback` has a lower priority than `:mode`. For example:
+that ~:magic-fallback~ has a lower priority than ~:mode~. For example:
 
-``` elisp
+#+BEGIN_SRC emacs-lisp
 (use-package pdf-tools
   :load-path "site-lisp/pdf-tools/lisp"
   :magic ("%PDF" . pdf-view-mode)
   :config
   (pdf-tools-install))
-```
+#+END_SRC
 
-This registers an autoloaded command for `pdf-view-mode`, defers loading of
-`pdf-tools`, and runs `pdf-view-mode` if the beginning of a buffer matches the
-string `"%PDF"`.
+This registers an autoloaded command for ~pdf-view-mode~, defers loading of
+~pdf-tools~, and runs ~pdf-view-mode~ if the beginning of a buffer matches the
+string ~"%PDF"~.
 
 ** ~:no-require~
 

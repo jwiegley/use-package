@@ -443,6 +443,13 @@ When you nest selectors, such as `(:any (:all foo bar) (:all baz quux))`, it
 means that the package will be loaded when either both `foo` and `bar` have
 been loaded, or both `baz` and `quux` have been loaded.
 
+Note: Pay attention if you set `use-package-always-defer` to t, and also use
+the `:after` keyword, as you will need to specify how the declared package is
+to be loaded: e.g., by some `:bind`. If you're not using one of tho mechanisms
+that registers autoloads, such as `:bind` or `:hook`, and your package manager
+does not provide autoloads, it's possible that without adding `:demand t` to
+those declarations, your package will never be loaded.
+
 ### Prevent loading if dependencies are missing
 
 While the `:after` keyword delays loading until the dependencies are loaded,
