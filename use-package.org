@@ -188,6 +188,29 @@ Tools,/debugging-tools)}}}.
 
 TODO. For now, see ~README.md~.
 
+* Basic Concepts
+
+~use-package~ was created for few basic reasons, each of which drove the
+design in various ways. Understanding these reasons may help make some of
+those decisions clearer:
+
+  1. To gather all configuration details of a package into one place, making
+     it easier to copy, disable, or move it elsewhere in the init file.
+
+  2. To reduce duplication and boilerplate, capturing several common practices
+     as mere keywords both easy and intuitive to use.
+
+  3. To make startup time of Emacs as quick as possible, without sacrificing
+     the quantity of add-on packages used.
+
+  4. To make it so errors encountered during startup disable only the package
+     raising the error, and as little else as possible, leaving a close to a
+     functional Emacs as possible.
+
+  5. To allow byte-compilation of one's init file so that any warnings or
+     errors seen are meaningful. In this way, even if byte-compilation is not
+     used for speed (reason 3), it can still be used as a sanity check.
+
 * Issues/Requests
 :PROPERTIES:
 :EXPORT_HUGO_SECTION: issues
