@@ -132,7 +132,6 @@ manually updated package."
 
 (defvar package-archive-contents)
 
-;;;###autoload
 (defun use-package-ensure-elpa-normalize (args)
   (if (null args)
       (list t)
@@ -182,6 +181,10 @@ manually updated package."
                               (format "Failed to install %s: %s"
                                       name (error-message-string err))
                               :error))))))))
+
+;;;###autoload
+(defun use-package-normalize/:ensure (name keyword args)
+  args)
 
 ;;;###autoload
 (defun use-package-handler/:ensure (name keyword ensure rest state)
