@@ -56,7 +56,7 @@ See also `use-package-defaults', which uses this value."
   :type 'symbol
   :group 'use-package-ensure)
 
-(defcustom use-package-ensure-function 'use-package-ensure-elpa
+(defcustom use-package-ensure-function #'use-package-ensure-elpa
   "Function that ensures a package is installed.
 This function is called with three arguments: the name of the
 package declared in the `use-package' form; the arguments passed
@@ -132,11 +132,10 @@ manually updated package."
 
 (defvar package-archive-contents)
 
-;;;###autoload
-(defun use-package-normalize/:ensure (name keyword args)
+(defun use-package-ensure-elpa-normalize (args)
   (if (null args)
       (list t)
-    (use-package-only-one (symbol-name keyword) args
+    (use-package-only-one "ensure" args
       #'(lambda (label arg)
           (cond
            ((symbolp arg)
@@ -153,6 +152,7 @@ manually updated package."
                      "(an unquoted symbol name), or (<symbol> :pin <string>)"))))))))
 
 (defun use-package-ensure-elpa (name args state &optional no-refresh)
+  (setq args (use-package-ensure-elpa-normalize args))
   (dolist (ensure args)
     (let ((package
            (or (and (eq ensure t) (use-package-as-symbol name))
@@ -181,6 +181,10 @@ manually updated package."
                               (format "Failed to install %s: %s"
                                       name (error-message-string err))
                               :error))))))))
+
+;;;###autoload
+(defun use-package-normalize/:ensure (name keyword args)
+  args)
 
 ;;;###autoload
 (defun use-package-handler/:ensure (name keyword ensure rest state)
