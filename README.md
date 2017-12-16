@@ -736,8 +736,7 @@ initialization they've reached, and how much aggregate time they've spent
 (roughly), you can enable `use-package-compute-statistics` after loading
 `use-package` but before any `use-package` forms, and then run the command
 `M-x use-package-report` to see the results. The buffer displayed is an Org
-table for now, so just type `M-x orgtbl-mode` and then use `C-c C-c` to
-reformat the table. You can also use `C-c ^` in a column to sort it.
+table for now. You can use `C-c ^` in a column to sort it.
 
 ## Keyword Extensions
 
