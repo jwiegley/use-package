@@ -1,4 +1,4 @@
-;; Time-stamp: <2017-12-09 10:28:42 kmodi>
+;; Time-stamp: <2017-12-17 11:18:33 kmodi>
 
 ;; Setup to export Org files to Hugo-compatible Markdown using
 ;; `ox-hugo' in an "emacs -Q" environment.
@@ -32,7 +32,8 @@ generation.")
 (when ox-hugo-test-setup-verbose
   (message "ox-hugo-elpa: %s" ox-hugo-elpa))
 
-(defvar ox-hugo-packages '(toc-org ox-hugo))
+(defvar ox-hugo-packages '(;; toc-org ;No need to install toc-org yet, needed only if exporting to README.org
+                           ox-hugo))
 (when ox-hugo-install-org-from-elpa
   ;; `org' will always be detected as installed, so use
   ;; `org-plus-contrib'.
@@ -85,10 +86,7 @@ even if they are found as dependencies."
       ;; Below require will auto-create `package-user-dir' it doesn't exist.
       (require 'package)
 
-      (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                          (not (gnutls-available-p))))
-             (url (concat (if no-ssl "http" "https") "://melpa.org/packages/")))
-        (add-to-list 'package-archives (cons "melpa" url) :append))
+      (add-to-list 'package-archives (cons "melpa" "http://melpa.org/packages/") :append)
 
       ;; Need to add Org Elpa in `package-archives' to prevent the
       ;; "Package ‘org-9.0’ is unavailable" error.
