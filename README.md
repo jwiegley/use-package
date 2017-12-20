@@ -365,7 +365,7 @@ graphical Emacs, not for other Emacsen I may start at the command line:
 ```
 In another example, we can load things conditional on the operating system:
 
-```
+``` elisp
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns))
   :ensure t
@@ -389,7 +389,7 @@ Note that `:when` is provided as an alias for `:if`, and `:unless foo` means
 the same thing as `:if (not foo)`. For example, the following will also stop
 `:ensure` from happening on Mac systems:
 
-```
+``` elisp
 (when (memq window-system '(mac ns))
   (use-package exec-path-from-shell
     :ensure t
@@ -972,7 +972,7 @@ this case, but that's a subtlety I'd rather avoid.
 `:defer [N]` causes the package to be loaded -- if it has not already been --
 after `N` seconds of idle time.
 
-```
+``` elisp
 (use-package back-button
   :commands (back-button-mode)
   :defer 2
