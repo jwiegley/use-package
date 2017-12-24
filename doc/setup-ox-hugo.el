@@ -1,4 +1,4 @@
-;; Time-stamp: <2017-12-17 11:18:33 kmodi>
+;; Time-stamp: <2017-12-19 16:49:24 kmodi>
 
 ;; Setup to export Org files to Hugo-compatible Markdown using
 ;; `ox-hugo' in an "emacs -Q" environment.
@@ -25,7 +25,7 @@ generation.")
                        (unless dir
                          (setq dir (concat (file-name-as-directory
                                             (concat temporary-file-directory (getenv "USER")))
-                                           "ox-hugo-dev/")))
+                                           "ox-hugo-site/")))
                        (setq dir (file-name-as-directory dir))
                        (make-directory dir :parents)
                        dir))
@@ -44,9 +44,10 @@ generation.")
   ;; will end up with mixed Org version.  So put `org-plus-contrib' at
   ;; the beginning of `ox-hugo-packages'.
   (add-to-list 'ox-hugo-packages 'org-plus-contrib))
+
 (defvar ox-hugo-site-git-root (progn
                                 (require 'vc-git)
-                                (file-truename (vc-git-root ".")))
+                                (file-truename (vc-git-root default-directory)))
   "Absolute path of the git root of the current project.")
 (when ox-hugo-test-setup-verbose
   (message "ox-hugo-site-git-root: %S" ox-hugo-site-git-root))
@@ -86,36 +87,40 @@ even if they are found as dependencies."
       ;; Below require will auto-create `package-user-dir' it doesn't exist.
       (require 'package)
 
-      (add-to-list 'package-archives (cons "melpa" "http://melpa.org/packages/") :append)
+      (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+                          (not (gnutls-available-p))))
+             (url (concat (if no-ssl "http" "https") "://melpa.org/packages/")))
+        (add-to-list 'package-archives (cons "melpa" url)))
 
-      ;; Need to add Org Elpa in `package-archives' to prevent the
-      ;; "Package ‘org-9.0’ is unavailable" error.
-      (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") :append) ;For latest stable `org'
-      ;; (add-to-list 'load-path (concat ox-hugo-site-git-root "doc/")) ;For ox-hugo-export-gh-doc.el
+      ;; Even if we don't need to install Org from Elpa, we need to
+      ;; add Org Elpa in `package-archives' to prevent the "Package
+      ;; ‘org-9.0’ is unavailable" error.
+      (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/")) ;For latest stable `org'
 
       ;; Load emacs packages and activate them.
       ;; Don't delete this line.
       (package-initialize)
       ;; `package-initialize' call is required before any of the below
       ;; can happen.
+      ;; (add-to-list 'load-path (concat ox-hugo-site-git-root "doc/")) ;For ox-hugo-export-gh-doc.el
 
-      (defvar my/missing-packages '()
+      (defvar ox-hugo-missing-packages '()
         "List populated at each startup that contains the list of packages that need
 to be installed.")
 
       (dolist (p ox-hugo-packages)
         ;; (message "Is %S installed? %s" p (package-installed-p p))
         (unless (package-installed-p p)
-          (add-to-list 'my/missing-packages p :append)))
+          (add-to-list 'ox-hugo-missing-packages p :append)))
 
-      (when my/missing-packages
+      (when ox-hugo-missing-packages
         (message "Emacs is now refreshing its package database...")
         (package-refresh-contents)
         ;; Install the missing packages
-        (dolist (p my/missing-packages)
+        (dolist (p ox-hugo-missing-packages)
           (message "Installing `%s' .." p)
           (package-install p))
-        (setq my/missing-packages '())))
+        (setq ox-hugo-missing-packages '())))
   (error "The environment variable OX_HUGO_ELPA needs to be set"))
 
 ;; Remove Org that ships with Emacs from the `load-path' if installing
@@ -162,6 +167,7 @@ Emacs installation.  If Emacs is installed using
     (message "ox-hugo-default-lisp-directory: %S" ox-hugo-default-lisp-directory))
 
   (with-eval-after-load 'package
+    ;; Remove Org that ships with Emacs from the `load-path'.
     (when (stringp ox-hugo-default-lisp-directory)
       (dolist (path load-path)
         (when (string-match-p (expand-file-name "org" ox-hugo-default-lisp-directory) path)
