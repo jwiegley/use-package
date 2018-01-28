@@ -1,4 +1,4 @@
-# Time-stamp: <2017-12-07 14:46:01 kmodi>
+# Time-stamp: <2018-01-27 22:11:28 kmodi>
 
 # Makefile to generate use-package doc site
 
@@ -25,7 +25,7 @@ endif
 
 # HUGO_VERSION and HUGO_OS are used later in the vcheck rule only if
 # HUGO_exists has evaluated to "".
-HUGO_VERSION ?= 0.31.1
+HUGO_VERSION ?= 0.34
 # |--------------------|
 # | HUGO_OS            |
 # |--------------------|

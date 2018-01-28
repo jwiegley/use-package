@@ -103,6 +103,11 @@ ul.task-list {
     padding-left: 1rem;
 }
 
+/* Don't display section numbers */
+.section-num {
+    display: none;
+}
+
 @media screen and (min-width: 1400px) {
     .toc {
         display: block;
