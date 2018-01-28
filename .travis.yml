@@ -29,7 +29,7 @@ deploy:
   provider: pages
   skip_cleanup: true
   github_token: $GITHUB_TOKEN
-  local_dir: public
+  local_dir: doc/public
   on:
     branch: master
     condition: $EMACS_VERSION = 26
