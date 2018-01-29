@@ -113,3 +113,30 @@ ul.task-list {
         display: block;
     }
 }
+
+/* Captions */
+figcaption,
+.src-block-caption,
+.table-caption {
+    font-style: italic;
+    text-align: center;
+}
+
+/* Don't underline captions in hyperlinked images */
+figure a,
+figure a:hover {
+    text-decoration: none;
+}
+
+/* Sane Table */
+/* https://css-tricks.com/complete-guide-table-element/#article-header-id-17 */
+.sane-table table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.sane-table th,
+.sane-table td {
+  padding: 0.25rem;
+  text-align: left;
+  border: 1px solid #ccc;
+}

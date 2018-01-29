@@ -4,7 +4,7 @@
         using
         {{ with .Params.creator }}
             <a href="https://www.gnu.org/software/emacs/">{{ . | replaceRE "\\(Org.*" "" }}</a> &plus;
-            <a href="http://orgmode.org/">{{ . | replaceRE "Emacs.*\\(" "" | replaceRE "\\+ ox-.*" "" }}</a>
+            <a href="https://orgmode.org/">{{ . | replaceRE "Emacs.*\\(" "" | replaceRE "\\+ ox-.*" "" }}</a>
         {{ end }}
         and published using <a href="http://gohugo.io/">Hugo {{ .Hugo.Version }}</a>
 	&plus; <a href="https://github.com/digitalcraftsman/hugo-alabaster-theme">Alabaster</a>
