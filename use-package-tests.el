@@ -1883,6 +1883,75 @@
       (define-prefix-command 'my/map)
       (bind-key "<f1>" 'my/map nil nil))))
 
+(ert-deftest use-package-test-normalize/:hydra ()
+  ;; basic example
+  (should (equal (use-package-hydra--normalize
+                  'foopkg :hydra (hydra-foo (foo-mode-map "<f2>")
+                                            "Zoom"
+                                            ("g" text-scale-increase "in")
+                                            ("l" text-scale-decrease "out")))
+                 '((hydra-foo (foo-mode-map "<f2>")
+                              "Zoom"
+                              ("g" text-scale-increase "in")
+                              ("l" text-scale-decrease "out")))))
+  ;; omits docstring
+  (should (equal (use-package-hydra--normalize
+                  'foopkg :hydra (hydra-foo (foo-mode-map "<f2>")
+                                            ("g" text-scale-increase "in")
+                                            ("l" text-scale-decrease "out")))
+                 '((hydra-foo (foo-mode-map "<f2>")
+                              ("g" text-scale-increase "in")
+                              ("l" text-scale-decrease "out")))))
+  ;; nil for body-map and body-key
+  (should (equal (use-package-hydra--normalize
+                  'foopkg :hydra (hydra-foo (nil ni)
+                                            ("g" text-scale-increase "in")
+                                            ("l" text-scale-decrease "out")))
+                 '((hydra-foo (nil nil)
+                              ("g" text-scale-increase "in")
+                              ("l" text-scale-decrease "out")))))
+  ;; omits body-map and body-key completely
+  (should (equal (use-package-hydra--normalize
+                  'foopkg :hydra (hydra-foo ()
+                                            ("g" text-scale-increase "in")
+                                            ("l" text-scale-decrease "out")))
+                 '((hydra-foo ()
+                              ("g" text-scale-increase "in")
+                              ("l" text-scale-decrease "out")))))
+  ;; body only has a plist with a color
+  (should (equal (use-package-hydra--normalize
+                  'foopkg :hydra (hydra-foo (:color pink)
+                                            ("g" text-scale-increase "in")
+                                            ("l" text-scale-decrease "out")))
+                 '((hydra-foo (:color pink)
+                              ("g" text-scale-increase "in")
+                              ("l" text-scale-decrease "out")))))
+  ;; omits head-hint
+  (should (equal (use-package-hydra--normalize
+                  'foopkg :hydra (hydra-foo (foo-mode-map "<f2>")
+                                            ("g" text-scale-increase)
+                                            ("l" text-scale-decrease)))
+                 '((hydra-foo (foo-mode-map "<f2>")
+                              ("g" text-scale-increase)
+                              ("l" text-scale-decrease)))))
+  ;; has plist for heads
+  (should (equal (use-package-hydra--normalize
+                  'foopkg :hydra (hydra-foo (foo-mode-map "<f2>")
+                                            ("g" text-scale-increase "in" :bind nil)
+                                            ("l" text-scale-decrease "out" :bind nil)))
+                 '((hydra-foo (foo-mode-map "<f2>")
+                              ("g" text-scale-increase "in" :bind nil)
+                              ("l" text-scale-decrease "out" :bind nil)))))
+  ;; omits head-hint and has plist for heads
+  (should (equal (use-package-hydra--normalize
+                  'foopkg :hydra (hydra-foo (foo-mode-map "<f2>")
+                                            ("g" text-scale-increase :bind nil)
+                                            ("l" text-scale-decrease :bind nil)))
+                 '((hydra-foo (foo-mode-map "<f2>")
+                              ("g" text-scale-increase :bind nil)
+                              ("l" text-scale-decrease :bind nil))))))
+
+
 ;; Local Variables:
 ;; indent-tabs-mode: nil
 ;; no-byte-compile: t
