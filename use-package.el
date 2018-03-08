@@ -45,6 +45,7 @@
 (require 'use-package-diminish)
 (require 'use-package-delight)
 (require 'use-package-ensure)
+(require 'use-package-hydra)
 
 (declare-function use-package-jump-to-package-form "use-package-jump")
 (autoload #'use-package-jump-to-package-form "use-package-jump" nil t)
