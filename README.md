@@ -732,11 +732,12 @@ is [`straight.el`](https://github.com/raxod502/straight.el).
 ## Gathering Statistics
 
 If you'd like to see how many packages you've loaded, what stage of
-initialization they've reached, and how much aggregate time they've spent
-(roughly), you can enable `use-package-compute-statistics` after loading
-`use-package` but before any `use-package` forms, and then run the command
-`M-x use-package-report` to see the results. The buffer displayed is an Org
-table for now. You can use `C-c ^` in a column to sort it.
+initialization they've reached, and how much aggregate time they've
+spent (roughly), you can enable `use-package-compute-statistics` after
+loading `use-package` but before any `use-package` forms, and then run
+the command `M-x use-package-report` to see the results. The buffer
+displayed is a tabulated list. You can use `S` in a column to sort the
+rows based on it.
 
 ## Keyword Extensions
 
