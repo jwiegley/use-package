@@ -26,7 +26,8 @@ RMDIR    ?= rm -rf
 TAR      ?= tar
 SED      ?= sed
 
-EMACSBIN ?= emacs
+EMACS    ?= emacs
+EMACSBIN ?= $(EMACS)
 BATCH     = $(EMACSBIN) -Q --batch $(LOAD_PATH)
 
 INSTALL_INFO     ?= $(shell command -v ginstall-info || printf install-info)
