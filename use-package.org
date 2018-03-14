@@ -77,7 +77,7 @@ with it by reading the documentation in the Emacs manual, see
 #+BEGIN_SRC emacs-lisp
   (require 'package)
   (add-to-list 'package-archives
-               '("melpa" . "http://melpa.org/packages/") t)
+               '("melpa" . "https://melpa.org/packages/") t)
 #+END_SRC
 
 - To use Melpa-Stable:
@@ -85,7 +85,7 @@ with it by reading the documentation in the Emacs manual, see
 #+BEGIN_SRC emacs-lisp
   (require 'package)
   (add-to-list 'package-archives
-               '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+               '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 #+END_SRC
 
 Once you have added your preferred archive, you need to update the
