@@ -778,18 +778,30 @@ does not, it will use your system package manager (using the package
 attempt an install of a binary by the same name asyncronously. For
 example, for most `macOS` users this would call: `brew install rg`.
 
-What if you want to customize the install command?
+If the package is named differently than the binary, you can use a
+cons in the form of  `(binary . package-name)`, i.e.:
+
+``` emacs-lisp
+(use-package rg
+  :ensure-system-package
+  (rg . ripgrep))
+```
+
+In the previous `macOS` example, this would call: `brew install
+ripgrep` if `rg` was not found.
+
+What if you want to customize the install command further?
 
 ``` emacs-lisp
 (use-package tern
   :ensure-system-package (tern . "npm i -g tern"))
 ```
 
-`:ensure-system-package` can take a cons. In that case, its `cdr`
-should be a string that will get called by `(async-shell-command)` to
-install if it isn’t found.
+`:ensure-system-package` can also take a cons where its `cdr` is a
+string that will get called by `(async-shell-command)` to install if
+it isn’t found.
 
-Also you may also pass in a list of cons-es in the same format:
+You may also pass in a list of cons-es:
 
 ``` emacs-lisp
 (use-package ruby-mode
