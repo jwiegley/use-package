@@ -153,7 +153,7 @@ For example:
 ``` elisp
 (use-package projectile
   :bind-keymap
-  ("C-c p" . projectile-command-map)
+  ("C-c p" . projectile-command-map))
 ```
 
 ### Binding within local keymaps
