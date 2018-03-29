@@ -670,6 +670,20 @@ If you need to install a different package from the one named by
   :ensure auctex)
 ```
 
+Note that `:ensure` will install a package if it is not already installed, but
+it does not keep it up-to-date. If you want to keep your packages updated
+automatically, one option is to use
+[auto-package-update](https://github.com/rranelli/auto-package-update.el),
+like
+
+``` elisp
+(use-package auto-package-update
+  :config
+  (setq auto-package-update-delete-old-versions t)
+  (setq auto-package-update-hide-results t)
+  (auto-package-update-maybe))
+```
+
 Lastly, when running on Emacs 24.4 or later, use-package can pin a package to
 a specific archive, allowing you to mix and match packages from different
 archives.  The primary use-case for this is preferring packages from the
