@@ -133,6 +133,16 @@ Examples:
          ([S-f10] . helm-recentf)))
 ```
 
+Furthermore, [remapping commands](https://www.gnu.org/software/emacs/manual/html_node/elisp/Remapping-Commands.html)
+with `:bind` and `bind-key` works as expected, because when the
+binding is a vector, it is passed straight to `define-key`. So the
+following example will rebind `M-q` (originally `fill-paragraph`) to
+`unfill-toggle`:
+
+``` elisp
+(use-package unfill
+  :bind ([remap fill-paragraph] . unfill-toggle))
+```
 
 ### Binding to keymaps
 
