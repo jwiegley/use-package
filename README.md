@@ -927,9 +927,8 @@ body, so that only the minimum code necessary is emitted as the result of a
 
 After the keyword has been inserted into `use-package-keywords`, and a
 normalizer and a handler defined, you can now test it by seeing how usages of
-the keyword will expand.  For this, temporarily set `use-package-debug` to
-`t`, and just evaluate the `use-package` declaration.  The expansion will be
-shown in a special buffer called `*use-package*`.
+the keyword will expand.  For this, use `M-x pp-macroexpand-last-sexp` with
+the cursor set immediately after the `(use-package ...)` expression.
 
 ## Some timing results
 
