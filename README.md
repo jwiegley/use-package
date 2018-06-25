@@ -133,6 +133,16 @@ Examples:
          ([S-f10] . helm-recentf)))
 ```
 
+Furthermore, [remapping commands](https://www.gnu.org/software/emacs/manual/html_node/elisp/Remapping-Commands.html)
+with `:bind` and `bind-key` works as expected, because when the
+binding is a vector, it is passed straight to `define-key`. So the
+following example will rebind `M-q` (originally `fill-paragraph`) to
+`unfill-toggle`:
+
+``` elisp
+(use-package unfill
+  :bind ([remap fill-paragraph] . unfill-toggle))
+```
 
 ### Binding to keymaps
 
@@ -670,6 +680,20 @@ If you need to install a different package from the one named by
   :ensure auctex)
 ```
 
+Note that `:ensure` will install a package if it is not already installed, but
+it does not keep it up-to-date. If you want to keep your packages updated
+automatically, one option is to use
+[auto-package-update](https://github.com/rranelli/auto-package-update.el),
+like
+
+``` elisp
+(use-package auto-package-update
+  :config
+  (setq auto-package-update-delete-old-versions t)
+  (setq auto-package-update-hide-results t)
+  (auto-package-update-maybe))
+```
+
 Lastly, when running on Emacs 24.4 or later, use-package can pin a package to
 a specific archive, allowing you to mix and match packages from different
 archives.  The primary use-case for this is preferring packages from the
@@ -903,9 +927,8 @@ body, so that only the minimum code necessary is emitted as the result of a
 
 After the keyword has been inserted into `use-package-keywords`, and a
 normalizer and a handler defined, you can now test it by seeing how usages of
-the keyword will expand.  For this, temporarily set `use-package-debug` to
-`t`, and just evaluate the `use-package` declaration.  The expansion will be
-shown in a special buffer called `*use-package*`.
+the keyword will expand.  For this, use `M-x pp-macroexpand-last-sexp` with
+the cursor set immediately after the `(use-package ...)` expression.
 
 ## Some timing results
 

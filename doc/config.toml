@@ -71,8 +71,10 @@ disableFastRender = true        # Hugo 0.30
                         ]
   custom_js  = []
 
+  favicon = "favicon.ico?v=1"
+
 [params.sidebar]
-  logo = "favicon.ico"
+  logo = "img/use-package-logo-96x96-v1.svg"
 
   github_button  = true
   travis_button  = true
