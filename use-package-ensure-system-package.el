@@ -27,7 +27,11 @@
 
 (defun use-package-ensure-system-package-install-command (pack)
   "Return the default install command for PACK."
-  (system-packages-get-command 'install pack))
+  (if system-packages-package-manager
+      (system-packages-get-command 'install pack)
+    (display-warning 'use-package
+                     (format "Unable to ensure system package %s is installed" pack)
+                     :warning)))
 
 (defun use-package-ensure-system-package-consify (arg)
   "Turn `arg' into a cons of (`package-name' . `install-command')."
