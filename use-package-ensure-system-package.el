@@ -29,9 +29,10 @@
   "Return the default install command for PACK."
   (if system-packages-package-manager
       (system-packages-get-command 'install pack)
-    (display-warning 'use-package
+    (display-warning 'use-package-ensure-system-package
                      (format "Unable to ensure system package %s is installed" pack)
-                     :warning)))
+                     :warning)
+      nil))
 
 (defun use-package-ensure-system-package-consify (arg)
   "Turn `arg' into a cons of (`package-name' . `install-command')."
