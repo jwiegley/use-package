@@ -836,6 +836,17 @@ You may also pass in a list of cons-es:
    (pry         . "gem install pry")))
 ```
 
+Finally, in case the package dependency does not provide a global
+executable, you can ensure packages exist by checking the presence of
+a file path by providing a string like so:
+
+``` emacs-lisp
+(use-package dash-at-point
+  :if (eq system-type 'darwin)
+  :ensure-system-package
+  ("/Applications/Dash.app" . "brew cask install dash"))
+```
+
 ### `(use-package-chords)`
 
 The `:chords` keyword allows you to define
