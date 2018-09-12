@@ -847,6 +847,15 @@ a file path by providing a string like so:
   ("/Applications/Dash.app" . "brew cask install dash"))
 ```
 
+`:ensure-system-package` will use `system-packages-install` to install
+system packages, except where a custom command has been specified, in
+which case it will be executed verbatim by `async-shell-command`.
+
+Configuration variables `system-packages-package-manager` and
+`system-packages-use-sudo` will be honoured, but not for custom
+commands. Custom commands should include the call to sudo in the
+command if needed.
+
 ### `(use-package-chords)`
 
 The `:chords` keyword allows you to define
