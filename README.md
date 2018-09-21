@@ -11,6 +11,11 @@ created it because I have over 80 packages that I use in Emacs, and things
 were getting difficult to manage.  Yet with this utility my total load time is
 around 2 seconds, with no loss of functionality!
 
+Note that `use-package` is **not** a package manager! Although `use-package`
+does have the useful capability to interface with package managers (see
+[below](#package-installation)), its primary purpose is for the configuration
+and loading of packages.
+
 Notes for users upgrading to 2.x are located [at the bottom](#upgrading-to-2x).
 
 ## Installing use-package
