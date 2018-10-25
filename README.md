@@ -803,7 +803,7 @@ Here’s an example of usage:
 
 This will expect a global binary package to exist called `rg`. If it
 does not, it will use your system package manager (using the package
-[`system-packages`](https://github.com/jabranham/system-packages)) to
+[`system-packages`](https://gitlab.com/jabranham/system-packages)) to
 attempt an install of a binary by the same name asyncronously. For
 example, for most `macOS` users this would call: `brew install rg`.
 
