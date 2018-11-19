@@ -123,8 +123,8 @@ The `:bind` keyword takes either a cons or a list of conses:
 
 The `:commands` keyword likewise takes either a symbol or a list of symbols.
 
-NOTE: Special keys like `tab` or `F1`-`Fn` can be written in square brackets,
-i.e. `[tab]` instead of `"tab"`. The syntax for the keybindings is similar to
+NOTE: Inside strings, special keys like `tab` or `F1`-`Fn` have to be written inside angle brackets, e.g. `"C-<up>"`.
+Standalone special keys (and some combinations) can be written in square brackets, e.g. `[tab]` instead of `"<tab>"`. The syntax for the keybindings is similar to
 the "kbd" syntax: see [https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-Rebinding.html](https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-Rebinding.html)
 for more information.
 
