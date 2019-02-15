@@ -669,8 +669,7 @@ You can use `use-package` to load packages from ELPA with `package.el`. This
 is particularly useful if you share your `.emacs` among several machines; the
 relevant packages are downloaded automatically once declared in your `.emacs`.
 The `:ensure` keyword causes the package(s) to be installed automatically if
-not already present on your system (set `(setq use-package-always-ensure t)`
-if you wish this behavior to be global for all packages):
+not already present on your system:
 
 ``` elisp
 (use-package magit
@@ -683,6 +682,14 @@ If you need to install a different package from the one named by
 ``` elisp
 (use-package tex
   :ensure auctex)
+```
+
+Enable `use-package-always-ensure` if you wish this behavior to be global
+for all packages:
+
+``` elisp
+(require 'use-package-ensure)
+(setq use-package-always-ensure t)
 ```
 
 Note that `:ensure` will install a package if it is not already installed, but
