@@ -892,6 +892,54 @@ Then you can define your chord bindings in the same manner as `:bind` using a co
            ("jl" . ace-jump-line-mode)))
 ```
 
+### `(use-package-tags)`
+
+The `:tags` keyword allows you to define tags which can be used to condition the installation based on the hostname.
+This can be used when you have multiple computers and needs to have different setups.
+
+To do so, you have to define the list of tags per machine.
+To achieve this, you need to define the `use-package-tags-enabled` variable.
+Therefore, to enable the extension, you can do as the following example:
+
+``` elisp
+(use-package use-package-tags
+  :ensure t
+  :config
+  (setq use-package-tags-enabled
+        '(("machine-name1" . ("tag1" "tag2"))
+          ("machine-name2" . ("tag2"))
+          ("machine-name3" . ("tag3"))
+          ("machine-name4" . ())
+          ;....
+          )))
+```
+
+Then you can define the tags for a package:
+
+``` elisp
+(use-package emms
+  :ensure t
+  :tags ("MULTIMEDIA")
+  ;;; config, init, ...
+  )
+
+(use-package circe
+  :ensure t
+  :tags ("INTERNET" "COMMUNICATION")
+  ;;; config, init, ...
+  )
+
+(use-package hydra
+  :ensure t
+  ;;; config, init, ...
+  )
+```
+
+In this example, emms will be installed if the tag "MULTIMEDIA" is associated to the hostname of the current machine or no tags are associated to this hostname.
+Circe will be installed if one of the tag (INTERNET **or** COMMUNICATION ) is associated to the hostname.
+Hydra will be installed in all cases.
+
+
 ### How to create an extension
 
 #### First step: Add the keyword
