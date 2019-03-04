@@ -1037,7 +1037,7 @@ this case, but that's a subtlety I'd rather avoid.
 ## :defer now accepts an optional integer argument
 
 `:defer [N]` causes the package to be loaded -- if it has not already been --
-after `N` seconds of idle time.
+after `N` seconds of idle time, where `N` is a float number.
 
 ``` elisp
 (use-package back-button
