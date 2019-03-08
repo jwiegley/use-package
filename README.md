@@ -252,7 +252,7 @@ that `:magic-fallback` has a lower priority than `:mode`. For example:
   :load-path "site-lisp/pdf-tools/lisp"
   :magic ("%PDF" . pdf-view-mode)
   :config
-  (pdf-tools-install))
+  (pdf-tools-install :no-query))
 ```
 
 This registers an autoloaded command for `pdf-view-mode`, defers loading of
