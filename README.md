@@ -11,7 +11,7 @@ created it because I have over 80 packages that I use in Emacs, and things
 were getting difficult to manage.  Yet with this utility my total load time is
 around 2 seconds, with no loss of functionality!
 
-Note that `use-package` is **not** a package manager! Although `use-package`
+**NOTE**: `use-package` is **not** a package manager! Although `use-package`
 does have the useful capability to interface with package managers (see
 [below](#package-installation)), its primary purpose is for the configuration
 and loading of packages.
@@ -123,7 +123,7 @@ The `:bind` keyword takes either a cons or a list of conses:
 
 The `:commands` keyword likewise takes either a symbol or a list of symbols.
 
-NOTE: Inside strings, special keys like `tab` or `F1`-`Fn` have to be written inside angle brackets, e.g. `"C-<up>"`.
+**NOTE**: inside strings, special keys like `tab` or `F1`-`Fn` have to be written inside angle brackets, e.g. `"C-<up>"`.
 Standalone special keys (and some combinations) can be written in square brackets, e.g. `[tab]` instead of `"<tab>"`. The syntax for the keybindings is similar to
 the "kbd" syntax: see [https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-Rebinding.html](https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-Rebinding.html)
 for more information.
@@ -400,7 +400,7 @@ or stop loading something you're not using at the present time:
 When byte-compiling your `.emacs` file, disabled declarations are omitted
 from the output entirely, to accelerate startup times.
 
-Note that `:when` is provided as an alias for `:if`, and `:unless foo` means
+**NOTE**: `:when` is provided as an alias for `:if`, and `:unless foo` means
 the same thing as `:if (not foo)`. For example, the following will also stop
 `:ensure` from happening on Mac systems:
 
@@ -458,7 +458,7 @@ When you nest selectors, such as `(:any (:all foo bar) (:all baz quux))`, it
 means that the package will be loaded when either both `foo` and `bar` have
 been loaded, or both `baz` and `quux` have been loaded.
 
-Note: Pay attention if you set `use-package-always-defer` to t, and also use
+**NOTE**: pay attention if you set `use-package-always-defer` to t, and also use
 the `:after` keyword, as you will need to specify how the declared package is
 to be loaded: e.g., by some `:bind`. If you're not using one of tho mechanisms
 that registers autoloads, such as `:bind` or `:hook`, and your package manager
@@ -557,7 +557,7 @@ strings.  If the path is relative, it is expanded within
   :commands R)
 ```
 
-Note that when using a symbol or a function to provide a dynamically generated
+**NOTE**: when using a symbol or a function to provide a dynamically generated
 list of paths, you must inform the byte-compiler of this definition so the
 value is available at byte-compilation time.  This is done by using the
 special form `eval-and-compile` (as opposed to `eval-when-compile`).  Further,
@@ -692,7 +692,7 @@ for all packages:
 (setq use-package-always-ensure t)
 ```
 
-Note that `:ensure` will install a package if it is not already installed, but
+**NOTE**: `:ensure` will install a package if it is not already installed, but
 it does not keep it up-to-date. If you want to keep your packages updated
 automatically, one option is to use
 [auto-package-update](https://github.com/rranelli/auto-package-update.el),
@@ -1056,7 +1056,7 @@ will 1) make the byte-compiler happy (it won't complain about functions whose
 definitions are unknown because you have them within a guard block), and 2)
 allow you to define code that can be used in an `:if` test.
 
-Note that whatever is specified within `:preface` is evaluated both at load
+**NOTE**: whatever is specified within `:preface` is evaluated both at load
 time and at byte-compilation time, in order to ensure that definitions are
 seen by both the Lisp evaluator and the byte-compiler, so you should avoid
 having any side-effects in your preface, and restrict it merely to symbol
