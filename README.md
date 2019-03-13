@@ -1034,7 +1034,7 @@ timer to fire, this is the sequence of events:
 It's possible that the user could use `featurep` in their idle to test for
 this case, but that's a subtlety I'd rather avoid.
 
-## :defer now accepts an optional integer argument
+## :defer now accepts an optional numeric argument
 
 `:defer [N]` causes the package to be loaded -- if it has not already been --
 after `N` seconds of idle time.
