@@ -471,7 +471,7 @@ While the `:after` keyword delays loading until the dependencies are loaded,
 the somewhat simpler `:requires` keyword simply never loads the package if the
 dependencies are not available at the time the `use-package` declaration is
 encountered. By "available" in this context it means that `foo` is available
-of `(featurep 'foo)` evaulates to a non-nil value. For example:
+if `(featurep 'foo)` evaluates to a non-nil value. For example:
 
 ``` elisp
 (use-package abbrev
