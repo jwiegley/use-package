@@ -54,12 +54,14 @@
        (t
         (list (use-package-ensure-system-package-consify arg)))))))
 
-(defun use-package-ensure-system-package-exists? (file-or-exe)
+(defun use-package-ensure-system-package-exists? (file-or-sym)
   "If variable is a string, ensure the file path exists.
-If it is a symbol, ensure the binary exist."
-  (if (stringp file-or-exe)
-      (file-exists-p file-or-exe)
-    (executable-find (symbol-name file-or-exe))))
+If it is a symbol, check if a boolean or else ensure the binary exist."
+  (if (booleanp file-or-sym)
+      file-or-sym
+    (if (stringp file-or-sym)
+        (file-exists-p file-or-sym)
+      (executable-find (symbol-name file-or-sym)))))
 
 
 ;;;###autoload
@@ -69,7 +71,7 @@ If it is a symbol, ensure the binary exist."
     (use-package-concat
      (mapcar #'(lambda (cons)
                  `(unless (use-package-ensure-system-package-exists? ',(car cons))
-		    ,(cdr cons))) arg)
+                    ,(cdr cons))) arg)
      body)))
 
 (add-to-list 'use-package-keywords :ensure-system-package t)
