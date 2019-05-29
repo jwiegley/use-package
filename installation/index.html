@@ -1,0 +1,228 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head lang="en-us">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" /><meta name="description" content="A use-package declaration for simplifying your .emacs"><meta name="generator" content="Hugo 0.34" />
+
+    <title>Installation &mdash; use-package</title>
+
+    <link rel="stylesheet" href="https://jwiegley.github.io/use-package/css/basic.css" type="text/css" />
+    <link rel="stylesheet" href="https://jwiegley.github.io/use-package/css/alabaster.css" type="text/css" />
+    
+
+    <link rel="stylesheet" href="https://jwiegley.github.io/use-package/css/github_chroma.css"><link rel="stylesheet" href="https://jwiegley.github.io/use-package/css/style.css">
+
+    <link rel="stylesheet" href="https://cdn.rawgit.com/kaushalmodi/iosevka-mirror/v1.13.2/iosevka.css">
+
+    <link rel="shortcut icon" href="https://jwiegley.github.io/use-package/favicon.ico?v=1" type="image/x-icon"/>
+</head>
+
+
+    <body role="document">
+	<div class="document">
+	    <div class="documentwrapper">
+		<div class="bodywrapper">
+		    <div class="body" role="main">
+			
+	<h1>Installation</h1>
+	
+	
+
+<p><style>
+  .ox-hugo-toc ul {
+    list-style: none;
+  }
+</style>
+<div class="ox-hugo-toc toc">
+<div></div></p>
+
+<div class="heading">Table of Contents</div>
+
+<ul>
+<li><span class="section-num">1</span> <a href="#installing-from-an-elpa-archive">Installing from an Elpa Archive</a></li>
+<li><span class="section-num">2</span> <a href="#installing-from-the-git-repository">Installing from the Git Repository</a></li>
+<li><span class="section-num">3</span> <a href="#post-installation-tasks">Post-Installation Tasks</a></li>
+</ul>
+
+<p></div>
+<!--endtoc--></p>
+
+<h2 id="installing-from-an-elpa-archive"><span class="section-num">1</span> Installing from an Elpa Archive</h2>
+
+<p>use-package is available from Melpa and Melpa-Stable. If you haven&rsquo;t used
+Emacs&rsquo; package manager before, then it is high time you familiarize yourself
+with it by reading the documentation in the Emacs manual, see
+<emacs#Packages>. Then add one of the archives to <code>package-archives</code>:</p>
+
+<ul>
+<li>To use Melpa:</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">require</span> <span class="ss">&#39;package</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">add-to-list</span> <span class="ss">&#39;package-archives</span>
+             <span class="o">&#39;</span><span class="p">(</span><span class="s">&#34;melpa&#34;</span> <span class="o">.</span> <span class="s">&#34;https://melpa.org/packages/&#34;</span><span class="p">)</span> <span class="no">t</span><span class="p">)</span></code></pre></div>
+<ul>
+<li>To use Melpa-Stable:</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">require</span> <span class="ss">&#39;package</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">add-to-list</span> <span class="ss">&#39;package-archives</span>
+             <span class="o">&#39;</span><span class="p">(</span><span class="s">&#34;melpa-stable&#34;</span> <span class="o">.</span> <span class="s">&#34;https://stable.melpa.org/packages/&#34;</span><span class="p">)</span> <span class="no">t</span><span class="p">)</span></code></pre></div>
+<p>Once you have added your preferred archive, you need to update the
+local package list using:</p>
+<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text">M-x package-refresh-contents RET</code></pre></div>
+<p>Once you have done that, you can install use-package and its dependencies
+using:</p>
+<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text"><span class="nx">M</span><span class="o">-</span><span class="nx">x</span> <span class="kn">package</span><span class="o">-</span><span class="nx">install</span> <span class="nx">RET</span> <span class="nx">use</span><span class="o">-</span><span class="kn">package</span> <span class="nx">RET</span></code></pre></div>
+<p>Now see <a href="#post-installation-tasks">3</a>.</p>
+
+<h2 id="installing-from-the-git-repository"><span class="section-num">2</span> Installing from the Git Repository</h2>
+
+<p>First, use Git to clone the use-package repository:</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell-script" data-lang="shell-script">$ git clone https://github.com/jwiegley/use-package.git ~/.emacs.d/site-lisp/use-package
+$ cd ~/.emacs.d/site-lisp/use-package</code></pre></div>
+<p>Then compile the libraries and generate the info manuals:</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell-script" data-lang="shell-script">$ make</code></pre></div>
+<p>You may need to create <code>/path/to/use-package/config.mk</code> with the following
+content before running <code>make</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-makefile" data-lang="makefile"><span class="nv">LOAD_PATH</span>  <span class="o">=</span> -L /path/to/use-package
+</code></pre></div>
+<p>Finally add this to your init file:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nv">add-to-list</span> <span class="ss">&#39;load-path</span> <span class="s">&#34;~/.emacs.d/site-lisp/use-package&#34;</span><span class="p">)</span>
+<span class="p">(</span><span class="nb">require</span> <span class="ss">&#39;use-package</span><span class="p">)</span>
+
+<span class="p">(</span><span class="nb">with-eval-after-load</span> <span class="ss">&#39;info</span>
+  <span class="p">(</span><span class="nv">info-initialize</span><span class="p">)</span>
+  <span class="p">(</span><span class="nv">add-to-list</span> <span class="ss">&#39;Info-directory-list</span>
+               <span class="s">&#34;~/.emacs.d/site-lisp/use-package/&#34;</span><span class="p">))</span></code></pre></div>
+<p>Note that elements of <code>load-path</code> should not end with a slash, while those of
+<code>Info-directory-list</code> should.</p>
+
+<p>Instead of running use-package directly from the repository by adding it to
+the <code>load-path</code>, you might want to instead install it in some other directory
+using <code>sudo make install</code> and setting <code>load-path</code> accordingly.</p>
+
+<p>To update use-package use:</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell-script" data-lang="shell-script">$ git pull
+$ make</code></pre></div>
+<p>At times it might be necessary to run <code>make clean all</code> instead.</p>
+
+<p>To view all available targets use <code>make help</code>.</p>
+
+<p>Now see <a href="#post-installation-tasks">3</a>.</p>
+
+<h2 id="post-installation-tasks"><span class="section-num">3</span> Post-Installation Tasks</h2>
+
+<p>After installing use-package you should verify that you are indeed using the
+use-package release you think you are using. It&rsquo;s best to restart Emacs before
+doing so, to make sure you are not using an outdated value for <code>load-path</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text">C-h v use-package-version RET</code></pre></div>
+<p>should display something like</p>
+<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text">use-package-version’s value is &#34;2.4&#34;</code></pre></div>
+<p>If you are completely new to use-package then see <a href="https://jwiegley.github.io/use-package/getting-started">Getting
+Started</a>.</p>
+
+<p>If you run into problems, then please see the
+<a href="https://jwiegley.github.io/use-package/faq">FAQ</a>.  Also see the <a href="https://jwiegley.github.io/use-package/debugging-tools">Debugging
+Tools</a>.</p>
+
+
+
+			
+		    </div>
+		</div>
+	    </div>
+
+	    <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+    <div class="sphinxsidebarwrapper">
+        <p class="logo">
+            <a href="https://jwiegley.github.io/use-package/">
+                <img class="logo" src="https://jwiegley.github.io/use-package/img/use-package-logo-96x96-v1.svg" alt="Logo"/>
+                    <h1 class="logo logo-name">use-package</h1>
+            </a>
+        </p>
+
+        <p class="blurb">A use-package declaration for simplifying your .emacs</p>
+
+        
+
+	<p>
+		<iframe src="https://ghbtns.com/github-btn.html?user=jwiegley&repo=use-package&type=watch&count=true&size=large"
+		allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+	</p>
+
+	<p>
+		<a href="https://travis-ci.org/jwiegley/use-package">
+			<img
+			alt="https://secure.travis-ci.org/jwiegley/use-package.svg?branch=master"
+			src="https://secure.travis-ci.org/jwiegley/use-package.svg?branch=master"
+			/>
+		</a>
+	</p>
+
+	
+        
+    
+        <ul>
+	    
+	        <li class="toctree-l1">
+		    <a class="reference internal" href="https://jwiegley.github.io/use-package/">Introduction</a>
+	        </li>
+	    
+	        <li class="toctree-l1">
+		    <a class="reference internal" href="https://jwiegley.github.io/use-package/installation/">Installation</a>
+	        </li>
+	    
+	        <li class="toctree-l1">
+		    <a class="reference internal" href="https://jwiegley.github.io/use-package/getting-started/">Getting Started</a>
+	        </li>
+	    
+	        <li class="toctree-l1">
+		    <a class="reference internal" href="https://jwiegley.github.io/use-package/issues/">Issues/Requests</a>
+	        </li>
+	    
+	        <li class="toctree-l1">
+		    <a class="reference internal" href="https://jwiegley.github.io/use-package/keywords/">Keywords</a>
+	        </li>
+	    
+	        <li class="toctree-l1">
+		    <a class="reference internal" href="https://jwiegley.github.io/use-package/faq/">FAQ</a>
+	        </li>
+	    
+	        <li class="toctree-l1">
+		    <a class="reference internal" href="https://jwiegley.github.io/use-package/debugging-tools/">Debugging Tools</a>
+	        </li>
+	    
+        </ul>
+    
+
+
+    </div>
+</div>
+<div class="clearer"></div>
+</div>
+
+	    <div class="footer">
+    Exported from <a href="https://raw.githubusercontent.com/jwiegley/use-package/master/use-package.org"><code>use-package.org</code></a>
+        using
+        
+            <a href="https://www.gnu.org/software/emacs/">Emacs 26.2.50 </a> &plus;
+            <a href="https://orgmode.org/">Org mode 9.1.9 </a>
+        
+        and published using <a href="http://gohugo.io/">Hugo 0.34</a>
+	&plus; <a href="https://github.com/digitalcraftsman/hugo-alabaster-theme">Alabaster</a>
+    
+</div>
+
+<a href="https://github.com/jwiegley/use-package" class="github">
+    <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" class="github"/>
+</a>
+
+
+	    
+
+		
+
+		
+	</div>
+    </body>
+</html>

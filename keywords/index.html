@@ -1,0 +1,645 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head lang="en-us">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" /><meta name="description" content="A use-package declaration for simplifying your .emacs"><meta name="generator" content="Hugo 0.34" />
+
+    <title>Keywords &mdash; use-package</title>
+
+    <link rel="stylesheet" href="https://jwiegley.github.io/use-package/css/basic.css" type="text/css" />
+    <link rel="stylesheet" href="https://jwiegley.github.io/use-package/css/alabaster.css" type="text/css" />
+    
+
+    <link rel="stylesheet" href="https://jwiegley.github.io/use-package/css/github_chroma.css"><link rel="stylesheet" href="https://jwiegley.github.io/use-package/css/style.css">
+
+    <link rel="stylesheet" href="https://cdn.rawgit.com/kaushalmodi/iosevka-mirror/v1.13.2/iosevka.css">
+
+    <link rel="shortcut icon" href="https://jwiegley.github.io/use-package/favicon.ico?v=1" type="image/x-icon"/>
+</head>
+
+
+    <body role="document">
+	<div class="document">
+	    <div class="documentwrapper">
+		<div class="bodywrapper">
+		    <div class="body" role="main">
+			
+	<h1>Keywords</h1>
+	
+	
+
+<p><style>
+  .ox-hugo-toc ul {
+    list-style: none;
+  }
+</style>
+<div class="ox-hugo-toc toc">
+<div></div></p>
+
+<div class="heading">Table of Contents</div>
+
+<ul>
+<li><span class="section-num">1</span> <a href="#after"><code>:after</code></a></li>
+<li><span class="section-num">2</span> <a href="#bind-keymap-bind-keymap"><code>:bind-keymap</code>, <code>:bind-keymap*</code></a></li>
+<li><span class="section-num">3</span> <a href="#bind-bind"><code>:bind</code>, <code>:bind*</code></a>
+
+<ul>
+<li><span class="section-num">3.1</span> <a href="#binding-to-local-keymaps">Binding to local keymaps</a></li>
+</ul></li>
+<li><span class="section-num">4</span> <a href="#commands"><code>:commands</code></a></li>
+<li><span class="section-num">5</span> <a href="#preface-init-config"><code>:preface</code>, <code>:init</code>, <code>:config</code></a></li>
+<li><span class="section-num">6</span> <a href="#custom"><code>:custom</code></a></li>
+<li><span class="section-num">7</span> <a href="#custom-face"><code>:custom-face</code></a></li>
+<li><span class="section-num">8</span> <a href="#defer-demand"><code>:defer</code>, <code>:demand</code></a></li>
+<li><span class="section-num">9</span> <a href="#defines-functions"><code>:defines</code>, <code>:functions</code></a></li>
+<li><span class="section-num">10</span> <a href="#diminish-delight"><code>:diminish</code>, <code>:delight</code></a></li>
+<li><span class="section-num">11</span> <a href="#disabled"><code>:disabled</code></a></li>
+<li><span class="section-num">12</span> <a href="#ensure-pin"><code>:ensure</code>, <code>:pin</code></a></li>
+<li><span class="section-num">13</span> <a href="#hook"><code>:hook</code></a></li>
+<li><span class="section-num">14</span> <a href="#if-when-unless"><code>:if</code>, <code>:when</code>, <code>:unless</code></a></li>
+<li><span class="section-num">15</span> <a href="#load-path"><code>:load-path</code></a></li>
+<li><span class="section-num">16</span> <a href="#mode-interpreter"><code>:mode</code>, <code>:interpreter</code></a></li>
+<li><span class="section-num">17</span> <a href="#magic-magic-fallback"><code>:magic</code>, <code>:magic-fallback</code></a></li>
+<li><span class="section-num">18</span> <a href="#no-require"><code>:no-require</code></a></li>
+<li><span class="section-num">19</span> <a href="#requires"><code>:requires</code></a></li>
+</ul>
+
+<p></div>
+<!--endtoc--></p>
+
+<h2 id="after"><span class="section-num">1</span> <code>:after</code></h2>
+
+<p>Sometimes it only makes sense to configure a package after another has been
+loaded, because certain variables or functions are not in scope until that
+time. This can achieved using an <code>:after</code> keyword that allows a fairly rich
+description of the exact conditions when loading should occur. Here is an
+example:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">hydra</span>
+  <span class="nb">:load-path</span> <span class="s">&#34;site-lisp/hydra&#34;</span><span class="p">)</span>
+
+<span class="p">(</span><span class="nb">use-package</span> <span class="nv">ivy</span>
+  <span class="nb">:load-path</span> <span class="s">&#34;site-lisp/swiper&#34;</span><span class="p">)</span>
+
+<span class="p">(</span><span class="nb">use-package</span> <span class="nv">ivy-hydra</span>
+  <span class="nb">:after</span> <span class="p">(</span><span class="nv">ivy</span> <span class="nv">hydra</span><span class="p">))</span></code></pre></div>
+<p>In this case, because all of these packages are demand-loaded in the order
+they occur, the use of <code>:after</code> is not strictly necessary. By using it,
+however, the above code becomes order-independent, without an implicit
+depedence on the nature of your init file.</p>
+
+<p>By default, <code>:after (foo bar)</code> is the same as <code>:after (:all foo bar)</code>, meaning
+that loading of the given package will not happen until both <code>foo</code> and <code>bar</code>
+have been loaded. Here are some of the other possibilities:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="nb">:after</span> <span class="p">(</span><span class="nv">foo</span> <span class="nv">bar</span><span class="p">)</span>
+<span class="nb">:after</span> <span class="p">(</span><span class="nb">:all</span> <span class="nv">foo</span> <span class="nv">bar</span><span class="p">)</span>
+<span class="nb">:after</span> <span class="p">(</span><span class="nb">:any</span> <span class="nv">foo</span> <span class="nv">bar</span><span class="p">)</span>
+<span class="nb">:after</span> <span class="p">(</span><span class="nb">:all</span> <span class="p">(</span><span class="nb">:any</span> <span class="nv">foo</span> <span class="nv">bar</span><span class="p">)</span> <span class="p">(</span><span class="nb">:any</span> <span class="nv">baz</span> <span class="nv">quux</span><span class="p">))</span>
+<span class="nb">:after</span> <span class="p">(</span><span class="nb">:any</span> <span class="p">(</span><span class="nb">:all</span> <span class="nv">foo</span> <span class="nv">bar</span><span class="p">)</span> <span class="p">(</span><span class="nb">:all</span> <span class="nv">baz</span> <span class="nv">quux</span><span class="p">))</span></code></pre></div>
+<p>When you nest selectors, such as <code>(:any (:all foo bar) (:all baz quux))</code>, it
+means that the package will be loaded when either both <code>foo</code> and <code>bar</code> have
+been loaded, or both <code>baz</code> and <code>quux</code> have been loaded.</p>
+
+<p><strong>NOTE</strong>: Pay attention if you set <code>use-package-always-defer</code> to t, and also use
+the <code>:after</code> keyword, as you will need to specify how the declared package is
+to be loaded: e.g., by some <code>:bind</code>. If you&rsquo;re not using one of tho mechanisms
+that registers autoloads, such as <code>:bind</code> or <code>:hook</code>, and your package manager
+does not provide autoloads, it&rsquo;s possible that without adding <code>:demand t</code> to
+those declarations, your package will never be loaded.</p>
+
+<h2 id="bind-keymap-bind-keymap"><span class="section-num">2</span> <code>:bind-keymap</code>, <code>:bind-keymap*</code></h2>
+
+<p>Normally <code>:bind</code> expects that commands are functions that will be autoloaded
+from the given package. However, this does not work if one of those commands
+is actually a keymap, since keymaps are not functions, and cannot be
+autoloaded using Emacs&rsquo; <code>autoload</code> mechanism.</p>
+
+<p>To handle this case, <code>use-package</code> offers a special, limited variant of
+<code>:bind</code> called <code>:bind-keymap</code>. The only difference is that the &ldquo;commands&rdquo;
+bound to by <code>:bind-keymap</code> must be keymaps defined in the package, rather than
+command functions. This is handled behind the scenes by generating custom code
+that loads the package containing the keymap, and then re-executes your
+keypress after the first load, to reinterpret that keypress as a prefix key.</p>
+
+<p>For example:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">projectile</span>
+  <span class="nb">:bind-keymap</span>
+  <span class="p">(</span><span class="s">&#34;C-c p&#34;</span> <span class="o">.</span> <span class="nv">projectile-command-map</span><span class="p">)</span></code></pre></div>
+<h2 id="bind-bind"><span class="section-num">3</span> <code>:bind</code>, <code>:bind*</code></h2>
+
+<p>Another common thing to do when loading a module is to bind a key to primary
+commands within that module:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">ace-jump-mode</span>
+  <span class="nb">:bind</span> <span class="p">(</span><span class="s">&#34;C-.&#34;</span> <span class="o">.</span> <span class="nv">ace-jump-mode</span><span class="p">))</span></code></pre></div>
+<p>This does two things: first, it creates an autoload for the <code>ace-jump-mode</code>
+command and defers loading of <code>ace-jump-mode</code> until you actually use it.
+Second, it binds the key <code>C-.</code> to that command.  After loading, you can use
+<code>M-x describe-personal-keybindings</code> to see all such keybindings you&rsquo;ve set
+throughout your <code>.emacs</code> file.</p>
+
+<p>A more literal way to do the exact same thing is:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">ace-jump-mode</span>
+  <span class="nb">:commands</span> <span class="nv">ace-jump-mode</span>
+  <span class="nb">:init</span>
+  <span class="p">(</span><span class="nv">bind-key</span> <span class="s">&#34;C-.&#34;</span> <span class="ss">&#39;ace-jump-mode</span><span class="p">))</span></code></pre></div>
+<p>When you use the <code>:commands</code> keyword, it creates autoloads for those commands
+and defers loading of the module until they are used. Since the <code>:init</code> form
+is always run&mdash;even if <code>ace-jump-mode</code> might not be on your system&mdash;remember
+to restrict <code>:init</code> code to only what would succeed either way.</p>
+
+<p>The <code>:bind</code> keyword takes either a cons or a list of conses:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">hi-lock</span>
+  <span class="nb">:bind</span> <span class="p">((</span><span class="s">&#34;M-o l&#34;</span> <span class="o">.</span> <span class="nv">highlight-lines-matching-regexp</span><span class="p">)</span>
+         <span class="p">(</span><span class="s">&#34;M-o r&#34;</span> <span class="o">.</span> <span class="nv">highlight-regexp</span><span class="p">)</span>
+         <span class="p">(</span><span class="s">&#34;M-o w&#34;</span> <span class="o">.</span> <span class="nv">highlight-phrase</span><span class="p">)))</span></code></pre></div>
+<p>The <code>:commands</code> keyword likewise takes either a symbol or a list of symbols.</p>
+
+<p>NOTE: Special keys like <code>tab</code> or <code>F1</code>-<code>Fn</code> can be written in square brackets,
+i.e. <code>[tab]</code> instead of <code>&quot;tab&quot;</code>. The syntax for the keybindings is similar to
+the &ldquo;kbd&rdquo; syntax: see <a href="https://www.gnu.org/software/emacs/manual/html%5Fnode/emacs/Init-Rebinding.html" target="_blank">the Emacs Manual</a> for more information.</p>
+
+<p>Examples:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">helm</span>
+  <span class="nb">:bind</span> <span class="p">((</span><span class="s">&#34;M-x&#34;</span> <span class="o">.</span> <span class="nv">helm-M-x</span><span class="p">)</span>
+         <span class="p">(</span><span class="s">&#34;M-&lt;f5&gt;&#34;</span> <span class="o">.</span> <span class="nv">helm-find-files</span><span class="p">)</span>
+         <span class="p">([</span><span class="nv">f10</span><span class="p">]</span> <span class="o">.</span> <span class="nv">helm-buffers-list</span><span class="p">)</span>
+         <span class="p">([</span><span class="nv">S-f10</span><span class="p">]</span> <span class="o">.</span> <span class="nv">helm-recentf</span><span class="p">)))</span></code></pre></div>
+<h3 id="binding-to-local-keymaps"><span class="section-num">3.1</span> Binding to local keymaps</h3>
+
+<p>Slightly different from binding a key to a keymap, is binding a key <strong>within</strong> a
+local keymap that only exists after the package is loaded.  <code>use-package</code>
+supports this with a <code>:map</code> modifier, taking the local keymap to bind to:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">helm</span>
+  <span class="nb">:bind</span> <span class="p">(</span><span class="nb">:map</span> <span class="nv">helm-command-map</span>
+         <span class="p">(</span><span class="s">&#34;C-c h&#34;</span> <span class="o">.</span> <span class="nv">helm-execute-persistent-action</span><span class="p">)))</span></code></pre></div>
+<p>The effect of this statement is to wait until <code>helm</code> has loaded, and then to
+bind the key <code>C-c h</code> to <code>helm-execute-persistent-action</code> within Helm&rsquo;s local
+keymap, <code>helm-mode-map</code>.</p>
+
+<p>Multiple uses of <code>:map</code> may be specified. Any binding occurring before the
+first use of <code>:map</code> are applied to the global keymap:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">term</span>
+  <span class="nb">:bind</span> <span class="p">((</span><span class="s">&#34;C-c t&#34;</span> <span class="o">.</span> <span class="nv">term</span><span class="p">)</span>
+         <span class="nb">:map</span> <span class="nv">term-mode-map</span>
+         <span class="p">(</span><span class="s">&#34;M-p&#34;</span> <span class="o">.</span> <span class="nv">term-send-up</span><span class="p">)</span>
+         <span class="p">(</span><span class="s">&#34;M-n&#34;</span> <span class="o">.</span> <span class="nv">term-send-down</span><span class="p">)</span>
+         <span class="nb">:map</span> <span class="nv">term-raw-map</span>
+         <span class="p">(</span><span class="s">&#34;M-o&#34;</span> <span class="o">.</span> <span class="nv">other-window</span><span class="p">)</span>
+         <span class="p">(</span><span class="s">&#34;M-p&#34;</span> <span class="o">.</span> <span class="nv">term-send-up</span><span class="p">)</span>
+         <span class="p">(</span><span class="s">&#34;M-n&#34;</span> <span class="o">.</span> <span class="nv">term-send-down</span><span class="p">)))</span></code></pre></div>
+<h2 id="commands"><span class="section-num">4</span> <code>:commands</code></h2>
+
+<h2 id="preface-init-config"><span class="section-num">5</span> <code>:preface</code>, <code>:init</code>, <code>:config</code></h2>
+
+<p>Here is the simplest <code>use-package</code> declaration:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="c1">;; This is only needed once, near the top of the file</span>
+<span class="p">(</span><span class="nb">eval-when-compile</span>
+  <span class="c1">;; Following line is not needed if use-package.el is in ~/.emacs.d</span>
+  <span class="p">(</span><span class="nv">add-to-list</span> <span class="ss">&#39;load-path</span> <span class="s">&#34;&lt;path where use-package is installed&gt;&#34;</span><span class="p">)</span>
+  <span class="p">(</span><span class="nb">require</span> <span class="ss">&#39;use-package</span><span class="p">))</span>
+
+<span class="p">(</span><span class="nb">use-package</span> <span class="nv">foo</span><span class="p">)</span></code></pre></div>
+<p>This loads in the package <code>foo</code>, but only if <code>foo</code> is available on your
+system. If not, a warning is logged to the <code>*Messages*</code> buffer. If it
+succeeds, a message about <code>&quot;Loading foo&quot;</code> is logged, along with the time it
+took to load, if it took over 0.1 seconds.</p>
+
+<p>Use the <code>:init</code> keyword to execute code before a package is loaded.  It
+accepts one or more forms, up until the next keyword:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">foo</span>
+  <span class="nb">:init</span>
+  <span class="p">(</span><span class="nb">setq</span> <span class="nv">foo-variable</span> <span class="no">t</span><span class="p">))</span></code></pre></div>
+<p>Similarly, <code>:config</code> can be used to execute code after a package is loaded.
+In cases where loading is done lazily (see more about autoloading below), this
+execution is deferred until after the autoload occurs:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">foo</span>
+  <span class="nb">:init</span>
+  <span class="p">(</span><span class="nb">setq</span> <span class="nv">foo-variable</span> <span class="no">t</span><span class="p">)</span>
+  <span class="nb">:config</span>
+  <span class="p">(</span><span class="nv">foo-mode</span> <span class="mi">1</span><span class="p">))</span></code></pre></div>
+<p>As you might expect, you can use <code>:init</code> and <code>:config</code> together:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">color-moccur</span>
+  <span class="nb">:commands</span> <span class="p">(</span><span class="nv">isearch-moccur</span> <span class="nv">isearch-all</span><span class="p">)</span>
+  <span class="nb">:bind</span> <span class="p">((</span><span class="s">&#34;M-s O&#34;</span> <span class="o">.</span> <span class="nv">moccur</span><span class="p">)</span>
+         <span class="nb">:map</span> <span class="nv">isearch-mode-map</span>
+         <span class="p">(</span><span class="s">&#34;M-o&#34;</span> <span class="o">.</span> <span class="nv">isearch-moccur</span><span class="p">)</span>
+         <span class="p">(</span><span class="s">&#34;M-O&#34;</span> <span class="o">.</span> <span class="nv">isearch-moccur-all</span><span class="p">))</span>
+  <span class="nb">:init</span>
+  <span class="p">(</span><span class="nb">setq</span> <span class="nv">isearch-lazy-highlight</span> <span class="no">t</span><span class="p">)</span>
+  <span class="nb">:config</span>
+  <span class="p">(</span><span class="nb">use-package</span> <span class="nv">moccur-edit</span><span class="p">))</span></code></pre></div>
+<p>In this case, I want to autoload the commands <code>isearch-moccur</code> and
+<code>isearch-all</code> from <code>color-moccur.el</code>, and bind keys both at the global level
+and within the <code>isearch-mode-map</code> (see next section).  When the package is
+actually loaded (by using one of these commands), <code>moccur-edit</code> is also
+loaded, to allow editing of the <code>moccur</code> buffer.</p>
+
+<h2 id="custom"><span class="section-num">6</span> <code>:custom</code></h2>
+
+<p>The <code>:custom</code> keyword allows customization of package custom variables.</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">comint</span>
+  <span class="nb">:custom</span>
+  <span class="p">(</span><span class="nv">comint-buffer-maximum-size</span> <span class="mi">20000</span> <span class="s">&#34;Increase comint buffer size.&#34;</span><span class="p">)</span>
+  <span class="p">(</span><span class="nv">comint-prompt-read-only</span> <span class="no">t</span> <span class="s">&#34;Make the prompt read only.&#34;</span><span class="p">))</span></code></pre></div>
+<p>The documentation string is not mandatory.</p>
+
+<h2 id="custom-face"><span class="section-num">7</span> <code>:custom-face</code></h2>
+
+<p>The <code>:custom-face</code> keyword allows customization of package custom faces.</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">eruby-mode</span>
+  <span class="nb">:custom-face</span>
+  <span class="p">(</span><span class="nv">eruby-standard-face</span> <span class="p">((</span><span class="no">t</span> <span class="p">(</span><span class="nb">:slant</span> <span class="nv">italic</span><span class="p">)))))</span></code></pre></div>
+<h2 id="defer-demand"><span class="section-num">8</span> <code>:defer</code>, <code>:demand</code></h2>
+
+<p>In almost all cases you don&rsquo;t need to manually specify <code>:defer t</code>. This is
+implied whenever <code>:bind</code> or <code>:mode</code> or <code>:interpreter</code> is used. Typically, you
+only need to specify <code>:defer</code> if you know for a fact that some other package
+will do something to cause your package to load at the appropriate time, and
+thus you would like to defer loading even though use-package isn&rsquo;t creating
+any autoloads for you.</p>
+
+<p>You can override package deferral with the <code>:demand</code> keyword. Thus, even if
+you use <code>:bind</code>, using <code>:demand</code> will force loading to occur immediately and
+not establish an autoload for the bound key.</p>
+
+<h2 id="defines-functions"><span class="section-num">9</span> <code>:defines</code>, <code>:functions</code></h2>
+
+<p>Another feature of <code>use-package</code> is that it always loads every file that it
+can when <code>.emacs</code> is being byte-compiled.  This helps to silence spurious
+warnings about unknown variables and functions.</p>
+
+<p>However, there are times when this is just not enough.  For those times, use
+the <code>:defines</code> and <code>:functions</code> keywords to introduce dummy variable and
+function declarations solely for the sake of the byte-compiler:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">texinfo</span>
+  <span class="nb">:defines</span> <span class="nv">texinfo-section-list</span>
+  <span class="nb">:commands</span> <span class="nv">texinfo-mode</span>
+  <span class="nb">:init</span>
+  <span class="p">(</span><span class="nv">add-to-list</span> <span class="ss">&#39;auto-mode-alist</span> <span class="o">&#39;</span><span class="p">(</span><span class="s">&#34;\\.texi$&#34;</span> <span class="o">.</span> <span class="nv">texinfo-mode</span><span class="p">)))</span></code></pre></div>
+<p>If you need to silence a missing function warning, you can use <code>:functions</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">ruby-mode</span>
+  <span class="nb">:mode</span> <span class="s">&#34;\\.rb\\&#39;&#34;</span>
+  <span class="nb">:interpreter</span> <span class="s">&#34;ruby&#34;</span>
+  <span class="nb">:functions</span> <span class="nv">inf-ruby-keys</span>
+  <span class="nb">:config</span>
+  <span class="p">(</span><span class="nb">defun</span> <span class="nv">my-ruby-mode-hook</span> <span class="p">()</span>
+    <span class="p">(</span><span class="nb">require</span> <span class="ss">&#39;inf-ruby</span><span class="p">)</span>
+    <span class="p">(</span><span class="nv">inf-ruby-keys</span><span class="p">))</span>
+
+  <span class="p">(</span><span class="nv">add-hook</span> <span class="ss">&#39;ruby-mode-hook</span> <span class="ss">&#39;my-ruby-mode-hook</span><span class="p">))</span></code></pre></div>
+<h2 id="diminish-delight"><span class="section-num">10</span> <code>:diminish</code>, <code>:delight</code></h2>
+
+<p><code>use-package</code> also provides built-in support for the diminish and delight
+utilities&mdash;if you have them installed. Their purpose is to remove or change
+minor mode strings in your mode-line.</p>
+
+<p><a href="https://github.com/myrjola/diminish.el" target="_blank">diminish</a> is invoked with the <code>:diminish</code> keyword, which is passed either a
+minor mode symbol, a cons of the symbol and its replacement string, or just a
+replacement string, in which case the minor mode symbol is guessed to be the
+package name with &ldquo;-mode&rdquo; appended at the end:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">abbrev</span>
+  <span class="nb">:diminish</span> <span class="nv">abbrev-mode</span>
+  <span class="nb">:config</span>
+  <span class="p">(</span><span class="nb">if</span> <span class="p">(</span><span class="nf">file-exists-p</span> <span class="nv">abbrev-file-name</span><span class="p">)</span>
+      <span class="p">(</span><span class="nv">quietly-read-abbrev-file</span><span class="p">)))</span></code></pre></div>
+<p><a href="https://elpa.gnu.org/packages/delight.html" target="_blank">delight</a> is invoked with the <code>:delight</code> keyword, which is passed a minor mode
+symbol, a replacement string or quoted <a href="https://www.gnu.org/software/emacs/manual/html%5Fnode/elisp/Mode-Line-Data.html" target="_blank">mode-line data</a> (in which case the minor
+mode symbol is guessed to be the package name with &ldquo;-mode&rdquo; appended at the
+end), both of these, or several lists of both. If no arguments are provided,
+the default mode name is hidden completely.</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="c1">;; Don&#39;t show anything for rainbow-mode.</span>
+<span class="p">(</span><span class="nb">use-package</span> <span class="nv">rainbow-mode</span>
+  <span class="nb">:delight</span><span class="p">)</span>
+
+<span class="c1">;; Don&#39;t show anything for auto-revert-mode, which doesn&#39;t match</span>
+<span class="c1">;; its package name.</span>
+<span class="p">(</span><span class="nb">use-package</span> <span class="nv">autorevert</span>
+  <span class="nb">:delight</span> <span class="nv">auto-revert-mode</span><span class="p">)</span>
+
+<span class="c1">;; Remove the mode name for projectile-mode, but show the project name.</span>
+<span class="p">(</span><span class="nb">use-package</span> <span class="nv">projectile</span>
+  <span class="nb">:delight</span> <span class="o">&#39;</span><span class="p">(</span><span class="nb">:eval</span> <span class="p">(</span><span class="nf">concat</span> <span class="s">&#34; &#34;</span> <span class="p">(</span><span class="nv">projectile-project-name</span><span class="p">))))</span>
+
+<span class="c1">;; Completely hide visual-line-mode and change auto-fill-mode to &#34; AF&#34;.</span>
+<span class="p">(</span><span class="nb">use-package</span> <span class="nv">emacs</span>
+  <span class="nb">:delight</span>
+  <span class="p">(</span><span class="nv">auto-fill-function</span> <span class="s">&#34; AF&#34;</span><span class="p">)</span>
+  <span class="p">(</span><span class="nv">visual-line-mode</span><span class="p">))</span></code></pre></div>
+<h2 id="disabled"><span class="section-num">11</span> <code>:disabled</code></h2>
+
+<p>The <code>:disabled</code> keyword can turn off a module you&rsquo;re having difficulties with,
+or stop loading something you&rsquo;re not using at the present time:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">ess-site</span>
+  <span class="nb">:disabled</span>
+  <span class="nb">:commands</span> <span class="nv">R</span><span class="p">)</span></code></pre></div>
+<p>When byte-compiling your <code>.emacs</code> file, disabled declarations are omitted
+from the output entirely, to accelerate startup times.</p>
+
+<h2 id="ensure-pin"><span class="section-num">12</span> <code>:ensure</code>, <code>:pin</code></h2>
+
+<p>You can use <code>use-package</code> to load packages from ELPA with <code>package.el</code>. This
+is particularly useful if you share your <code>.emacs</code> among several machines; the
+relevant packages are downloaded automatically once declared in your <code>.emacs</code>.
+The <code>:ensure</code> keyword causes the package(s) to be installed automatically if
+not already present on your system (set <code>(setq use-package-always-ensure t)</code>
+if you wish this behavior to be global for all packages):</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">magit</span>
+  <span class="nb">:ensure</span> <span class="no">t</span><span class="p">)</span></code></pre></div>
+<p>If you need to install a different package from the one named by
+<code>use-package</code>, you can specify it like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">tex</span>
+  <span class="nb">:ensure</span> <span class="nv">auctex</span><span class="p">)</span></code></pre></div>
+<p>Lastly, when running on Emacs 24.4 or later, use-package can pin a package to
+a specific archive, allowing you to mix and match packages from different
+archives.  The primary use-case for this is preferring packages from the
+<code>melpa-stable</code> and <code>gnu</code> archives, but using specific packages from <code>melpa</code>
+when you need to track newer versions than what is available in the <code>stable</code>
+archives is also a valid use-case.</p>
+
+<p>By default <code>package.el</code> prefers <code>melpa</code> over <code>melpa-stable</code> due to the
+versioning <code>(&gt; evil-20141208.623 evil-1.0.9)</code>, so even if you are tracking
+only a single package from <code>melpa</code>, you will need to tag all the non-<code>melpa</code>
+packages with the appropriate archive. If this really annoys you, then you can
+set <code>use-package-always-pin</code> to set a default.</p>
+
+<p>If you want to manually keep a package updated and ignore upstream updates,
+you can pin it to <code>manual</code>, which as long as there is no repository by that
+name, will Just Work&trade;.</p>
+
+<p><code>use-package</code> throws an error if you try to pin a package to an archive that
+has not been configured using <code>package-archives</code> (apart from the magic
+<code>manual</code> archive mentioned above):</p>
+<div class="highlight"><pre class="chroma"><code class="language-text-mode" data-lang="text-mode"><span class="nx">Archive</span> <span class="err">&#39;</span><span class="nx">foo</span><span class="err">&#39;</span> <span class="nx">requested</span> <span class="k">for</span> <span class="kn">package</span> <span class="err">&#39;</span><span class="nx">bar</span><span class="err">&#39;</span> <span class="nx">is</span> <span class="nx">not</span> <span class="nx">available</span><span class="p">.</span></code></pre></div>
+<p>Example:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">company</span>
+  <span class="nb">:ensure</span> <span class="no">t</span>
+  <span class="nb">:pin</span> <span class="nv">melpa-stable</span><span class="p">)</span>
+
+<span class="p">(</span><span class="nb">use-package</span> <span class="nv">evil</span>
+  <span class="nb">:ensure</span> <span class="no">t</span><span class="p">)</span>
+  <span class="c1">;; no :pin needed, as package.el will choose the version in melpa</span>
+
+<span class="p">(</span><span class="nb">use-package</span> <span class="nv">adaptive-wrap</span>
+  <span class="nb">:ensure</span> <span class="no">t</span>
+  <span class="c1">;; as this package is available only in the gnu archive, this is</span>
+  <span class="c1">;; technically not needed, but it helps to highlight where it</span>
+  <span class="c1">;; comes from</span>
+  <span class="nb">:pin</span> <span class="nv">gnu</span><span class="p">)</span>
+
+<span class="p">(</span><span class="nb">use-package</span> <span class="nv">org</span>
+  <span class="nb">:ensure</span> <span class="no">t</span>
+  <span class="c1">;; ignore org-mode from upstream and use a manually installed version</span>
+  <span class="nb">:pin</span> <span class="nv">manual</span><span class="p">)</span></code></pre></div>
+<p><strong>NOTE</strong>: the <code>:pin</code> argument has no effect on emacs versions &lt; 24.4.</p>
+
+<h2 id="hook"><span class="section-num">13</span> <code>:hook</code></h2>
+
+<p>The <code>:hook</code> keyword allows adding functions onto hooks, here only the basename
+of the hook is required. Thus, all of the following are equivalent:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">ace-jump-mode</span>
+  <span class="nb">:hook</span> <span class="nv">prog-mode</span><span class="p">)</span>
+
+<span class="p">(</span><span class="nb">use-package</span> <span class="nv">ace-jump-mode</span>
+  <span class="nb">:hook</span> <span class="p">(</span><span class="nv">prog-mode</span> <span class="o">.</span> <span class="nv">ace-jump-mode</span><span class="p">))</span>
+
+<span class="p">(</span><span class="nb">use-package</span> <span class="nv">ace-jump-mode</span>
+  <span class="nb">:commands</span> <span class="nv">ace-jump-mode</span>
+  <span class="nb">:init</span>
+  <span class="p">(</span><span class="nv">add-hook</span> <span class="ss">&#39;prog-mode-hook</span> <span class="nf">#&#39;</span><span class="nv">ace-jump-mode</span><span class="p">))</span></code></pre></div>
+<p>And likewise, when multiple hooks should be applied, the following are also
+equivalent:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">ace-jump-mode</span>
+  <span class="nb">:hook</span> <span class="p">(</span><span class="nv">prog-mode</span> <span class="nv">text-mode</span><span class="p">))</span>
+
+<span class="p">(</span><span class="nb">use-package</span> <span class="nv">ace-jump-mode</span>
+  <span class="nb">:hook</span> <span class="p">((</span><span class="nv">prog-mode</span> <span class="nv">text-mode</span><span class="p">)</span> <span class="o">.</span> <span class="nv">ace-jump-mode</span><span class="p">))</span>
+
+<span class="p">(</span><span class="nb">use-package</span> <span class="nv">ace-jump-mode</span>
+  <span class="nb">:hook</span> <span class="p">((</span><span class="nv">prog-mode</span> <span class="o">.</span> <span class="nv">ace-jump-mode</span><span class="p">)</span>
+         <span class="p">(</span><span class="nv">text-mode</span> <span class="o">.</span> <span class="nv">ace-jump-mode</span><span class="p">)))</span>
+
+<span class="p">(</span><span class="nb">use-package</span> <span class="nv">ace-jump-mode</span>
+  <span class="nb">:commands</span> <span class="nv">ace-jump-mode</span>
+  <span class="nb">:init</span>
+  <span class="p">(</span><span class="nv">add-hook</span> <span class="ss">&#39;prog-mode-hook</span> <span class="nf">#&#39;</span><span class="nv">ace-jump-mode</span><span class="p">)</span>
+  <span class="p">(</span><span class="nv">add-hook</span> <span class="ss">&#39;text-mode-hook</span> <span class="nf">#&#39;</span><span class="nv">ace-jump-mode</span><span class="p">))</span></code></pre></div>
+<p>The use of <code>:hook</code>, as with <code>:bind</code>, <code>:mode</code>, <code>:interpreter</code>, etc., causes the
+functions being hooked to implicitly be read as <code>:commands</code> (meaning they will
+establish interactive <code>autoload</code> definitions for that module, if not already
+defined as functions), and so <code>:defer t</code> is also implied by <code>:hook</code>.</p>
+
+<h2 id="if-when-unless"><span class="section-num">14</span> <code>:if</code>, <code>:when</code>, <code>:unless</code></h2>
+
+<p>You can use the <code>:if</code> keyword to predicate the loading and initialization of
+modules.</p>
+
+<p>For example, I only want <code>edit-server</code> running for my main, graphical Emacs,
+not for other Emacsen I may start at the command line:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">edit-server</span>
+  <span class="nb">:if</span> <span class="nf">window-system</span>
+  <span class="nb">:init</span>
+  <span class="p">(</span><span class="nv">add-hook</span> <span class="ss">&#39;after-init-hook</span> <span class="ss">&#39;server-start</span> <span class="no">t</span><span class="p">)</span>
+  <span class="p">(</span><span class="nv">add-hook</span> <span class="ss">&#39;after-init-hook</span> <span class="ss">&#39;edit-server-start</span> <span class="no">t</span><span class="p">))</span></code></pre></div>
+<p>In another example, we can load things conditional on the operating system:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">exec-path-from-shell</span>
+  <span class="nb">:if</span> <span class="p">(</span><span class="nf">memq</span> <span class="nf">window-system</span> <span class="o">&#39;</span><span class="p">(</span><span class="nv">mac</span> <span class="nv">ns</span><span class="p">))</span>
+  <span class="nb">:ensure</span> <span class="no">t</span>
+  <span class="nb">:config</span>
+  <span class="p">(</span><span class="nv">exec-path-from-shell-initialize</span><span class="p">))</span></code></pre></div>
+<p>Note that <code>:when</code> is provided as an alias for <code>:if</code>, and <code>:unless foo</code> means
+the same thing as <code>:if (not foo)</code>.</p>
+
+<h2 id="load-path"><span class="section-num">15</span> <code>:load-path</code></h2>
+
+<p>If your package needs a directory added to the <code>load-path</code> in order to load,
+use <code>:load-path</code>. This takes a symbol, a function, a string or a list of
+strings. If the path is relative, it is expanded within
+<code>user-emacs-directory</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">ess-site</span>
+  <span class="nb">:load-path</span> <span class="s">&#34;site-lisp/ess/lisp/&#34;</span>
+  <span class="nb">:commands</span> <span class="nv">R</span><span class="p">)</span></code></pre></div>
+<p>Note that when using a symbol or a function to provide a dynamically generated
+list of paths, you must inform the byte-compiler of this definition so the
+value is available at byte-compilation time. This is done by using the special
+form <code>eval-and-compile</code> (as opposed to <code>eval-when-compile</code>). Further, this
+value is fixed at whatever was determined during compilation, to avoid looking
+up the same information again on each startup:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">eval-and-compile</span>
+  <span class="p">(</span><span class="nb">defun</span> <span class="nv">ess-site-load-path</span> <span class="p">()</span>
+    <span class="p">(</span><span class="nv">shell-command</span> <span class="s">&#34;find ~ -path ess/lisp&#34;</span><span class="p">)))</span>
+
+<span class="p">(</span><span class="nb">use-package</span> <span class="nv">ess-site</span>
+  <span class="nb">:load-path</span> <span class="p">(</span><span class="nb">lambda</span> <span class="p">()</span> <span class="p">(</span><span class="nf">list</span> <span class="p">(</span><span class="nv">ess-site-load-path</span><span class="p">)))</span>
+  <span class="nb">:commands</span> <span class="nv">R</span><span class="p">)</span></code></pre></div>
+<h2 id="mode-interpreter"><span class="section-num">16</span> <code>:mode</code>, <code>:interpreter</code></h2>
+
+<p>Similar to <code>:bind</code>, you can use <code>:mode</code> and <code>:interpreter</code> to establish a
+deferred binding within the <code>auto-mode-alist</code> and <code>interpreter-mode-alist</code>
+variables. The specifier to either keyword can be a cons cell, a list of cons
+cells, or a string or regexp:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">ruby-mode</span>
+  <span class="nb">:mode</span> <span class="s">&#34;\\.rb\\&#39;&#34;</span>
+  <span class="nb">:interpreter</span> <span class="s">&#34;ruby&#34;</span><span class="p">)</span>
+
+<span class="c1">;; The package is &#34;python&#34; but the mode is &#34;python-mode&#34;:</span>
+<span class="p">(</span><span class="nb">use-package</span> <span class="nv">python</span>
+  <span class="nb">:mode</span> <span class="p">(</span><span class="s">&#34;\\.py\\&#39;&#34;</span> <span class="o">.</span> <span class="nv">python-mode</span><span class="p">)</span>
+  <span class="nb">:interpreter</span> <span class="p">(</span><span class="s">&#34;python&#34;</span> <span class="o">.</span> <span class="nv">python-mode</span><span class="p">))</span></code></pre></div>
+<p>If you aren&rsquo;t using <code>:commands</code>, <code>:bind</code>, <code>:bind*</code>, <code>:bind-keymap</code>,
+<code>:bind-keymap*</code>, <code>:mode</code>, or <code>:interpreter</code> (all of which imply <code>:defer</code>; see
+the docstring for <code>use-package</code> for a brief description of each), you can
+still defer loading with the <code>:defer</code> keyword:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">ace-jump-mode</span>
+  <span class="nb">:defer</span> <span class="no">t</span>
+  <span class="nb">:init</span>
+  <span class="p">(</span><span class="nf">autoload</span> <span class="ss">&#39;ace-jump-mode</span> <span class="s">&#34;ace-jump-mode&#34;</span> <span class="no">nil</span> <span class="no">t</span><span class="p">)</span>
+  <span class="p">(</span><span class="nv">bind-key</span> <span class="s">&#34;C-.&#34;</span> <span class="ss">&#39;ace-jump-mode</span><span class="p">))</span></code></pre></div>
+<p>This does exactly the same thing as the following:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">ace-jump-mode</span>
+  <span class="nb">:bind</span> <span class="p">(</span><span class="s">&#34;C-.&#34;</span> <span class="o">.</span> <span class="nv">ace-jump-mode</span><span class="p">))</span></code></pre></div>
+<h2 id="magic-magic-fallback"><span class="section-num">17</span> <code>:magic</code>, <code>:magic-fallback</code></h2>
+
+<p>Similar to <code>:mode</code> and <code>:interpreter</code>, you can also use <code>:magic</code> and
+<code>:magic-fallback</code> to cause certain function to be run if the beginning of a
+file matches a given regular expression. The difference between the two is
+that <code>:magic-fallback</code> has a lower priority than <code>:mode</code>. For example:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">pdf-tools</span>
+  <span class="nb">:load-path</span> <span class="s">&#34;site-lisp/pdf-tools/lisp&#34;</span>
+  <span class="nb">:magic</span> <span class="p">(</span><span class="s">&#34;%PDF&#34;</span> <span class="o">.</span> <span class="nv">pdf-view-mode</span><span class="p">)</span>
+  <span class="nb">:config</span>
+  <span class="p">(</span><span class="nv">pdf-tools-install</span><span class="p">))</span></code></pre></div>
+<p>This registers an autoloaded command for <code>pdf-view-mode</code>, defers loading of
+<code>pdf-tools</code>, and runs <code>pdf-view-mode</code> if the beginning of a buffer matches the
+string <code>&quot;%PDF&quot;</code>.</p>
+
+<h2 id="no-require"><span class="section-num">18</span> <code>:no-require</code></h2>
+
+<p>Normally, <code>use-package</code> will load each package at compile time before
+compiling the configuration, to ensure that any necessary symbols are in scope
+to satisfy the byte-compiler. At times this can cause problems, since a
+package may have special loading requirements, and all that you want to use
+<code>use-package</code> for is to add a configuration to the <code>eval-after-load</code> hook. In
+such cases, use the <code>:no-require</code> keyword:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">foo</span>
+  <span class="nb">:no-require</span> <span class="no">t</span>
+  <span class="nb">:config</span>
+  <span class="p">(</span><span class="nf">message</span> <span class="s">&#34;This is evaluated when </span><span class="ss">`foo&#39;</span><span class="s"> is loaded&#34;</span><span class="p">))</span></code></pre></div>
+<h2 id="requires"><span class="section-num">19</span> <code>:requires</code></h2>
+
+<p>While the <code>:after</code> keyword delays loading until the dependencies are loaded,
+the somewhat simpler <code>:requires</code> keyword simply never loads the package if the
+dependencies are not available at the time the <code>use-package</code> declaration is
+encountered. By &ldquo;available&rdquo; in this context it means that <code>foo</code> is available
+of <code>(featurep 'foo)</code> evaulates to a non-nil value. For example:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">abbrev</span>
+  <span class="nb">:requires</span> <span class="nv">foo</span><span class="p">)</span></code></pre></div>
+<p>This is the same as:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">abbrev</span>
+  <span class="nb">:if</span> <span class="p">(</span><span class="nb">featurep</span> <span class="ss">&#39;foo</span><span class="p">))</span></code></pre></div>
+<p>As a convenience, a list of such packages may be specified:</p>
+<div class="highlight"><pre class="chroma"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">use-package</span> <span class="nv">abbrev</span>
+  <span class="nb">:requires</span> <span class="p">(</span><span class="nv">foo</span> <span class="nv">bar</span> <span class="nv">baz</span><span class="p">))</span></code></pre></div>
+<p>For more complex logic, such as that supported by <code>:after</code>, simply use <code>:if</code>
+and the appropriate Lisp expression.</p>
+
+
+
+			
+		    </div>
+		</div>
+	    </div>
+
+	    <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+    <div class="sphinxsidebarwrapper">
+        <p class="logo">
+            <a href="https://jwiegley.github.io/use-package/">
+                <img class="logo" src="https://jwiegley.github.io/use-package/img/use-package-logo-96x96-v1.svg" alt="Logo"/>
+                    <h1 class="logo logo-name">use-package</h1>
+            </a>
+        </p>
+
+        <p class="blurb">A use-package declaration for simplifying your .emacs</p>
+
+        
+
+	<p>
+		<iframe src="https://ghbtns.com/github-btn.html?user=jwiegley&repo=use-package&type=watch&count=true&size=large"
+		allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+	</p>
+
+	<p>
+		<a href="https://travis-ci.org/jwiegley/use-package">
+			<img
+			alt="https://secure.travis-ci.org/jwiegley/use-package.svg?branch=master"
+			src="https://secure.travis-ci.org/jwiegley/use-package.svg?branch=master"
+			/>
+		</a>
+	</p>
+
+	
+        
+    
+        <ul>
+	    
+	        <li class="toctree-l1">
+		    <a class="reference internal" href="https://jwiegley.github.io/use-package/">Introduction</a>
+	        </li>
+	    
+	        <li class="toctree-l1">
+		    <a class="reference internal" href="https://jwiegley.github.io/use-package/installation/">Installation</a>
+	        </li>
+	    
+	        <li class="toctree-l1">
+		    <a class="reference internal" href="https://jwiegley.github.io/use-package/getting-started/">Getting Started</a>
+	        </li>
+	    
+	        <li class="toctree-l1">
+		    <a class="reference internal" href="https://jwiegley.github.io/use-package/issues/">Issues/Requests</a>
+	        </li>
+	    
+	        <li class="toctree-l1">
+		    <a class="reference internal" href="https://jwiegley.github.io/use-package/keywords/">Keywords</a>
+	        </li>
+	    
+	        <li class="toctree-l1">
+		    <a class="reference internal" href="https://jwiegley.github.io/use-package/faq/">FAQ</a>
+	        </li>
+	    
+	        <li class="toctree-l1">
+		    <a class="reference internal" href="https://jwiegley.github.io/use-package/debugging-tools/">Debugging Tools</a>
+	        </li>
+	    
+        </ul>
+    
+
+
+    </div>
+</div>
+<div class="clearer"></div>
+</div>
+
+	    <div class="footer">
+    Exported from <a href="https://raw.githubusercontent.com/jwiegley/use-package/master/use-package.org"><code>use-package.org</code></a>
+        using
+        
+            <a href="https://www.gnu.org/software/emacs/">Emacs 26.2.50 </a> &plus;
+            <a href="https://orgmode.org/">Org mode 9.1.9 </a>
+        
+        and published using <a href="http://gohugo.io/">Hugo 0.34</a>
+	&plus; <a href="https://github.com/digitalcraftsman/hugo-alabaster-theme">Alabaster</a>
+    
+</div>
+
+<a href="https://github.com/jwiegley/use-package" class="github">
+    <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" class="github"/>
+</a>
+
+
+	    
+
+		
+
+		
+	</div>
+    </body>
+</html>

@@ -1,0 +1,142 @@
+.post-date {
+    /* display: block; */
+    float: right;
+    /* Italicize the date stamp */
+    font-style: italic;
+    margin-top: -0.5em;
+    margin-bottom: 0.3em;
+    color: #9a9a9a;
+}
+
+/* Show actual underline under "underline" class spanned text.  */
+.underline {
+    text-decoration: underline;
+}
+
+/* Iosevka font is awesome! */
+pre, tt, code {
+    font-family: 'Iosevka', 'Consolas', 'Menlo', 'Deja Vu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
+    font-size: 0.9em;
+}
+
+/* Tue Sep 26 12:32:04 EDT 2017 - kmodi*/
+/* Override the background-color for pre blocks.. overrides the Hugo theme, and Pygments/Chroma CSS. */
+pre, pre code, .chroma {
+    /* background-color: inherit; */
+    background-color: #EEE;
+}
+
+/* Very little padding on the left and right margins of code blocks */
+li pre, pre {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+/* Do not show list bullets for checkbox list items */
+ul.task-list {
+    list-style-type: none;
+}
+
+/* Org timestamps */
+/* Example: In Changelog */
+.timestamp {
+    color: #BEBEBE;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 0.7em;
+}
+
+/* * Table of Contents on side */
+.toc {
+    font-family: 'Source Sans Pro', sans-serif;
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 110px;
+    width: 260px;
+    margin-left: 500px;
+    overflow-y: auto;
+    max-height: 85%;
+    padding: 0;
+}
+.toc li {
+    list-style: none;
+}
+.toc ul>li {
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+}
+.toc ul>li>ul>li {
+    font-size: 0.8rem;
+    margin-bottom: 0.4rem;
+}
+.toc ul>li>ul>li>ul>li {
+    font-size: 0.7rem;
+    margin-bottom: 0.3rem;
+}
+.toc ul {              /* Add left padding for headings in TOC */
+    padding-left: 1rem;
+    margin: 0;
+}
+.toc nav>ul {           /* The highest level heading in a blog post is level-2 */
+    padding-left: 0;    /* The level-1 heading is reserved for the blog title. */
+    /* So do not add any padding for level-1 heading, as that will never show*/
+    /* up in the TOC. */
+}
+.toc a {
+    text-decoration: none;
+}
+.toc a:hover {
+    color: gray;
+}
+.toc a.current {
+    color: gray;
+    font-weight: bold;
+}
+/* Override the bullets customization done above, just for list items*/
+/* in .toc class */
+.toc ul:not(.catlist):not(.navbar):not(.post-list) li:before {
+    content: '';
+}
+.toc .back-to-top {             /* Back to top link */
+    font-size: 0.7rem;
+    padding-left: 1rem;
+}
+
+/* Don't display section numbers */
+.section-num {
+    display: none;
+}
+
+@media screen and (min-width: 1400px) {
+    .toc {
+        display: block;
+    }
+}
+
+/* Captions */
+figcaption,
+.src-block-caption,
+.table-caption {
+    font-style: italic;
+    text-align: center;
+}
+
+/* Don't underline captions in hyperlinked images */
+figure a,
+figure a:hover {
+    text-decoration: none;
+}
+
+/* Sane Table */
+/* https://css-tricks.com/complete-guide-table-element/#article-header-id-17 */
+.sane-table table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.sane-table th,
+.sane-table td {
+  padding: 0.25rem;
+  text-align: left;
+  border: 1px solid #ccc;
+}
