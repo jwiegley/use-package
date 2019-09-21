@@ -261,8 +261,8 @@ string `"%PDF"`.
 
 ## Hooks
 
-The `:hook` keyword allows adding functions onto hooks, here only the basename
-of the hook is required. Thus, all of the following are equivalent:
+The `:hook` keyword allows adding functions onto package hooks. Thus,
+all of the following are equivalent:
 
 ``` elisp
 (use-package ace-jump-mode
@@ -297,6 +297,20 @@ equivalent:
   (add-hook 'prog-mode-hook #'ace-jump-mode)
   (add-hook 'text-mode-hook #'ace-jump-mode))
 ```
+
+When using `:hook` omit the "-hook" suffix if you specify the hook
+explicitly, as this is appended by default. For example the following
+code will not work as it attempts to add to the `prog-mode-hook-hook`
+which does not exist:
+
+``` elisp
+;; DOES NOT WORK
+(use-package ace-jump-mode
+  :hook (prog-mode-hook . ace-jump-mode))
+```
+
+If you do not like this behaviour, set `use-package-hook-name-suffix`
+to nil. By default the value of this variable is "-hook".
 
 The use of `:hook`, as with `:bind`, `:mode`, `:interpreter`, etc., causes the
 functions being hooked to implicitly be read as `:commands` (meaning they will
