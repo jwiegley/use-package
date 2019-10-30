@@ -1515,6 +1515,7 @@ For full documentation, please see the README file that came with
 this file.  Usage:
 
   (use-package package-name
+     [docstring]
      [:keyword [option]]...)
 
 :init            Code to run before PACKAGE-NAME has been loaded.
@@ -1563,7 +1564,10 @@ this file.  Usage:
 :custom-face     Call `customize-set-faces' with each face definition.
 :ensure          Loads the package using package.el if necessary.
 :pin             Pin the package to an archive."
-  (declare (indent 1))
+  (declare (indent 1) (doc-string 2))
+  ;; Docstring.
+  (when (stringp (car args))
+    (pop args))
   (unless (memq :disabled args)
     (macroexp-progn
      (use-package-concat
