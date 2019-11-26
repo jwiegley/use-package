@@ -263,7 +263,7 @@ been loaded, or both ~baz~ and ~quux~ have been loaded.
 
 *NOTE*: Pay attention if you set ~use-package-always-defer~ to t, and also use
 the ~:after~ keyword, as you will need to specify how the declared package is
-to be loaded: e.g., by some ~:bind~. If you're not using one of tho mechanisms
+to be loaded: e.g., by some ~:bind~. If you're not using one of the mechanisms
 that registers autoloads, such as ~:bind~ or ~:hook~, and your package manager
 does not provide autoloads, it's possible that without adding ~:demand t~ to
 those declarations, your package will never be loaded.
@@ -822,7 +822,7 @@ While the ~:after~ keyword delays loading until the dependencies are loaded,
 the somewhat simpler ~:requires~ keyword simply never loads the package if the
 dependencies are not available at the time the ~use-package~ declaration is
 encountered. By "available" in this context it means that ~foo~ is available
-of ~(featurep 'foo)~ evaulates to a non-nil value. For example:
+of ~(featurep 'foo)~ evaluates to a non-nil value. For example:
 
 #+BEGIN_SRC emacs-lisp
 (use-package abbrev

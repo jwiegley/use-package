@@ -474,7 +474,7 @@ been loaded, or both `baz` and `quux` have been loaded.
 
 **NOTE**: pay attention if you set `use-package-always-defer` to t, and also use
 the `:after` keyword, as you will need to specify how the declared package is
-to be loaded: e.g., by some `:bind`. If you're not using one of tho mechanisms
+to be loaded: e.g., by some `:bind`. If you're not using one of the mechanisms
 that registers autoloads, such as `:bind` or `:hook`, and your package manager
 does not provide autoloads, it's possible that without adding `:demand t` to
 those declarations, your package will never be loaded.
