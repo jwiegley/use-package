@@ -193,17 +193,25 @@ can safely be called at any time."
 (defmacro unbind-key (key-name &optional keymap)
   "Unbind the given KEY-NAME, within the KEYMAP (if specified).
 See `bind-key' for more details."
-  `(progn
-     (bind-key ,key-name nil ,keymap)
-     (setq personal-keybindings
-           (cl-delete-if #'(lambda (k)
-                             ,(if keymap
-                                  `(and (consp (car k))
-                                        (string= (caar k) ,key-name)
-                                        (eq (cdar k) ',keymap))
-                                `(and (stringp (car k))
-                                      (string= (car k) ,key-name))))
-                         personal-keybindings))))
+  (let ((namevar (make-symbol "name"))
+        (keyvar (make-symbol "key"))
+        (kdescvar (make-symbol "kdesc")))
+    `(let* ((,namevar ,key-name)
+            (,keyvar (if (vectorp ,namevar) ,namevar
+                       (read-kbd-macro ,namevar)))
+            (,kdescvar (cons (if (stringp ,namevar) ,namevar
+                               (key-description ,namevar))
+                             (quote ,keymap))))
+       (bind-key ,key-name nil ,keymap)
+       (setq personal-keybindings
+             (cl-delete-if #'(lambda (k)
+                               ,(if keymap
+                                    `(and (consp (car k))
+                                          (string= (caar k) (car ,kdescvar))
+                                          (eq (cdar k) ',keymap))
+                                  `(and (stringp (car k))
+                                        (string= (car k) (car ,kdescvar)))))
+                           personal-keybindings)))))
 
 ;;;###autoload
 (defmacro bind-key* (key-name command &optional predicate)
