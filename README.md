@@ -56,7 +56,7 @@ Notes for users upgrading to 2.x are located [at the bottom](#upgrading-to-2x).
 	+ [Semantics of :init is now consistent](#semantics-of-init-is-now-consistent)
 	+ [:idle has been removed](#idle-has-been-removed)
 	+ [:defer now accepts an optional numeric argument](#defer-now-accepts-an-optional-numeric-argument)
-	+ [Add :preface, occuring before everything except :disabled](#add-preface-occurring-before-everything-except-disabled)
+	+ [Add :preface, occurring before everything except :disabled](#add-preface-occurring-before-everything-except-disabled)
 	+ [Add :functions, for declaring functions to the byte-compiler](#add-functions-for-declaring-functions-to-the-byte-compiler)
 	+ [use-package.el is no longer needed at runtime](#use-packageel-is-no-longer-needed-at-runtime)
 ## Installing use-package
