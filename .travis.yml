@@ -15,11 +15,12 @@ install:
   - tar xf emacs-bin-${EMACS_VERSION}.tar.gz -C /
   - export EMACS=/tmp/emacs/bin/emacs
   - $EMACS --version
-dist: trusty
+dist: bionic
 addons:
   apt:
     packages:
       - texinfo
+      - libgnutls30
 script:
   - make
   - make test
