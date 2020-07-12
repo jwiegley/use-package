@@ -376,8 +376,12 @@ The documentation string is not mandatory.
 **NOTE**: these are only for people who wish to keep customizations with their
 accompanying use-package declarations. Functionally, the only benefit over
 using `setq` in a `:config` block is that customizations might execute code
-when values are assigned. If you currently use `M-x customize-option` and save
-to a settings file, you do not want to use this option.
+when values are assigned.
+
+**NOTE**: The customized values are **not** saved in the Emacs `custom-file`.
+Thus you should either use the `:custom` option **or** you should use `M-x
+customize-option` which will save customized values in the Emacs `custom-file`.
+Do not use both.
 
 ### Customizing faces
 
