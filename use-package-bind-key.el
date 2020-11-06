@@ -52,11 +52,16 @@ defined by the package. In this way, loading the package is
 deferred until the prefix key sequence is pressed."
   (if (not (require package nil t))
       (use-package-error (format "Cannot load package.el: %s" package))
-    (if (and (boundp keymap-symbol)
-             (keymapp (symbol-value keymap-symbol)))
+    (if (or (and (fboundp keymap-symbol)
+                 (keymapp (symbol-function keymap-symbol)))
+            (and (boundp keymap-symbol)
+                 (keymapp (symbol-value keymap-symbol))))
         (let* ((kv (this-command-keys-vector))
                (key (key-description kv))
-               (keymap (symbol-value keymap-symbol)))
+               (keymap (if (and (fboundp keymap-symbol)
+                                (keymapp (symbol-function keymap-symbol)))
+                           keymap-symbol
+                         (symbol-value keymap-symbol))))
           (if override
               (bind-key* key keymap)
             (bind-key key keymap))
@@ -152,15 +157,17 @@ deferred until the prefix key sequence is pressed."
     (name _keyword args rest state &optional override)
   (use-package-concat
    (use-package-process-keywords name rest state)
-   (mapcar
+   (mapcan
     #'(lambda (binding)
-        `(,(if override 'bind-key* 'bind-key)
-          ,(car binding)
-          #'(lambda ()
+        (let ((lazy-name (intern (format "%s-lazy" (cdr binding)))))
+          `((defun ,lazy-name ()
               (interactive)
               (use-package-autoload-keymap
                ',(cdr binding) ',(use-package-as-symbol name)
-               ,override))))
+               ,override))
+            (,(if override 'bind-key* 'bind-key)
+             ,(car binding)
+             #',lazy-name))))
     args)))
 
 ;;;###autoload

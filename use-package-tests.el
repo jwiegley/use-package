@@ -707,18 +707,20 @@
 (ert-deftest use-package-test/:bind-keymap-1 ()
   (match-expansion
    (use-package foo :bind-keymap ("C-k" . key))
-   `(bind-key "C-k"
-              #'(lambda nil
-                  (interactive)
-                  (use-package-autoload-keymap 'key 'foo nil)))))
+   `(progn
+      (defun key-lazy nil
+        (interactive)
+        (use-package-autoload-keymap 'key 'foo nil))
+      (bind-key "C-k" #'key-lazy))))
 
 (ert-deftest use-package-test/:bind-keymap*-1 ()
   (match-expansion
    (use-package foo :bind-keymap* ("C-k" . key))
-   `(bind-key* "C-k"
-               #'(lambda ()
-                   (interactive)
-                   (use-package-autoload-keymap 'key 'foo t)))))
+   `(progn
+      (defun key-lazy nil
+        (interactive)
+        (use-package-autoload-keymap 'key 'foo t))
+      (bind-key* "C-k" #'key-lazy))))
 
 (ert-deftest use-package-test/:interpreter-1 ()
   (match-expansion
@@ -1720,14 +1722,15 @@
      :bind (:map my/transpose-map
 	         ("w" . transpose-words)))
    `(progn
-      (unless (fboundp 'transpose-words)
+      (unless
+          (fboundp 'transpose-words)
         (autoload #'transpose-words "simple" nil t))
-      (bind-key "C-t "
-                #'(lambda nil
-                    (interactive)
-                    (use-package-autoload-keymap 'my/transpose-map 'simple nil)))
+      (defun my/transpose-map-lazy nil
+        (interactive)
+        (use-package-autoload-keymap 'my/transpose-map 'simple nil))
+      (bind-key "C-t " #'my/transpose-map-lazy)
       (bind-keys :package simple :map my/transpose-map
-                 ("w" . transpose-words)))))
+	         ("w" . transpose-words)))))
 
 (ert-deftest use-package-test/482-2 ()
   (match-expansion
