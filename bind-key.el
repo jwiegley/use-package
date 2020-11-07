@@ -190,23 +190,21 @@ can safely be called at any time."
                '(menu-item "" nil :filter (lambda (&optional _)
                                             (when ,predicate
                                               ,command))))
-          `(define-key (or kmap global-map) ,keyvar ,command)))))
+          `(define-key (or kmap global-map) ,keyvar ,command))
+       ,(unless command
+          `(setq personal-keybindings
+                 (cl-delete-if #'(lambda (k)
+                                   ,(if keymap
+                                        `(and (string= (caar k) ,key-name)
+                                              (eq (cdar k) ',keymap))
+                                      `(string= (caar k) ,key-name)))
+                               personal-keybindings))))))
 
 ;;;###autoload
 (defmacro unbind-key (key-name &optional keymap)
   "Unbind the given KEY-NAME, within the KEYMAP (if specified).
 See `bind-key' for more details."
-  `(progn
-     (bind-key ,key-name nil ,keymap)
-     (setq personal-keybindings
-           (cl-delete-if #'(lambda (k)
-                             ,(if keymap
-                                  `(and (consp (car k))
-                                        (string= (caar k) ,key-name)
-                                        (eq (cdar k) ',keymap))
-                                `(and (stringp (car k))
-                                      (string= (car k) ,key-name))))
-                         personal-keybindings))))
+  `(bind-key ,key-name nil ,keymap))
 
 ;;;###autoload
 (defmacro bind-key* (key-name command &optional predicate)
