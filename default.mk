@@ -63,9 +63,9 @@ ELGS =
 
 ## Versions ##########################################################
 
-VERSION = 2.4
+VERSION = 2.4.1
 
-USE_PACKAGE_VERSION = 2.4
+USE_PACKAGE_VERSION = 2.4.1
 
 EMACS_VERSION = 24.3
 

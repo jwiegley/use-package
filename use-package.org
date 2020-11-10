@@ -11,7 +11,7 @@
 #+TEXINFO_DIR_CATEGORY: Emacs
 #+TEXINFO_DIR_TITLE: use-package: (use-package).
 #+TEXINFO_DIR_DESC: Declarative package configuration for Emacs.
-#+SUBTITLE: for version 2.4
+#+SUBTITLE: for version 2.4.1
 
 #+TEXINFO_DEFFN: t
 #+OPTIONS: H:4 num:3 toc:2 creator:t
@@ -171,7 +171,7 @@ doing so, to make sure you are not using an outdated value for ~load-path~.
 should display something like
 
 #+BEGIN_EXAMPLE
-  use-package-version’s value is "2.4"
+  use-package-version’s value is "2.4.1"
 #+END_EXAMPLE
 
 If you are completely new to use-package then see {{{link-jump(Getting
