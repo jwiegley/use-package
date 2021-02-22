@@ -91,6 +91,7 @@
     :magic
     :magic-fallback
     :hook
+    :hook*
     ;; Any other keyword that also declares commands to be autoloaded (such as
     ;; :bind) must appear before this keyword.
     :commands
@@ -1283,6 +1284,28 @@ meaning:
                    (quote ,(intern
                             (concat (symbol-name sym)
                                     use-package-hook-name-suffix)))
+                   (function ,fun)))
+             (if (use-package-non-nil-symbolp syms) (list syms) syms)))))
+    (use-package-normalize-commands args))))
+
+;;;; :hook*
+
+(defalias 'use-package-normalize/:hook* 'use-package-normalize/:hook)
+(defalias 'use-package-autoloads/:hook* 'use-package-autoloads/:hook)
+
+(defun use-package-handler/:hook* (name _keyword args rest state)
+  "Generate use-package custom keyword code."
+  (use-package-concat
+   (use-package-process-keywords name rest state)
+   (cl-mapcan
+    #'(lambda (def)
+        (let ((syms (car def))
+              (fun (cdr def)))
+          (when fun
+            (mapcar
+             #'(lambda (sym)
+                 `(add-hook
+                   (quote ,(intern (symbol-name sym)))
                    (function ,fun)))
              (if (use-package-non-nil-symbolp syms) (list syms) syms)))))
     (use-package-normalize-commands args))))
