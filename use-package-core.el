@@ -1594,6 +1594,7 @@ this file.  Usage:
                  loaded, and you wish to conditionally call functions in your
                  `:init' block that are defined in the package.
 :hook            Specify hook(s) to attach this package to.
+:hook*           Similer to :hook, but without `use-package-hook-name-suffix'.
 
 :bind            Bind keys, and define autoloads for the bound commands.
 :bind*           Bind keys, and define autoloads for the bound commands,

@@ -358,6 +358,16 @@ functions being hooked to implicitly be read as `:commands` (meaning they will
 establish interactive `autoload` definitions for that module, if not already
 defined as functions), and so `:defer t` is also implied by `:hook`.
 
+When you want to ignore `use-package-hook-name-suffix`, please
+try `:hook*` keyword like `:hook` keyword.
+
+```elisp
+(use-package vterm
+  :hook* (vterm-exit-functions . aorst/kill-vterm))
+```
+
+This use-package should hook `aorst/kill-vterm` on `vterm-exit-functions`.
+
 ## Package customization
 
 ### Customizing variables.
