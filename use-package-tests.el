@@ -1116,6 +1116,16 @@
            (require 'erefactor nil nil)
            (add-hook 'emacs-lisp-mode-hook #'(lambda nil (function))))))))
 
+(ert-deftest use-package-test/:hook*-1 ()
+  (let ((use-package-hook-name-suffix "-special"))
+    (match-expansion
+     (use-package foo
+       :hook* (hook . fun))
+     `(progn
+        (unless (fboundp 'fun)
+          (autoload #'fun "foo" nil t))
+        (add-hook 'hook #'fun)))))
+
 (ert-deftest use-package-test-normalize/:custom ()
   (flet ((norm (&rest args)
                (apply #'use-package-normalize/:custom
