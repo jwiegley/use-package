@@ -123,6 +123,13 @@ and within the `isearch-mode-map` (see next section).  When the package is
 actually loaded (by using one of these commands), `moccur-edit` is also
 loaded, to allow editing of the `moccur` buffer.
 
+If you autoload no-interactive function, please use `:autoload`.
+
+```elisp
+(use-package org-crypt
+  :autoload org-crypt-use-before-save-magic)
+```
+
 ## Key-binding
 
 Another common thing to do when loading a module is to bind a key to primary
