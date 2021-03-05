@@ -226,7 +226,7 @@ supports this with a `:map` modifier, taking the local keymap to bind to:
 
 The effect of this statement is to wait until `helm` has loaded, and then to
 bind the key `C-c h` to `helm-execute-persistent-action` within Helm's local
-keymap, `helm-mode-map`.
+keymap, `helm-command-map`.
 
 Multiple uses of `:map` may be specified. Any binding occurring before the
 first use of `:map` are applied to the global keymap:
