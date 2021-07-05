@@ -2,7 +2,7 @@
 
 [![Join the chat at https://gitter.im/use-package/Lobby](https://badges.gitter.im/use-package/Lobby.svg)](https://gitter.im/use-package/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/jwiegley/use-package.svg?branch=master)](https://travis-ci.org/jwiegley/use-package)
-[![MELPA](http://melpa.milkbox.net/packages/use-package-badge.svg)](http://melpa.milkbox.net/#/use-package)
+[![MELPA](https://melpa.org/packages/use-package-badge.svg)](https://melpa.org/#/use-package)
 [![MELPA Stable](https://stable.melpa.org/packages/use-package-badge.svg)](https://stable.melpa.org/#/use-package)
 
 The `use-package` macro allows you to isolate package configuration in your
@@ -62,7 +62,7 @@ Notes for users upgrading to 2.x are located [at the bottom](#upgrading-to-2x).
 ## Installing use-package
 
 Either clone from this GitHub repository or install from
-[MELPA](http://melpa.milkbox.net/) (recommended).
+[MELPA](http://melpa.org/) (recommended).
 
 ## Getting started
 
