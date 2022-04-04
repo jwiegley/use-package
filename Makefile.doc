@@ -60,7 +60,7 @@ clean:
 # using a shared target.
 
 DOC_ARGS  = --batch -Q $(DOC_LOAD_PATH)
-DOC_ARGS += -l ox-extra -l org-man -l ox-texinfo+.el
+DOC_ARGS += -l ox-extra -l ol-man -l ox-texinfo+.el
 DOC_EVAL  = --eval "(ox-extras-activate '(ignore-headlines))"
 DOC_EVAL += -f org-texinfo-export-to-texinfo
 
