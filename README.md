@@ -395,15 +395,23 @@ The `:custom-face` keyword allows customization of package custom faces.
 
 ## Notes about lazy loading
 
-In almost all cases you don't need to manually specify `:defer t`.  This is
-implied whenever `:bind` or `:mode` or `:interpreter` is used.  Typically, you
-only need to specify `:defer` if you know for a fact that some other package
-will do something to cause your package to load at the appropriate time, and
-thus you would like to defer loading even though use-package isn't creating
-any autoloads for you.
+The keywords `:commands`, et al, provide "triggers" that cause a package to be
+loaded when certain events occur. However, if `use-package` cannot determine
+that any trigger has been declared, it will load the package immediately (when
+Emacs is starting up) unless `:defer t` is given. The presence of triggers can
+be overridden using `:demand t` to force immediately loading anyway. For
+example, `:hook` represents a trigger that fires when the specified hook is
+run.
 
-You can override package deferral with the `:demand` keyword.  Thus, even if
-you use `:bind`, using `:demand` will force loading to occur immediately and
+In almost all cases you don't need to manually specify `:defer t`, because
+this is implied whenever `:bind` or `:mode` or `:interpreter` are used.
+Typically, you only need to specify `:defer` if you know for a fact that some
+other package will do something to cause your package to load at the
+appropriate time, and thus you would like to defer loading even though
+`use-package` has not created any autoloads for you.
+
+You can override package deferral with the `:demand` keyword. Thus, even if
+you use `:bind`, adding `:demand` will force loading to occur immediately and
 not establish an autoload for the bound key.
 
 ## Information about package loads
