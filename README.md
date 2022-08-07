@@ -472,6 +472,20 @@ The `:custom-face` keyword allows customization of package custom faces.
 (use-package eruby-mode
   :custom-face
   (eruby-standard-face ((t (:slant italic)))))
+
+(use-package example
+  :custom-face 
+  (example-1-face ((t (:foreground "LightPink"))))
+  (example-2-face ((t (:foreground "LightGreen")))))
+
+(use-package zenburn-theme
+  :preface
+  (setq my/zenburn-colors-alist
+        '((fg . "#DCDCCC") (bg . "#1C1C1C") (cyan . "#93E0E3")))
+  :custom-face
+  (region ((t (:background ,(alist-get my/zenburn-colors-alist 'cyan)))))
+  :config
+  (load-theme 'zenburn t))
 ```
 
 ## Notes about lazy loading
