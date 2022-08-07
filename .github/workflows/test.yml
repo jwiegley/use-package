@@ -1,0 +1,32 @@
+## test.yml
+
+name: Main workflow
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        emacs_version:
+          - '26.1'
+          - '26.2'
+          - '26.3'
+          - '27.1'
+          - 'snapshot'
+        include:
+          - emacs_version: 'snapshot'
+            allow_failure: true
+    steps:
+    - uses: actions/checkout@v2
+    - uses: purcell/setup-emacs@master
+      with:
+        version: ${{ matrix.emacs_version }}
+
+    - name: Run tests
+      if: matrix.allow_failure != true
+      run: 'make && make test'
+
+    - name: Run tests (allow failure)
+      if: matrix.allow_failure == true
+      run: 'make && make test || true'
