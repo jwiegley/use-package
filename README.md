@@ -62,7 +62,7 @@ Notes for users upgrading to 2.x are located [at the bottom](#upgrading-to-2x).
 ## Installing use-package
 
 Either clone from this GitHub repository or install from
-[MELPA](http://melpa.milkbox.net/) (recommended).
+[MELPA](https://melpa.org/) (recommended).
 
 ## Getting started
 
