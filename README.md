@@ -242,6 +242,87 @@ first use of `:map` are applied to the global keymap:
          ("M-p" . term-send-up)
          ("M-n" . term-send-down)))
 ```
+### Binding to repeat-maps
+
+A special case of binding within a local keymap is when that keymap is
+used by `repeat-mode`. These keymaps are usually defined specifically
+for this. Using the `:repeat-map` keyword, and passing it a name for
+the map it defines, will bind all following keys inside that map, and
+(by default) set the `repeat-map` property of each bound command to
+that map.
+
+
+This creates a keymap called `git-gutter+-repeat-map`, makes four
+bindings in it as above, then sets the `repeat-map` property of each
+bound command (`git-gutter+-next-hunk` `git-gutter+-previous-hunk`,
+`git-gutter+-stage-hunks` and `git-gutter+-revert-hunk`) to that
+keymap.
+
+``` elisp
+(use-package git-gutter+
+  :bind
+  (:repeat-map git-gutter+-repeat-map
+   ("n" . git-gutter+-next-hunk)
+   ("p" . git-gutter+-previous-hunk)
+   ("s" . git-gutter+-stage-hunks)
+   ("r" . git-gutter+-revert-hunk)))
+```
+
+Specifying `:exit` inside the scope of `:repeat-map` will prevent the
+`repeat-map` property being set, so that the command can be used from
+within the repeat map, but after it using it the repeat map will no
+longer be available. This is useful for commands often used at the end
+of a series of repeated commands:
+
+``` elisp
+(use-package git-gutter+
+  :bind
+  (:repeat-map my/git-gutter+-repeat-map
+   ("n" . git-gutter+-next-hunk)
+   ("p" . git-gutter+-previous-hunk)
+   ("s" . git-gutter+-stage-hunks)
+   ("r" . git-gutter+-revert-hunk)
+   :exit
+   ("c" . magit-commit-create)
+   ("C" . magit-commit)
+   ("b" . magit-blame)))
+```
+
+Specifying `:continue` *forces* setting the `repeat-map` property
+(just like *not* specifying `:exit`), so these two snippets are
+equivalent:
+
+``` elisp
+(use-package git-gutter+
+  :bind
+  (:repeat-map my/git-gutter+-repeat-map
+   ("n" . git-gutter+-next-hunk)
+   ("p" . git-gutter+-previous-hunk)
+   ("s" . git-gutter+-stage-hunks)
+   ("r" . git-gutter+-revert-hunk)
+   :exit
+   ("c" . magit-commit-create)
+   ("C" . magit-commit)
+   ("b" . magit-blame)))
+```
+
+``` elisp
+(use-package git-gutter+
+  :bind
+  (:repeat-map my/git-gutter+-repeat-map
+   :exit
+   ("c" . magit-commit-create)
+   ("C" . magit-commit)
+   ("b" . magit-blame)
+   :continue
+   ("n" . git-gutter+-next-hunk)
+   ("p" . git-gutter+-previous-hunk)
+   ("s" . git-gutter+-stage-hunks)
+   ("r" . git-gutter+-revert-hunk)))
+```
+   
+
+
 
 ## Modes and interpreters
 
