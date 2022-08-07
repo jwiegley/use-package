@@ -1,3 +1,5 @@
+  -*- lexical-binding: t; -*-
+
 ;; Time-stamp: <2017-12-19 16:49:24 kmodi>
 
 ;; Setup to export Org files to Hugo-compatible Markdown using
