@@ -1,4 +1,5 @@
 #+title: use-package User Manual
+:PREAMBLE:
 #+author: John Wiegley
 #+email: johnw@newartisans.com
 #+date: 2012-{{{year}}}
@@ -43,7 +44,7 @@ This document is distributed in the hope that it will be useful, but WITHOUT
 ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #+end_quote
-
+:END:
 * Introduction
 :PROPERTIES:
 :EXPORT_FILE_NAME: _index
