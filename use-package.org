@@ -846,50 +846,12 @@ As a convenience, a list of such packages may be specified:
 For more complex logic, such as that supported by ~:after~, simply use ~:if~
 and the appropriate Lisp expression.
 
-* FAQ
-:PROPERTIES:
-:APPENDIX:   t
-:EXPORT_FILE_NAME: faq
-:END:
-
-The next two nodes lists frequently asked questions.
-
-Please also use the {{{link-jump(Debugging Tools,/debugging-tools)}}}.
-
-** FAQ - How to ...?
-*** This is a question
-
-This is an answer.
-
-** FAQ - Issues and Errors
-*** This is an issues
-
-This is a description.
-
 * Debugging Tools
 :PROPERTIES:
 :EXPORT_FILE_NAME: debugging-tools
 :END:
 
 TODO
-
-Please also see the {{{link-jump(FAQ,/faq)}}}.
-
-* Command Index
-:PROPERTIES:
-:APPENDIX:   t
-:INDEX:      cp
-:END:
-* Function Index
-:PROPERTIES:
-:APPENDIX:   t
-:INDEX:      fn
-:END:
-* Variable Index
-:PROPERTIES:
-:APPENDIX:   t
-:INDEX:      vr
-:END:
 
 * _ Copying
 :PROPERTIES:
