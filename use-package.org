@@ -1,7 +1,7 @@
 #+TITLE: use-package User Manual
 #+AUTHOR: John Wiegley
 #+EMAIL: johnw@newartisans.com
-#+DATE: 2012-2017
+#+DATE: 2012-{{{year}}}
 #+LANGUAGE: en
 
 #+HUGO_BASE_DIR: ./doc
@@ -11,7 +11,7 @@
 #+TEXINFO_DIR_CATEGORY: Emacs
 #+TEXINFO_DIR_TITLE: use-package: (use-package).
 #+TEXINFO_DIR_DESC: Declarative package configuration for Emacs.
-#+SUBTITLE: for version 2.4.1
+#+SUBTITLE: for version {{{version}}}
 
 #+OPTIONS: H:4 num:3 toc:2 creator:t
 
@@ -27,10 +27,13 @@
 
 #+MACRO: link-jump @@texinfo:@ref{$1}@@@@hugo:[$1]($2)@@
 
+#+macro: year (eval (format-time-string "%Y"))
+#+macro: version (eval (or (getenv "PACKAGE_REVDESC") (getenv "PACKAGE_VERSION") (ignore-errors (car (process-lines "git" "describe" "--exact"))) (ignore-errors (concat (car (process-lines "git" "describe" (if (getenv "AMEND") "HEAD~" "HEAD"))) "+1"))))
+
 use-package is...
 
 #+BEGIN_QUOTE
-Copyright (C) 2012-2017 John Wiegley <johnw@newartisans.com>
+Copyright (C) 2012-{{{year}}} John Wiegley <johnw@newartisans.com>
 
 You can redistribute this document and/or modify it under the terms of the GNU
 General Public License as published by the Free Software Foundation, either
@@ -894,7 +897,7 @@ Please also see the {{{link-jump(FAQ,/faq)}}}.
 :END:
 
 #+BEGIN_QUOTE
-Copyright (C) 2012-2017 John Wiegley <johnw@newartisans.com>
+Copyright (C) 2012-{{{year}}} John Wiegley <johnw@newartisans.com>
 
 You can redistribute this document and/or modify it under the terms
 of the GNU General Public License as published by the Free Software
