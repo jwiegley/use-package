@@ -76,31 +76,31 @@ with it by reading the documentation in the Emacs manual, see
 
 - To use Melpa:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (require 'package)
   (add-to-list 'package-archives
                '("melpa" . "https://melpa.org/packages/") t)
-#+END_SRC
+#+end_src
 
 - To use Melpa-Stable:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (require 'package)
   (add-to-list 'package-archives
                '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-#+END_SRC
+#+end_src
 
 Once you have added your preferred archive, you need to update the
 local package list using:
 
-#+BEGIN_EXAMPLE
+#+begin_example
   M-x package-refresh-contents RET
 #+END_EXAMPLE
 
 Once you have done that, you can install use-package and its dependencies
 using:
 
-#+BEGIN_EXAMPLE
+#+begin_example
   M-x package-install RET use-package RET
 #+END_EXAMPLE
 
@@ -110,27 +110,27 @@ Now see [[*Post-Installation Tasks]].
 
 First, use Git to clone the use-package repository:
 
-#+BEGIN_SRC shell-script
+#+begin_src shell-script
   $ git clone https://github.com/jwiegley/use-package.git ~/.emacs.d/site-lisp/use-package
   $ cd ~/.emacs.d/site-lisp/use-package
-#+END_SRC
+#+end_src
 
 Then compile the libraries and generate the info manuals:
 
-#+BEGIN_SRC shell-script
+#+begin_src shell-script
   $ make
-#+END_SRC
+#+end_src
 
 You may need to create ~/path/to/use-package/config.mk~ with the following
 content before running ~make~:
 
-#+BEGIN_SRC makefile
+#+begin_src makefile
   LOAD_PATH  = -L /path/to/use-package
-#+END_SRC
+#+end_src
 
 Finally add this to your init file:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (add-to-list 'load-path "~/.emacs.d/site-lisp/use-package")
   (require 'use-package)
 
@@ -138,7 +138,7 @@ Finally add this to your init file:
     (info-initialize)
     (add-to-list 'Info-directory-list
                  "~/.emacs.d/site-lisp/use-package/"))
-#+END_SRC
+#+end_src
 
 Note that elements of ~load-path~ should not end with a slash, while those of
 ~Info-directory-list~ should.
@@ -149,10 +149,10 @@ using ~sudo make install~ and setting ~load-path~ accordingly.
 
 To update use-package use:
 
-#+BEGIN_SRC shell-script
+#+begin_src shell-script
   $ git pull
   $ make
-#+END_SRC
+#+end_src
 
 At times it might be necessary to run ~make clean all~ instead.
 
@@ -166,13 +166,13 @@ After installing use-package you should verify that you are indeed using the
 use-package release you think you are using. It's best to restart Emacs before
 doing so, to make sure you are not using an outdated value for ~load-path~.
 
-#+BEGIN_EXAMPLE
+#+begin_example
   C-h v use-package-version RET
 #+END_EXAMPLE
 
 should display something like
 
-#+BEGIN_EXAMPLE
+#+begin_example
   use-package-version’s value is "2.4.1"
 #+END_EXAMPLE
 
@@ -231,7 +231,7 @@ time. This can achieved using an ~:after~ keyword that allows a fairly rich
 description of the exact conditions when loading should occur. Here is an
 example:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package hydra
     :load-path "site-lisp/hydra")
 
@@ -240,7 +240,7 @@ example:
 
   (use-package ivy-hydra
     :after (ivy hydra))
-#+END_SRC
+#+end_src
 
 In this case, because all of these packages are demand-loaded in the order
 they occur, the use of ~:after~ is not strictly necessary. By using it,
@@ -251,13 +251,13 @@ By default, ~:after (foo bar)~ is the same as ~:after (:all foo bar)~, meaning
 that loading of the given package will not happen until both ~foo~ and ~bar~
 have been loaded. Here are some of the other possibilities:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   :after (foo bar)
   :after (:all foo bar)
   :after (:any foo bar)
   :after (:all (:any foo bar) (:any baz quux))
   :after (:any (:all foo bar) (:all baz quux))
-#+END_SRC
+#+end_src
 
 When you nest selectors, such as ~(:any (:all foo bar) (:all baz quux))~, it
 means that the package will be loaded when either both ~foo~ and ~bar~ have
@@ -286,21 +286,21 @@ keypress after the first load, to reinterpret that keypress as a prefix key.
 
 For example:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package projectile
     :bind-keymap
     ("C-c p" . projectile-command-map)
-#+END_SRC
+#+end_src
 
 ** ~:bind~, ~:bind*~
 
 Another common thing to do when loading a module is to bind a key to primary
 commands within that module:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package ace-jump-mode
     :bind ("C-." . ace-jump-mode))
-#+END_SRC
+#+end_src
 
 This does two things: first, it creates an autoload for the ~ace-jump-mode~
 command and defers loading of ~ace-jump-mode~ until you actually use it.
@@ -310,12 +310,12 @@ throughout your ~.emacs~ file.
 
 A more literal way to do the exact same thing is:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package ace-jump-mode
     :commands ace-jump-mode
     :init
     (bind-key "C-." 'ace-jump-mode))
-#+END_SRC
+#+end_src
 
 When you use the ~:commands~ keyword, it creates autoloads for those commands
 and defers loading of the module until they are used. Since the ~:init~ form
@@ -324,12 +324,12 @@ to restrict ~:init~ code to only what would succeed either way.
 
 The ~:bind~ keyword takes either a cons or a list of conses:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package hi-lock
     :bind (("M-o l" . highlight-lines-matching-regexp)
            ("M-o r" . highlight-regexp)
            ("M-o w" . highlight-phrase)))
-#+END_SRC
+#+end_src
 
 The ~:commands~ keyword likewise takes either a symbol or a list of symbols.
 
@@ -339,13 +339,13 @@ the "kbd" syntax: see [[https://www.gnu.org/software/emacs/manual/html_node/emac
 
 Examples:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package helm
     :bind (("M-x" . helm-M-x)
            ("M-<f5>" . helm-find-files)
            ([f10] . helm-buffers-list)
            ([S-f10] . helm-recentf)))
-#+END_SRC
+#+end_src
 
 *** Binding to local keymaps
 
@@ -353,11 +353,11 @@ Slightly different from binding a key to a keymap, is binding a key *within* a
 local keymap that only exists after the package is loaded.  ~use-package~
 supports this with a ~:map~ modifier, taking the local keymap to bind to:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package helm
     :bind (:map helm-command-map
            ("C-c h" . helm-execute-persistent-action)))
-#+END_SRC
+#+end_src
 
 The effect of this statement is to wait until ~helm~ has loaded, and then to
 bind the key ~C-c h~ to ~helm-execute-persistent-action~ within Helm's local
@@ -366,7 +366,7 @@ keymap, ~helm-mode-map~.
 Multiple uses of ~:map~ may be specified. Any binding occurring before the
 first use of ~:map~ are applied to the global keymap:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package term
     :bind (("C-c t" . term)
            :map term-mode-map
@@ -376,14 +376,14 @@ first use of ~:map~ are applied to the global keymap:
            ("M-o" . other-window)
            ("M-p" . term-send-up)
            ("M-n" . term-send-down)))
-#+END_SRC
+#+end_src
 
 ** ~:commands~
 ** ~:preface~, ~:init~, ~:config~
 
 Here is the simplest ~use-package~ declaration:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; This is only needed once, near the top of the file
   (eval-when-compile
     ;; Following line is not needed if use-package.el is in ~/.emacs.d
@@ -391,7 +391,7 @@ Here is the simplest ~use-package~ declaration:
     (require 'use-package))
 
   (use-package foo)
-#+END_SRC
+#+end_src
 
 This loads in the package ~foo~, but only if ~foo~ is available on your
 system. If not, a warning is logged to the ~*Messages*~ buffer. If it
@@ -401,27 +401,27 @@ took to load, if it took over 0.1 seconds.
 Use the ~:init~ keyword to execute code before a package is loaded.  It
 accepts one or more forms, up until the next keyword:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package foo
     :init
     (setq foo-variable t))
-#+END_SRC
+#+end_src
 
 Similarly, ~:config~ can be used to execute code after a package is loaded.
 In cases where loading is done lazily (see more about autoloading below), this
 execution is deferred until after the autoload occurs:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package foo
     :init
     (setq foo-variable t)
     :config
     (foo-mode 1))
-#+END_SRC
+#+end_src
 
 As you might expect, you can use ~:init~ and ~:config~ together:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package color-moccur
     :commands (isearch-moccur isearch-all)
     :bind (("M-s O" . moccur)
@@ -432,7 +432,7 @@ As you might expect, you can use ~:init~ and ~:config~ together:
     (setq isearch-lazy-highlight t)
     :config
     (use-package moccur-edit))
-#+END_SRC
+#+end_src
 
 In this case, I want to autoload the commands ~isearch-moccur~ and
 ~isearch-all~ from ~color-moccur.el~, and bind keys both at the global level
@@ -444,12 +444,12 @@ loaded, to allow editing of the ~moccur~ buffer.
 
 The ~:custom~ keyword allows customization of package custom variables.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package comint
     :custom
     (comint-buffer-maximum-size 20000 "Increase comint buffer size.")
     (comint-prompt-read-only t "Make the prompt read only."))
-#+END_SRC
+#+end_src
 
 The documentation string is not mandatory.
 
@@ -457,11 +457,11 @@ The documentation string is not mandatory.
 
 The ~:custom-face~ keyword allows customization of package custom faces.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package eruby-mode
     :custom-face
     (eruby-standard-face ((t (:slant italic)))))
-#+END_SRC
+#+end_src
 
 ** ~:defer~, ~:demand~
 
