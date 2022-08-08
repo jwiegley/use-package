@@ -13,7 +13,7 @@
 #+texinfo_dir_desc: Declarative package configuration for Emacs.
 #+subtitle: for version {{{version}}}
 
-#+options: H:4 num:3 toc:2 creator:t
+#+options: H:4 num:3 toc:2
 
 # Below macro is used so that both texinfo and hugo exports work
 # harmoniously.  For texinfo exports, the export is done using the
