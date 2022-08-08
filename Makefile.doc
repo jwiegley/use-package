@@ -59,14 +59,12 @@ clean:
 # use "%.texi: %.org".  Instead we have to hardcode each file
 # using a shared target.
 
-DOC_ARGS  = --batch -Q $(DOC_LOAD_PATH)
-DOC_ARGS += -l ox-extra -l ol-man -l ox-texinfo+.el
-DOC_EVAL  = --eval "(ox-extras-activate '(ignore-headlines))"
-DOC_EVAL += -f org-texinfo-export-to-texinfo
+ORG_ARGS = --batch -Q $(DOC_LOAD_PATH)
+ORG_EVAL = --funcall org-texinfo-export-to-texinfo
 
 texi:
 	@printf "Generating use-package.texi\n"
-	@$(EMACSBIN) $(DOC_ARGS) use-package.org $(DOC_EVAL)
+	@$(EMACSBIN) $(ORG_ARGS) use-package.org $(ORG_EVAL)
 	@echo >> use-package.texi
 
 stats:
