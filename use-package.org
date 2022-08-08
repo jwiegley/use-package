@@ -31,19 +31,14 @@
 #+macro: year (eval (format-time-string "%Y"))
 #+macro: version (eval (or (getenv "PACKAGE_REVDESC") (getenv "PACKAGE_VERSION") (ignore-errors (car (process-lines "git" "describe" "--exact"))) (ignore-errors (concat (car (process-lines "git" "describe" (if (getenv "AMEND") "HEAD~" "HEAD"))) "+1"))))
 
-use-package is...
+The ~use-package~ macro allows you to isolate package configuration in your
+~.emacs~ file in a way that is both performance-oriented and, well, tidy. I
+created it because I have over 80 packages that I use in Emacs, and things
+were getting difficult to manage. Yet with this utility my total load time is
+around 2 seconds, with no loss of functionality!
 
-#+begin_quote
-Copyright (C) 2012-{{{year}}} John Wiegley <johnw@newartisans.com>
+#+texinfo: @insertcopying
 
-You can redistribute this document and/or modify it under the terms of the GNU
-General Public License as published by the Free Software Foundation, either
-version 3 of the License, or (at your option) any later version.
-
-This document is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-#+end_quote
 :END:
 * Introduction
 :PROPERTIES:
