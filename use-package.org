@@ -13,7 +13,6 @@
 #+TEXINFO_DIR_DESC: Declarative package configuration for Emacs.
 #+SUBTITLE: for version 2.4.1
 
-#+TEXINFO_DEFFN: t
 #+OPTIONS: H:4 num:3 toc:2 creator:t
 
 # Below macro is used so that both texinfo and hugo exports work
@@ -176,8 +175,7 @@ should display something like
 If you are completely new to use-package then see {{{link-jump(Getting
 Started,/getting-started)}}}.
 
-If you run into problems, then please see the
-{{{link-jump(FAQ,/faq)}}}.  Also see the {{{link-jump(Debugging
+If you run into problems, then please see the {{{link-jump(Debugging
 Tools,/debugging-tools)}}}.
 
 * Getting Started
@@ -930,8 +928,6 @@ General Public License for more details.
 #  LocalWords:  backported macOS
 
 # Local Variables:
-# eval: (require 'org-man     nil t)
-# eval: (require 'ox-texinfo+ nil t)
 # indent-tabs-mode: nil
 # org-src-preserve-indentation: nil
 # End:
