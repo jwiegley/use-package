@@ -1,20 +1,20 @@
-#+TITLE: use-package User Manual
-#+AUTHOR: John Wiegley
-#+EMAIL: johnw@newartisans.com
-#+DATE: 2012-2017
-#+LANGUAGE: en
+#+title: use-package User Manual
+:PREAMBLE:
+#+author: John Wiegley
+#+email: johnw@newartisans.com
+#+date: 2012-{{{year}}}
+#+language: en
 
-#+HUGO_BASE_DIR: ./doc
-#+HUGO_SECTION: /
-#+HUGO_MENU: :menu main
+#+hugo_base_dir: ./doc
+#+hugo_section: /
+#+hugo_menu: :menu main
 
-#+TEXINFO_DIR_CATEGORY: Emacs
-#+TEXINFO_DIR_TITLE: use-package: (use-package).
-#+TEXINFO_DIR_DESC: Declarative package configuration for Emacs.
-#+SUBTITLE: for version 2.4.1
+#+texinfo_dir_category: Emacs
+#+texinfo_dir_title: use-package: (use-package).
+#+texinfo_dir_desc: Declarative package configuration for Emacs.
+#+subtitle: for version {{{version}}}
 
-#+TEXINFO_DEFFN: t
-#+OPTIONS: H:4 num:3 toc:2 creator:t
+#+options: H:4 num:3 toc:2
 
 # Below macro is used so that both texinfo and hugo exports work
 # harmoniously.  For texinfo exports, the export is done using the
@@ -26,22 +26,20 @@
 # FIXME: This is just a workaround.. hope to get a better solution in
 # the future.
 
-#+MACRO: link-jump @@texinfo:@ref{$1}@@@@hugo:[$1]($2)@@
+#+macro: link-jump @@texinfo:@ref{$1}@@@@hugo:[$1]($2)@@
 
-use-package is...
+#+macro: year (eval (format-time-string "%Y"))
+#+macro: version (eval (or (getenv "PACKAGE_REVDESC") (getenv "PACKAGE_VERSION") (ignore-errors (car (process-lines "git" "describe" "--exact"))) (ignore-errors (concat (car (process-lines "git" "describe" (if (getenv "AMEND") "HEAD~" "HEAD"))) "+1"))))
 
-#+BEGIN_QUOTE
-Copyright (C) 2012-2017 John Wiegley <johnw@newartisans.com>
+The ~use-package~ macro allows you to isolate package configuration in your
+~.emacs~ file in a way that is both performance-oriented and, well, tidy. I
+created it because I have over 80 packages that I use in Emacs, and things
+were getting difficult to manage. Yet with this utility my total load time is
+around 2 seconds, with no loss of functionality!
 
-You can redistribute this document and/or modify it under the terms of the GNU
-General Public License as published by the Free Software Foundation, either
-version 3 of the License, or (at your option) any later version.
+#+texinfo: @insertcopying
 
-This document is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-#+END_QUOTE
-
+:END:
 * Introduction
 :PROPERTIES:
 :EXPORT_FILE_NAME: _index
@@ -60,7 +58,6 @@ More text to come...
 :PROPERTIES:
 :EXPORT_FILE_NAME: installation
 :END:
-** _ :ignore:
 
 use-package can be installed using Emacs' package manager or manually from
 its development repository.
@@ -74,31 +71,31 @@ with it by reading the documentation in the Emacs manual, see
 
 - To use Melpa:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (require 'package)
   (add-to-list 'package-archives
                '("melpa" . "https://melpa.org/packages/") t)
-#+END_SRC
+#+end_src
 
 - To use Melpa-Stable:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (require 'package)
   (add-to-list 'package-archives
                '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-#+END_SRC
+#+end_src
 
 Once you have added your preferred archive, you need to update the
 local package list using:
 
-#+BEGIN_EXAMPLE
+#+begin_example
   M-x package-refresh-contents RET
 #+END_EXAMPLE
 
 Once you have done that, you can install use-package and its dependencies
 using:
 
-#+BEGIN_EXAMPLE
+#+begin_example
   M-x package-install RET use-package RET
 #+END_EXAMPLE
 
@@ -108,27 +105,27 @@ Now see [[*Post-Installation Tasks]].
 
 First, use Git to clone the use-package repository:
 
-#+BEGIN_SRC shell-script
+#+begin_src shell-script
   $ git clone https://github.com/jwiegley/use-package.git ~/.emacs.d/site-lisp/use-package
   $ cd ~/.emacs.d/site-lisp/use-package
-#+END_SRC
+#+end_src
 
 Then compile the libraries and generate the info manuals:
 
-#+BEGIN_SRC shell-script
+#+begin_src shell-script
   $ make
-#+END_SRC
+#+end_src
 
 You may need to create ~/path/to/use-package/config.mk~ with the following
 content before running ~make~:
 
-#+BEGIN_SRC makefile
+#+begin_src makefile
   LOAD_PATH  = -L /path/to/use-package
-#+END_SRC
+#+end_src
 
 Finally add this to your init file:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (add-to-list 'load-path "~/.emacs.d/site-lisp/use-package")
   (require 'use-package)
 
@@ -136,7 +133,7 @@ Finally add this to your init file:
     (info-initialize)
     (add-to-list 'Info-directory-list
                  "~/.emacs.d/site-lisp/use-package/"))
-#+END_SRC
+#+end_src
 
 Note that elements of ~load-path~ should not end with a slash, while those of
 ~Info-directory-list~ should.
@@ -147,10 +144,10 @@ using ~sudo make install~ and setting ~load-path~ accordingly.
 
 To update use-package use:
 
-#+BEGIN_SRC shell-script
+#+begin_src shell-script
   $ git pull
   $ make
-#+END_SRC
+#+end_src
 
 At times it might be necessary to run ~make clean all~ instead.
 
@@ -164,21 +161,20 @@ After installing use-package you should verify that you are indeed using the
 use-package release you think you are using. It's best to restart Emacs before
 doing so, to make sure you are not using an outdated value for ~load-path~.
 
-#+BEGIN_EXAMPLE
+#+begin_example
   C-h v use-package-version RET
 #+END_EXAMPLE
 
 should display something like
 
-#+BEGIN_EXAMPLE
+#+begin_example
   use-package-version’s value is "2.4.1"
 #+END_EXAMPLE
 
 If you are completely new to use-package then see {{{link-jump(Getting
 Started,/getting-started)}}}.
 
-If you run into problems, then please see the
-{{{link-jump(FAQ,/faq)}}}.  Also see the {{{link-jump(Debugging
+If you run into problems, then please see the {{{link-jump(Debugging
 Tools,/debugging-tools)}}}.
 
 * Getting Started
@@ -194,22 +190,23 @@ TODO. For now, see ~README.md~.
 design in various ways. Understanding these reasons may help make some of
 those decisions clearer:
 
-  1. To gather all configuration details of a package into one place, making
-     it easier to copy, disable, or move it elsewhere in the init file.
+- To gather all configuration details of a package into one place,
+  making it easier to copy, disable, or move it elsewhere in the init
+  file.
 
-  2. To reduce duplication and boilerplate, capturing several common practices
-     as mere keywords both easy and intuitive to use.
+- To reduce duplication and boilerplate, capturing several common
+  practices as mere keywords both easy and intuitive to use.
 
-  3. To make startup time of Emacs as quick as possible, without sacrificing
-     the quantity of add-on packages used.
+- To make startup time of Emacs as quick as possible, without
+  sacrificing the quantity of add-on packages used.
 
-  4. To make it so errors encountered during startup disable only the package
-     raising the error, and as little else as possible, leaving a close to a
-     functional Emacs as possible.
+- To make it so errors encountered during startup disable only the
+  package raising the error, and as little else as possible, leaving a
+  close to a functional Emacs as possible.
 
-  5. To allow byte-compilation of one's init file so that any warnings or
-     errors seen are meaningful. In this way, even if byte-compilation is not
-     used for speed (reason 3), it can still be used as a sanity check.
+- To allow byte-compilation of one's init file so that any warnings or
+  errors seen are meaningful. In this way, even if byte-compilation is not
+  used for speed (reason 3), it can still be used as a sanity check.
 
 * Issues/Requests
 :PROPERTIES:
@@ -229,16 +226,16 @@ time. This can achieved using an ~:after~ keyword that allows a fairly rich
 description of the exact conditions when loading should occur. Here is an
 example:
 
-#+BEGIN_SRC emacs-lisp
-(use-package hydra
-  :load-path "site-lisp/hydra")
+#+begin_src emacs-lisp
+  (use-package hydra
+    :load-path "site-lisp/hydra")
 
-(use-package ivy
-  :load-path "site-lisp/swiper")
+  (use-package ivy
+    :load-path "site-lisp/swiper")
 
-(use-package ivy-hydra
-  :after (ivy hydra))
-#+END_SRC
+  (use-package ivy-hydra
+    :after (ivy hydra))
+#+end_src
 
 In this case, because all of these packages are demand-loaded in the order
 they occur, the use of ~:after~ is not strictly necessary. By using it,
@@ -249,13 +246,13 @@ By default, ~:after (foo bar)~ is the same as ~:after (:all foo bar)~, meaning
 that loading of the given package will not happen until both ~foo~ and ~bar~
 have been loaded. Here are some of the other possibilities:
 
-#+BEGIN_SRC emacs-lisp
-:after (foo bar)
-:after (:all foo bar)
-:after (:any foo bar)
-:after (:all (:any foo bar) (:any baz quux))
-:after (:any (:all foo bar) (:all baz quux))
-#+END_SRC
+#+begin_src emacs-lisp
+  :after (foo bar)
+  :after (:all foo bar)
+  :after (:any foo bar)
+  :after (:all (:any foo bar) (:any baz quux))
+  :after (:any (:all foo bar) (:all baz quux))
+#+end_src
 
 When you nest selectors, such as ~(:any (:all foo bar) (:all baz quux))~, it
 means that the package will be loaded when either both ~foo~ and ~bar~ have
@@ -284,21 +281,21 @@ keypress after the first load, to reinterpret that keypress as a prefix key.
 
 For example:
 
-#+BEGIN_SRC emacs-lisp
-(use-package projectile
-  :bind-keymap
-  ("C-c p" . projectile-command-map)
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package projectile
+    :bind-keymap
+    ("C-c p" . projectile-command-map)
+#+end_src
 
 ** ~:bind~, ~:bind*~
 
 Another common thing to do when loading a module is to bind a key to primary
 commands within that module:
 
-#+BEGIN_SRC emacs-lisp
-(use-package ace-jump-mode
-  :bind ("C-." . ace-jump-mode))
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package ace-jump-mode
+    :bind ("C-." . ace-jump-mode))
+#+end_src
 
 This does two things: first, it creates an autoload for the ~ace-jump-mode~
 command and defers loading of ~ace-jump-mode~ until you actually use it.
@@ -308,12 +305,12 @@ throughout your ~.emacs~ file.
 
 A more literal way to do the exact same thing is:
 
-#+BEGIN_SRC emacs-lisp
-(use-package ace-jump-mode
-  :commands ace-jump-mode
-  :init
-  (bind-key "C-." 'ace-jump-mode))
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package ace-jump-mode
+    :commands ace-jump-mode
+    :init
+    (bind-key "C-." 'ace-jump-mode))
+#+end_src
 
 When you use the ~:commands~ keyword, it creates autoloads for those commands
 and defers loading of the module until they are used. Since the ~:init~ form
@@ -322,12 +319,12 @@ to restrict ~:init~ code to only what would succeed either way.
 
 The ~:bind~ keyword takes either a cons or a list of conses:
 
-#+BEGIN_SRC emacs-lisp
-(use-package hi-lock
-  :bind (("M-o l" . highlight-lines-matching-regexp)
-         ("M-o r" . highlight-regexp)
-         ("M-o w" . highlight-phrase)))
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package hi-lock
+    :bind (("M-o l" . highlight-lines-matching-regexp)
+           ("M-o r" . highlight-regexp)
+           ("M-o w" . highlight-phrase)))
+#+end_src
 
 The ~:commands~ keyword likewise takes either a symbol or a list of symbols.
 
@@ -337,13 +334,13 @@ the "kbd" syntax: see [[https://www.gnu.org/software/emacs/manual/html_node/emac
 
 Examples:
 
-#+BEGIN_SRC emacs-lisp
-(use-package helm
-  :bind (("M-x" . helm-M-x)
-         ("M-<f5>" . helm-find-files)
-         ([f10] . helm-buffers-list)
-         ([S-f10] . helm-recentf)))
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package helm
+    :bind (("M-x" . helm-M-x)
+           ("M-<f5>" . helm-find-files)
+           ([f10] . helm-buffers-list)
+           ([S-f10] . helm-recentf)))
+#+end_src
 
 *** Binding to local keymaps
 
@@ -351,11 +348,11 @@ Slightly different from binding a key to a keymap, is binding a key *within* a
 local keymap that only exists after the package is loaded.  ~use-package~
 supports this with a ~:map~ modifier, taking the local keymap to bind to:
 
-#+BEGIN_SRC emacs-lisp
-(use-package helm
-  :bind (:map helm-command-map
-         ("C-c h" . helm-execute-persistent-action)))
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package helm
+    :bind (:map helm-command-map
+           ("C-c h" . helm-execute-persistent-action)))
+#+end_src
 
 The effect of this statement is to wait until ~helm~ has loaded, and then to
 bind the key ~C-c h~ to ~helm-execute-persistent-action~ within Helm's local
@@ -364,32 +361,32 @@ keymap, ~helm-mode-map~.
 Multiple uses of ~:map~ may be specified. Any binding occurring before the
 first use of ~:map~ are applied to the global keymap:
 
-#+BEGIN_SRC emacs-lisp
-(use-package term
-  :bind (("C-c t" . term)
-         :map term-mode-map
-         ("M-p" . term-send-up)
-         ("M-n" . term-send-down)
-         :map term-raw-map
-         ("M-o" . other-window)
-         ("M-p" . term-send-up)
-         ("M-n" . term-send-down)))
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package term
+    :bind (("C-c t" . term)
+           :map term-mode-map
+           ("M-p" . term-send-up)
+           ("M-n" . term-send-down)
+           :map term-raw-map
+           ("M-o" . other-window)
+           ("M-p" . term-send-up)
+           ("M-n" . term-send-down)))
+#+end_src
 
 ** ~:commands~
 ** ~:preface~, ~:init~, ~:config~
 
 Here is the simplest ~use-package~ declaration:
 
-#+BEGIN_SRC emacs-lisp
-;; This is only needed once, near the top of the file
-(eval-when-compile
-  ;; Following line is not needed if use-package.el is in ~/.emacs.d
-  (add-to-list 'load-path "<path where use-package is installed>")
-  (require 'use-package))
+#+begin_src emacs-lisp
+  ;; This is only needed once, near the top of the file
+  (eval-when-compile
+    ;; Following line is not needed if use-package.el is in ~/.emacs.d
+    (add-to-list 'load-path "<path where use-package is installed>")
+    (require 'use-package))
 
-(use-package foo)
-#+END_SRC
+  (use-package foo)
+#+end_src
 
 This loads in the package ~foo~, but only if ~foo~ is available on your
 system. If not, a warning is logged to the ~*Messages*~ buffer. If it
@@ -399,38 +396,38 @@ took to load, if it took over 0.1 seconds.
 Use the ~:init~ keyword to execute code before a package is loaded.  It
 accepts one or more forms, up until the next keyword:
 
-#+BEGIN_SRC emacs-lisp
-(use-package foo
-  :init
-  (setq foo-variable t))
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package foo
+    :init
+    (setq foo-variable t))
+#+end_src
 
 Similarly, ~:config~ can be used to execute code after a package is loaded.
 In cases where loading is done lazily (see more about autoloading below), this
 execution is deferred until after the autoload occurs:
 
-#+BEGIN_SRC emacs-lisp
-(use-package foo
-  :init
-  (setq foo-variable t)
-  :config
-  (foo-mode 1))
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package foo
+    :init
+    (setq foo-variable t)
+    :config
+    (foo-mode 1))
+#+end_src
 
 As you might expect, you can use ~:init~ and ~:config~ together:
 
-#+BEGIN_SRC emacs-lisp
-(use-package color-moccur
-  :commands (isearch-moccur isearch-all)
-  :bind (("M-s O" . moccur)
-         :map isearch-mode-map
-         ("M-o" . isearch-moccur)
-         ("M-O" . isearch-moccur-all))
-  :init
-  (setq isearch-lazy-highlight t)
-  :config
-  (use-package moccur-edit))
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package color-moccur
+    :commands (isearch-moccur isearch-all)
+    :bind (("M-s O" . moccur)
+           :map isearch-mode-map
+           ("M-o" . isearch-moccur)
+           ("M-O" . isearch-moccur-all))
+    :init
+    (setq isearch-lazy-highlight t)
+    :config
+    (use-package moccur-edit))
+#+end_src
 
 In this case, I want to autoload the commands ~isearch-moccur~ and
 ~isearch-all~ from ~color-moccur.el~, and bind keys both at the global level
@@ -442,12 +439,12 @@ loaded, to allow editing of the ~moccur~ buffer.
 
 The ~:custom~ keyword allows customization of package custom variables.
 
-#+BEGIN_SRC emacs-lisp
-(use-package comint
-  :custom
-  (comint-buffer-maximum-size 20000 "Increase comint buffer size.")
-  (comint-prompt-read-only t "Make the prompt read only."))
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package comint
+    :custom
+    (comint-buffer-maximum-size 20000 "Increase comint buffer size.")
+    (comint-prompt-read-only t "Make the prompt read only."))
+#+end_src
 
 The documentation string is not mandatory.
 
@@ -455,11 +452,11 @@ The documentation string is not mandatory.
 
 The ~:custom-face~ keyword allows customization of package custom faces.
 
-#+BEGIN_SRC emacs-lisp
-(use-package eruby-mode
-  :custom-face
-  (eruby-standard-face ((t (:slant italic)))))
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package eruby-mode
+    :custom-face
+    (eruby-standard-face ((t (:slant italic)))))
+#+end_src
 
 ** ~:defer~, ~:demand~
 
@@ -484,28 +481,28 @@ However, there are times when this is just not enough.  For those times, use
 the ~:defines~ and ~:functions~ keywords to introduce dummy variable and
 function declarations solely for the sake of the byte-compiler:
 
-#+BEGIN_SRC emacs-lisp
-(use-package texinfo
-  :defines texinfo-section-list
-  :commands texinfo-mode
-  :init
-  (add-to-list 'auto-mode-alist '("\\.texi$" . texinfo-mode)))
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package texinfo
+    :defines texinfo-section-list
+    :commands texinfo-mode
+    :init
+    (add-to-list 'auto-mode-alist '("\\.texi$" . texinfo-mode)))
+#+end_src
 
 If you need to silence a missing function warning, you can use ~:functions~:
 
-#+BEGIN_SRC emacs-lisp
-(use-package ruby-mode
-  :mode "\\.rb\\'"
-  :interpreter "ruby"
-  :functions inf-ruby-keys
-  :config
-  (defun my-ruby-mode-hook ()
-    (require 'inf-ruby)
-    (inf-ruby-keys))
+#+begin_src emacs-lisp
+  (use-package ruby-mode
+    :mode "\\.rb\\'"
+    :interpreter "ruby"
+    :functions inf-ruby-keys
+    :config
+    (defun my-ruby-mode-hook ()
+      (require 'inf-ruby)
+      (inf-ruby-keys))
 
-  (add-hook 'ruby-mode-hook 'my-ruby-mode-hook))
-#+END_SRC
+    (add-hook 'ruby-mode-hook 'my-ruby-mode-hook))
+#+end_src
 
 ** ~:diminish~, ~:delight~
 
@@ -518,13 +515,13 @@ minor mode symbol, a cons of the symbol and its replacement string, or just a
 replacement string, in which case the minor mode symbol is guessed to be the
 package name with "-mode" appended at the end:
 
-#+BEGIN_SRC emacs-lisp
-(use-package abbrev
-  :diminish abbrev-mode
-  :config
-  (if (file-exists-p abbrev-file-name)
-      (quietly-read-abbrev-file)))
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package abbrev
+    :diminish abbrev-mode
+    :config
+    (if (file-exists-p abbrev-file-name)
+        (quietly-read-abbrev-file)))
+#+end_src
 
 [[https://elpa.gnu.org/packages/delight.html][delight]] is invoked with the ~:delight~ keyword, which is passed a minor mode
 symbol, a replacement string or quoted [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Mode-Line-Data.html][mode-line data]] (in which case the minor
@@ -532,37 +529,37 @@ mode symbol is guessed to be the package name with "-mode" appended at the
 end), both of these, or several lists of both. If no arguments are provided,
 the default mode name is hidden completely.
 
-#+BEGIN_SRC emacs-lisp
-;; Don't show anything for rainbow-mode.
-(use-package rainbow-mode
-  :delight)
+#+begin_src emacs-lisp
+  ;; Don't show anything for rainbow-mode.
+  (use-package rainbow-mode
+    :delight)
 
-;; Don't show anything for auto-revert-mode, which doesn't match
-;; its package name.
-(use-package autorevert
-  :delight auto-revert-mode)
+  ;; Don't show anything for auto-revert-mode, which doesn't match
+  ;; its package name.
+  (use-package autorevert
+    :delight auto-revert-mode)
 
-;; Remove the mode name for projectile-mode, but show the project name.
-(use-package projectile
-  :delight '(:eval (concat " " (projectile-project-name))))
+  ;; Remove the mode name for projectile-mode, but show the project name.
+  (use-package projectile
+    :delight '(:eval (concat " " (projectile-project-name))))
 
-;; Completely hide visual-line-mode and change auto-fill-mode to " AF".
-(use-package emacs
-  :delight
-  (auto-fill-function " AF")
-  (visual-line-mode))
-#+END_SRC
+  ;; Completely hide visual-line-mode and change auto-fill-mode to " AF".
+  (use-package emacs
+    :delight
+    (auto-fill-function " AF")
+    (visual-line-mode))
+#+end_src
 
 ** ~:disabled~
 
 The ~:disabled~ keyword can turn off a module you're having difficulties with,
 or stop loading something you're not using at the present time:
 
-#+BEGIN_SRC emacs-lisp
-(use-package ess-site
-  :disabled
-  :commands R)
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package ess-site
+    :disabled
+    :commands R)
+#+end_src
 
 When byte-compiling your ~.emacs~ file, disabled declarations are omitted
 from the output entirely, to accelerate startup times.
@@ -576,18 +573,18 @@ The ~:ensure~ keyword causes the package(s) to be installed automatically if
 not already present on your system (set ~(setq use-package-always-ensure t)~
 if you wish this behavior to be global for all packages):
 
-#+BEGIN_SRC emacs-lisp
-(use-package magit
-  :ensure t)
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package magit
+    :ensure t)
+#+end_src
 
 If you need to install a different package from the one named by
 ~use-package~, you can specify it like this:
 
-#+BEGIN_SRC emacs-lisp
-(use-package tex
-  :ensure auctex)
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package tex
+    :ensure auctex)
+#+end_src
 
 Lastly, when running on Emacs 24.4 or later, use-package can pin a package to
 a specific archive, allowing you to mix and match packages from different
@@ -610,33 +607,33 @@ name, will Just Work(tm).
 has not been configured using ~package-archives~ (apart from the magic
 ~manual~ archive mentioned above):
 
-#+BEGIN_SRC text-mode
+#+begin_src text-mode
 Archive 'foo' requested for package 'bar' is not available.
-#+END_SRC
+#+end_src
 
 Example:
 
-#+BEGIN_SRC emacs-lisp
-(use-package company
-  :ensure t
-  :pin melpa-stable)
+#+begin_src emacs-lisp
+  (use-package company
+    :ensure t
+    :pin melpa-stable)
 
-(use-package evil
-  :ensure t)
-  ;; no :pin needed, as package.el will choose the version in melpa
+  (use-package evil
+    :ensure t)
+    ;; no :pin needed, as package.el will choose the version in melpa
 
-(use-package adaptive-wrap
-  :ensure t
-  ;; as this package is available only in the gnu archive, this is
-  ;; technically not needed, but it helps to highlight where it
-  ;; comes from
-  :pin gnu)
+  (use-package adaptive-wrap
+    :ensure t
+    ;; as this package is available only in the gnu archive, this is
+    ;; technically not needed, but it helps to highlight where it
+    ;; comes from
+    :pin gnu)
 
-(use-package org
-  :ensure t
-  ;; ignore org-mode from upstream and use a manually installed version
-  :pin manual)
-#+END_SRC
+  (use-package org
+    :ensure t
+    ;; ignore org-mode from upstream and use a manually installed version
+    :pin manual)
+#+end_src
 
 *NOTE*: the ~:pin~ argument has no effect on emacs versions < 24.4.
 
@@ -645,39 +642,39 @@ Example:
 The ~:hook~ keyword allows adding functions onto hooks, here only the basename
 of the hook is required. Thus, all of the following are equivalent:
 
-#+BEGIN_SRC emacs-lisp
-(use-package ace-jump-mode
-  :hook prog-mode)
+#+begin_src emacs-lisp
+  (use-package ace-jump-mode
+    :hook prog-mode)
 
-(use-package ace-jump-mode
-  :hook (prog-mode . ace-jump-mode))
+  (use-package ace-jump-mode
+    :hook (prog-mode . ace-jump-mode))
 
-(use-package ace-jump-mode
-  :commands ace-jump-mode
-  :init
-  (add-hook 'prog-mode-hook #'ace-jump-mode))
-#+END_SRC
+  (use-package ace-jump-mode
+    :commands ace-jump-mode
+    :init
+    (add-hook 'prog-mode-hook #'ace-jump-mode))
+#+end_src
 
 And likewise, when multiple hooks should be applied, the following are also
 equivalent:
 
-#+BEGIN_SRC emacs-lisp
-(use-package ace-jump-mode
-  :hook (prog-mode text-mode))
+#+begin_src emacs-lisp
+  (use-package ace-jump-mode
+    :hook (prog-mode text-mode))
 
-(use-package ace-jump-mode
-  :hook ((prog-mode text-mode) . ace-jump-mode))
+  (use-package ace-jump-mode
+    :hook ((prog-mode text-mode) . ace-jump-mode))
 
-(use-package ace-jump-mode
-  :hook ((prog-mode . ace-jump-mode)
-         (text-mode . ace-jump-mode)))
+  (use-package ace-jump-mode
+    :hook ((prog-mode . ace-jump-mode)
+           (text-mode . ace-jump-mode)))
 
-(use-package ace-jump-mode
-  :commands ace-jump-mode
-  :init
-  (add-hook 'prog-mode-hook #'ace-jump-mode)
-  (add-hook 'text-mode-hook #'ace-jump-mode))
-#+END_SRC
+  (use-package ace-jump-mode
+    :commands ace-jump-mode
+    :init
+    (add-hook 'prog-mode-hook #'ace-jump-mode)
+    (add-hook 'text-mode-hook #'ace-jump-mode))
+#+end_src
 
 The use of ~:hook~, as with ~:bind~, ~:mode~, ~:interpreter~, etc., causes the
 functions being hooked to implicitly be read as ~:commands~ (meaning they will
@@ -692,23 +689,23 @@ modules.
 For example, I only want ~edit-server~ running for my main, graphical Emacs,
 not for other Emacsen I may start at the command line:
 
-#+BEGIN_SRC emacs-lisp
-(use-package edit-server
-  :if window-system
-  :init
-  (add-hook 'after-init-hook 'server-start t)
-  (add-hook 'after-init-hook 'edit-server-start t))
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package edit-server
+    :if window-system
+    :init
+    (add-hook 'after-init-hook 'server-start t)
+    (add-hook 'after-init-hook 'edit-server-start t))
+#+end_src
 
 In another example, we can load things conditional on the operating system:
 
-#+BEGIN_SRC emacs-lisp
-(use-package exec-path-from-shell
-  :if (memq window-system '(mac ns))
-  :ensure t
-  :config
-  (exec-path-from-shell-initialize))
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package exec-path-from-shell
+    :if (memq window-system '(mac ns))
+    :ensure t
+    :config
+    (exec-path-from-shell-initialize))
+#+end_src
 
 Note that ~:when~ is provided as an alias for ~:if~, and ~:unless foo~ means
 the same thing as ~:if (not foo)~.
@@ -720,11 +717,11 @@ use ~:load-path~. This takes a symbol, a function, a string or a list of
 strings. If the path is relative, it is expanded within
 ~user-emacs-directory~:
 
-#+BEGIN_SRC emacs-lisp
-(use-package ess-site
-  :load-path "site-lisp/ess/lisp/"
-  :commands R)
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package ess-site
+    :load-path "site-lisp/ess/lisp/"
+    :commands R)
+#+end_src
 
 Note that when using a symbol or a function to provide a dynamically generated
 list of paths, you must inform the byte-compiler of this definition so the
@@ -733,15 +730,15 @@ form ~eval-and-compile~ (as opposed to ~eval-when-compile~). Further, this
 value is fixed at whatever was determined during compilation, to avoid looking
 up the same information again on each startup:
 
-#+BEGIN_SRC emacs-lisp
-(eval-and-compile
-  (defun ess-site-load-path ()
-    (shell-command "find ~ -path ess/lisp")))
+#+begin_src emacs-lisp
+  (eval-and-compile
+    (defun ess-site-load-path ()
+      (shell-command "find ~ -path ess/lisp")))
 
-(use-package ess-site
-  :load-path (lambda () (list (ess-site-load-path)))
-  :commands R)
-#+END_SRC
+  (use-package ess-site
+    :load-path (lambda () (list (ess-site-load-path)))
+    :commands R)
+#+end_src
 
 ** ~:mode~, ~:interpreter~
 
@@ -750,36 +747,36 @@ deferred binding within the ~auto-mode-alist~ and ~interpreter-mode-alist~
 variables. The specifier to either keyword can be a cons cell, a list of cons
 cells, or a string or regexp:
 
-#+BEGIN_SRC emacs-lisp
-(use-package ruby-mode
-  :mode "\\.rb\\'"
-  :interpreter "ruby")
+#+begin_src emacs-lisp
+  (use-package ruby-mode
+    :mode "\\.rb\\'"
+    :interpreter "ruby")
 
-;; The package is "python" but the mode is "python-mode":
-(use-package python
-  :mode ("\\.py\\'" . python-mode)
-  :interpreter ("python" . python-mode))
-#+END_SRC
+  ;; The package is "python" but the mode is "python-mode":
+  (use-package python
+    :mode ("\\.py\\'" . python-mode)
+    :interpreter ("python" . python-mode))
+#+end_src
 
 If you aren't using ~:commands~, ~:bind~, ~:bind*~, ~:bind-keymap~,
 ~:bind-keymap*~, ~:mode~, or ~:interpreter~ (all of which imply ~:defer~; see
 the docstring for ~use-package~ for a brief description of each), you can
 still defer loading with the ~:defer~ keyword:
 
-#+BEGIN_SRC emacs-lisp
-(use-package ace-jump-mode
-  :defer t
-  :init
-  (autoload 'ace-jump-mode "ace-jump-mode" nil t)
-  (bind-key "C-." 'ace-jump-mode))
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package ace-jump-mode
+    :defer t
+    :init
+    (autoload 'ace-jump-mode "ace-jump-mode" nil t)
+    (bind-key "C-." 'ace-jump-mode))
+#+end_src
 
 This does exactly the same thing as the following:
 
-#+BEGIN_SRC emacs-lisp
-(use-package ace-jump-mode
-  :bind ("C-." . ace-jump-mode))
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package ace-jump-mode
+    :bind ("C-." . ace-jump-mode))
+#+end_src
 
 ** ~:magic~, ~:magic-fallback~
 
@@ -788,13 +785,13 @@ Similar to ~:mode~ and ~:interpreter~, you can also use ~:magic~ and
 file matches a given regular expression. The difference between the two is
 that ~:magic-fallback~ has a lower priority than ~:mode~. For example:
 
-#+BEGIN_SRC emacs-lisp
-(use-package pdf-tools
-  :load-path "site-lisp/pdf-tools/lisp"
-  :magic ("%PDF" . pdf-view-mode)
-  :config
-  (pdf-tools-install))
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package pdf-tools
+    :load-path "site-lisp/pdf-tools/lisp"
+    :magic ("%PDF" . pdf-view-mode)
+    :config
+    (pdf-tools-install))
+#+end_src
 
 This registers an autoloaded command for ~pdf-view-mode~, defers loading of
 ~pdf-tools~, and runs ~pdf-view-mode~ if the beginning of a buffer matches the
@@ -809,12 +806,12 @@ package may have special loading requirements, and all that you want to use
 ~use-package~ for is to add a configuration to the ~eval-after-load~ hook. In
 such cases, use the ~:no-require~ keyword:
 
-#+BEGIN_SRC emacs-lisp
-(use-package foo
-  :no-require t
-  :config
-  (message "This is evaluated when `foo' is loaded"))
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package foo
+    :no-require t
+    :config
+    (message "This is evaluated when `foo' is loaded"))
+#+end_src
 
 ** ~:requires~
 
@@ -824,47 +821,27 @@ dependencies are not available at the time the ~use-package~ declaration is
 encountered. By "available" in this context it means that ~foo~ is available
 of ~(featurep 'foo)~ evaluates to a non-nil value. For example:
 
-#+BEGIN_SRC emacs-lisp
-(use-package abbrev
-  :requires foo)
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package abbrev
+    :requires foo)
+#+end_src
 
 This is the same as:
 
-#+BEGIN_SRC emacs-lisp
-(use-package abbrev
-  :if (featurep 'foo))
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package abbrev
+    :if (featurep 'foo))
+#+end_src
 
 As a convenience, a list of such packages may be specified:
 
-#+BEGIN_SRC emacs-lisp
-(use-package abbrev
-  :requires (foo bar baz))
-#+END_SRC
+#+begin_src emacs-lisp
+  (use-package abbrev
+    :requires (foo bar baz))
+#+end_src
 
 For more complex logic, such as that supported by ~:after~, simply use ~:if~
 and the appropriate Lisp expression.
-
-* FAQ
-:PROPERTIES:
-:APPENDIX:   t
-:EXPORT_FILE_NAME: faq
-:END:
-
-The next two nodes lists frequently asked questions.
-
-Please also use the {{{link-jump(Debugging Tools,/debugging-tools)}}}.
-
-** FAQ - How to ...?
-*** This is a question
-
-This is an answer.
-
-** FAQ - Issues and Errors
-*** This is an issues
-
-This is a description.
 
 * Debugging Tools
 :PROPERTIES:
@@ -873,31 +850,13 @@ This is a description.
 
 TODO
 
-Please also see the {{{link-jump(FAQ,/faq)}}}.
-
-* Command Index
-:PROPERTIES:
-:APPENDIX:   t
-:INDEX:      cp
-:END:
-* Function Index
-:PROPERTIES:
-:APPENDIX:   t
-:INDEX:      fn
-:END:
-* Variable Index
-:PROPERTIES:
-:APPENDIX:   t
-:INDEX:      vr
-:END:
-
 * _ Copying
 :PROPERTIES:
 :COPYING:    t
 :END:
 
-#+BEGIN_QUOTE
-Copyright (C) 2012-2017 John Wiegley <johnw@newartisans.com>
+#+begin_quote
+Copyright (C) 2012-{{{year}}} John Wiegley <johnw@newartisans.com>
 
 You can redistribute this document and/or modify it under the terms
 of the GNU General Public License as published by the Free Software
@@ -908,9 +867,7 @@ This document is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 General Public License for more details.
-#+END_QUOTE
-
-* _ :ignore:
+#+end_quote
 
 #  LocalWords:  ARG ARGS CONDITIONs ChangeLog DNS Dired Ediff Ediffing
 #  LocalWords:  Elpa Emacsclient FUNC Flyspell Git Git's Gitk HOOK's
@@ -933,9 +890,6 @@ General Public License for more details.
 #  LocalWords:  backported macOS
 
 # Local Variables:
-# eval: (require 'org-man     nil t)
-# eval: (require 'ox-texinfo+ nil t)
-# eval: (and (require 'ox-extra nil t) (ox-extras-activate '(ignore-headlines)))
 # indent-tabs-mode: nil
 # org-src-preserve-indentation: nil
 # End:

@@ -1,8 +1,8 @@
 # `use-package`
 
 [![Join the chat at https://gitter.im/use-package/Lobby](https://badges.gitter.im/use-package/Lobby.svg)](https://gitter.im/use-package/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](https://travis-ci.org/jwiegley/use-package.svg?branch=master)](https://travis-ci.org/jwiegley/use-package)
-[![MELPA](http://melpa.milkbox.net/packages/use-package-badge.svg)](http://melpa.milkbox.net/#/use-package)
+[![Build Status](https://github.com/jwiegley/use-package/actions/workflows/test.yml/badge.svg)](https://github.com/jwiegley/use-package/actions)
+[![MELPA](https://melpa.org/packages/use-package-badge.svg)](https://melpa.org/#/use-package)
 [![MELPA Stable](https://stable.melpa.org/packages/use-package-badge.svg)](https://stable.melpa.org/#/use-package)
 
 The `use-package` macro allows you to isolate package configuration in your
@@ -56,13 +56,13 @@ Notes for users upgrading to 2.x are located [at the bottom](#upgrading-to-2x).
 	+ [Semantics of :init is now consistent](#semantics-of-init-is-now-consistent)
 	+ [:idle has been removed](#idle-has-been-removed)
 	+ [:defer now accepts an optional numeric argument](#defer-now-accepts-an-optional-numeric-argument)
-	+ [Add :preface, occuring before everything except :disabled](#add-preface-occurring-before-everything-except-disabled)
+	+ [Add :preface, occurring before everything except :disabled](#add-preface-occurring-before-everything-except-disabled)
 	+ [Add :functions, for declaring functions to the byte-compiler](#add-functions-for-declaring-functions-to-the-byte-compiler)
 	+ [use-package.el is no longer needed at runtime](#use-packageel-is-no-longer-needed-at-runtime)
 ## Installing use-package
 
 Either clone from this GitHub repository or install from
-[MELPA](http://melpa.milkbox.net/) (recommended).
+[MELPA](https://melpa.org/) (recommended).
 
 ## Getting started
 
@@ -226,7 +226,7 @@ supports this with a `:map` modifier, taking the local keymap to bind to:
 
 The effect of this statement is to wait until `helm` has loaded, and then to
 bind the key `C-c h` to `helm-execute-persistent-action` within Helm's local
-keymap, `helm-mode-map`.
+keymap, `helm-command-map`.
 
 Multiple uses of `:map` may be specified. Any binding occurring before the
 first use of `:map` are applied to the global keymap:
@@ -242,6 +242,87 @@ first use of `:map` are applied to the global keymap:
          ("M-p" . term-send-up)
          ("M-n" . term-send-down)))
 ```
+### Binding to repeat-maps
+
+A special case of binding within a local keymap is when that keymap is
+used by `repeat-mode`. These keymaps are usually defined specifically
+for this. Using the `:repeat-map` keyword, and passing it a name for
+the map it defines, will bind all following keys inside that map, and
+(by default) set the `repeat-map` property of each bound command to
+that map.
+
+
+This creates a keymap called `git-gutter+-repeat-map`, makes four
+bindings in it as above, then sets the `repeat-map` property of each
+bound command (`git-gutter+-next-hunk` `git-gutter+-previous-hunk`,
+`git-gutter+-stage-hunks` and `git-gutter+-revert-hunk`) to that
+keymap.
+
+``` elisp
+(use-package git-gutter+
+  :bind
+  (:repeat-map git-gutter+-repeat-map
+   ("n" . git-gutter+-next-hunk)
+   ("p" . git-gutter+-previous-hunk)
+   ("s" . git-gutter+-stage-hunks)
+   ("r" . git-gutter+-revert-hunk)))
+```
+
+Specifying `:exit` inside the scope of `:repeat-map` will prevent the
+`repeat-map` property being set, so that the command can be used from
+within the repeat map, but after it using it the repeat map will no
+longer be available. This is useful for commands often used at the end
+of a series of repeated commands:
+
+``` elisp
+(use-package git-gutter+
+  :bind
+  (:repeat-map my/git-gutter+-repeat-map
+   ("n" . git-gutter+-next-hunk)
+   ("p" . git-gutter+-previous-hunk)
+   ("s" . git-gutter+-stage-hunks)
+   ("r" . git-gutter+-revert-hunk)
+   :exit
+   ("c" . magit-commit-create)
+   ("C" . magit-commit)
+   ("b" . magit-blame)))
+```
+
+Specifying `:continue` *forces* setting the `repeat-map` property
+(just like *not* specifying `:exit`), so these two snippets are
+equivalent:
+
+``` elisp
+(use-package git-gutter+
+  :bind
+  (:repeat-map my/git-gutter+-repeat-map
+   ("n" . git-gutter+-next-hunk)
+   ("p" . git-gutter+-previous-hunk)
+   ("s" . git-gutter+-stage-hunks)
+   ("r" . git-gutter+-revert-hunk)
+   :exit
+   ("c" . magit-commit-create)
+   ("C" . magit-commit)
+   ("b" . magit-blame)))
+```
+
+``` elisp
+(use-package git-gutter+
+  :bind
+  (:repeat-map my/git-gutter+-repeat-map
+   :exit
+   ("c" . magit-commit-create)
+   ("C" . magit-commit)
+   ("b" . magit-blame)
+   :continue
+   ("n" . git-gutter+-next-hunk)
+   ("p" . git-gutter+-previous-hunk)
+   ("s" . git-gutter+-stage-hunks)
+   ("r" . git-gutter+-revert-hunk)))
+```
+   
+
+
 
 ## Modes and interpreters
 
@@ -401,19 +482,41 @@ The `:custom-face` keyword allows customization of package custom faces.
 (use-package eruby-mode
   :custom-face
   (eruby-standard-face ((t (:slant italic)))))
+
+(use-package example
+  :custom-face 
+  (example-1-face ((t (:foreground "LightPink"))))
+  (example-2-face ((t (:foreground "LightGreen")))))
+
+(use-package zenburn-theme
+  :preface
+  (setq my/zenburn-colors-alist
+        '((fg . "#DCDCCC") (bg . "#1C1C1C") (cyan . "#93E0E3")))
+  :custom-face
+  (region ((t (:background ,(alist-get my/zenburn-colors-alist 'cyan)))))
+  :config
+  (load-theme 'zenburn t))
 ```
 
 ## Notes about lazy loading
 
-In almost all cases you don't need to manually specify `:defer t`.  This is
-implied whenever `:bind` or `:mode` or `:interpreter` is used.  Typically, you
-only need to specify `:defer` if you know for a fact that some other package
-will do something to cause your package to load at the appropriate time, and
-thus you would like to defer loading even though use-package isn't creating
-any autoloads for you.
+The keywords `:commands`, et al, provide "triggers" that cause a package to be
+loaded when certain events occur. However, if `use-package` cannot determine
+that any trigger has been declared, it will load the package immediately (when
+Emacs is starting up) unless `:defer t` is given. The presence of triggers can
+be overridden using `:demand t` to force immediately loading anyway. For
+example, `:hook` represents a trigger that fires when the specified hook is
+run.
 
-You can override package deferral with the `:demand` keyword.  Thus, even if
-you use `:bind`, using `:demand` will force loading to occur immediately and
+In almost all cases you don't need to manually specify `:defer t`, because
+this is implied whenever `:bind` or `:mode` or `:interpreter` are used.
+Typically, you only need to specify `:defer` if you know for a fact that some
+other package will do something to cause your package to load at the
+appropriate time, and thus you would like to defer loading even though
+`use-package` has not created any autoloads for you.
+
+You can override package deferral with the `:demand` keyword. Thus, even if
+you use `:bind`, adding `:demand` will force loading to occur immediately and
 not establish an autoload for the bound key.
 
 ## Information about package loads

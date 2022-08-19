@@ -1,5 +1,12 @@
-/use-package.info
 *~
-*.elc
+/*-autoloads.el
+/*.elc
+/*.html
+/*.info
+/*.pdf
+/*.texi
+/config.mk
 /dir
 /doc/content/*
+/stats/
+/use-package/

@@ -1,3 +1,5 @@
+  -*- lexical-binding: t; -*-
+
 ;; Time-stamp: <2017-12-19 16:49:24 kmodi>
 
 ;; Setup to export Org files to Hugo-compatible Markdown using
@@ -178,7 +180,7 @@ Emacs installation.  If Emacs is installed using
   ;; (message (list-load-path-shadows :stringp))
   )
 
-(require 'ox-hugo)
+(require 'ox-hugo nil t)
 (defun org-hugo-export-all-wim-to-md ()
   (org-hugo-export-wim-to-md :all-subtrees nil nil :noerror))
 
