@@ -19,7 +19,8 @@ lisp:       $(ELCS)
 
 %.elc: %.el
 	@printf "Compiling $<\n"
-	-@$(BATCH) --eval "(progn\
+	@$(BATCH) -q --eval "(progn\
+	(setq byte-compile-error-on-warn t) \
 	(when (file-exists-p \"$@\")\
 	  (delete-file \"$@\"))\
 	(fset 'message* (symbol-function 'message))\
