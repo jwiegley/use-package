@@ -387,37 +387,37 @@ The `:hook` keyword allows adding functions onto package hooks. Thus,
 all of the following are equivalent:
 
 ``` elisp
-(use-package ace-jump-mode
+(use-package company
   :hook prog-mode)
 
-(use-package ace-jump-mode
-  :hook (prog-mode . ace-jump-mode))
+(use-package company
+  :hook (prog-mode . company-mode))
 
-(use-package ace-jump-mode
-  :commands ace-jump-mode
+(use-package company
+  :commands company-mode
   :init
-  (add-hook 'prog-mode-hook #'ace-jump-mode))
+  (add-hook 'prog-mode-hook #'company-mode))
 ```
 
 And likewise, when multiple hooks should be applied, the following are also
 equivalent:
 
 ``` elisp
-(use-package ace-jump-mode
+(use-package company
   :hook (prog-mode text-mode))
 
-(use-package ace-jump-mode
-  :hook ((prog-mode text-mode) . ace-jump-mode))
+(use-package company
+  :hook ((prog-mode text-mode) . company-mode))
 
-(use-package ace-jump-mode
-  :hook ((prog-mode . ace-jump-mode)
-         (text-mode . ace-jump-mode)))
+(use-package company
+  :hook ((prog-mode . company-mode)
+         (text-mode . company-mode)))
 
-(use-package ace-jump-mode
-  :commands ace-jump-mode
+(use-package company
+  :commands company-mode
   :init
-  (add-hook 'prog-mode-hook #'ace-jump-mode)
-  (add-hook 'text-mode-hook #'ace-jump-mode))
+  (add-hook 'prog-mode-hook #'company-mode)
+  (add-hook 'text-mode-hook #'company-mode))
 ```
 
 When using `:hook` omit the "-hook" suffix if you specify the hook
