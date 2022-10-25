@@ -856,7 +856,7 @@ TODO
 :END:
 
 #+begin_quote
-Copyright (C) 2012-{{{year}}} John Wiegley <johnw@newartisans.com>
+Copyright (C) 2012-{{{year}}} Free Software Foundation, Inc.
 
 You can redistribute this document and/or modify it under the terms
 of the GNU General Public License as published by the Free Software
