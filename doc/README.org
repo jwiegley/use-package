@@ -1,0 +1,12 @@
+#+title: use-package Documentation generator
+:PREAMBLE:
+#+author: Payas Relekar
+#+email: relekarpayas@gmail.com
+#+date: 2022-{{{year}}}
+#+language: en
+
+This directory contains necessary scripts and static resources to generate
+online documentation for at [[https://jwiegley.github.io/use-package/][use-package]].
+
+The static site generator used is [[https://gohugo.io/][Hugo]] and uses org-mode documents from this
+repository via [[https://github.com/kaushalmodi/ox-hugo][ox-hugo]] org-mode to markdown converter.
