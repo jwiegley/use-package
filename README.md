@@ -481,9 +481,9 @@ The `:custom-face` keyword allows customization of package custom faces.
   (eruby-standard-face ((t (:slant italic)))))
 
 (use-package example
-  :custom-face 
+  :custom-face
   (example-1-face ((t (:foreground "LightPink"))))
-  (example-2-face ((t (:foreground "LightGreen")))))
+  (example-2-face ((t (:foreground "LightGreen"))) face-defspec-spec))
 
 (use-package zenburn-theme
   :preface
