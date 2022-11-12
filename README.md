@@ -16,8 +16,6 @@ does have the useful capability to interface with package managers (see
 [below](#package-installation)), its primary purpose is for the configuration
 and loading of packages.
 
-Notes for users upgrading to 2.x are located [at the bottom](#upgrading-to-2x).
-
 - [Installing use-package](#installing-use-package)
 - [Getting started](#getting-started)
 - [Key-binding](#key-binding)
