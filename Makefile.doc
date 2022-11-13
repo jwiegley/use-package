@@ -64,7 +64,7 @@ ORG_EVAL = --funcall org-texinfo-export-to-texinfo
 
 texi:
 	@printf "Generating use-package.texi\n"
-	@$(EMACSBIN) $(ORG_ARGS) use-package.org $(ORG_EVAL)
+	@$(EMACS) $(ORG_ARGS) use-package.org $(ORG_EVAL)
 	@echo >> use-package.texi
 
 stats:
