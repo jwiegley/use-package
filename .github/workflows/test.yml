@@ -2,6 +2,7 @@
 
 name: Main workflow
 on: [push, pull_request]
+permissions: {}
 
 jobs:
   build:
@@ -26,8 +27,12 @@ jobs:
           - emacs_version: 'snapshot'
             allow_failure: true
     steps:
-    - uses: actions/checkout@v2
-    - uses: purcell/setup-emacs@master
+    - uses: actions/checkout@v3
+      with:
+        persist-credentials: false
+
+    - name: Install Emacs
+      uses: purcell/setup-emacs@master
       with:
         version: ${{ matrix.emacs_version }}
 
