@@ -168,7 +168,7 @@ doing so, to make sure you are not using an outdated value for ~load-path~.
 should display something like
 
 #+begin_example
-  use-package-version’s value is "2.4.3"
+  use-package-version’s value is "2.4.4"
 #+END_EXAMPLE
 
 If you are completely new to use-package then see {{{link-jump(Getting
