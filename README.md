@@ -568,7 +568,13 @@ When byte-compiling your `.emacs` file, disabled declarations are omitted
 from the output entirely, to accelerate startup times.
 
 **NOTE**: `:when` is provided as an alias for `:if`, and `:unless foo` means
-the same thing as `:if (not foo)`. For example, the following will also stop
+the same thing as `:if (not foo)`.
+
+### Conditional loading before :preface
+
+If you need to conditionalize a use-package form so that the condition occurs
+before even the `:preface` is executed, simply use `when` around the
+use-package form itself.  For example, the following will also stop
 `:ensure` from happening on Mac systems:
 
 ``` elisp
@@ -578,12 +584,6 @@ the same thing as `:if (not foo)`. For example, the following will also stop
     :config
     (exec-path-from-shell-initialize)))
 ```
-
-### Conditional loading before :preface
-
-If you need to conditionalize a use-package form so that the condition occurs
-before even the `:preface` is executed, simply use `when` around the
-use-package form itself:
 
 ### Loading packages in sequence
 
