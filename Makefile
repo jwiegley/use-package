@@ -107,12 +107,12 @@ test:
 	(ert-run-tests-batch-and-exit))"
 
 test-interactive:
-	@$(EMACSBIN) -Q $(LOAD_PATH) --eval "(progn\
+	@$(EMACS) -Q $(LOAD_PATH) --eval "(progn\
 	(load-file \"use-package-tests.el\")\
 	(ert t))"
 
 emacs-Q: clean-lisp
-	@$(EMACSBIN) -Q $(LOAD_PATH) --debug-init --eval "(progn\
+	@$(EMACS) -Q $(LOAD_PATH) --debug-init --eval "(progn\
 	(setq debug-on-error t)\
 	(require 'use-package))"
 

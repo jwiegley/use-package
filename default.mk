@@ -27,8 +27,7 @@ TAR      ?= tar
 SED      ?= sed
 
 EMACS    ?= emacs
-EMACSBIN ?= $(EMACS)
-BATCH     = $(EMACSBIN) -Q --batch $(LOAD_PATH)
+BATCH     = $(EMACS) -Q --batch $(LOAD_PATH)
 
 INSTALL_INFO     ?= $(shell command -v ginstall-info || printf install-info)
 MAKEINFO         ?= makeinfo
@@ -81,7 +80,7 @@ ifndef LOAD_PATH
 
 ELPA_DIR ?= $(HOME)/.emacs.d/elpa
 
-SYSTYPE := $(shell $(EMACSBIN) -Q --batch --eval "(princ system-type)")
+SYSTYPE := $(shell $(EMACS) -Q --batch --eval "(princ system-type)")
 ifeq ($(SYSTYPE), windows-nt)
   CYGPATH := $(shell cygpath --version 2>/dev/null)
 endif
