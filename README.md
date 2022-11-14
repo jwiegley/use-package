@@ -16,8 +16,6 @@ does have the useful capability to interface with package managers (see
 [below](#package-installation)), its primary purpose is for the configuration
 and loading of packages.
 
-Notes for users upgrading to 2.x are located [at the bottom](#upgrading-to-2x).
-
 - [Installing use-package](#installing-use-package)
 - [Getting started](#getting-started)
 - [Key-binding](#key-binding)
@@ -123,7 +121,7 @@ and within the `isearch-mode-map` (see next section).  When the package is
 actually loaded (by using one of these commands), `moccur-edit` is also
 loaded, to allow editing of the `moccur` buffer.
 
-If you autoload no-interactive function, please use `:autoload`.
+If you autoload non-interactive function, please use `:autoload`.
 
 ```elisp
 (use-package org-crypt
