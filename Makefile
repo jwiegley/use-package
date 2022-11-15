@@ -43,7 +43,7 @@ help:
 	$(info make clean-lisp       - clean elisp)
 	$(info make clean-docs       - clean docs)
 	$(info make clean-archives   - clean release tarball)
-	$(info make clean-all        - clean everything except tracked texi)
+	$(info make clean-all        - clean everything)
 	$(info make clean-stats      - clean stats)
 	$(info )
 	$(info Test)
@@ -56,7 +56,6 @@ help:
 	$(info Release Management)
 	$(info ==================)
 	$(info )
-	$(info make texi             - regenerate texi from org)
 	$(info make stats            - regenerate statistics)
 	$(info make authors          - regenerate AUTHORS.md)
 	$(info make preview-stats    - preview statistics)
@@ -107,12 +106,12 @@ test:
 	(ert-run-tests-batch-and-exit))"
 
 test-interactive:
-	@$(EMACSBIN) -Q $(LOAD_PATH) --eval "(progn\
+	@$(EMACS) -Q $(LOAD_PATH) --eval "(progn\
 	(load-file \"use-package-tests.el\")\
 	(ert t))"
 
 emacs-Q: clean-lisp
-	@$(EMACSBIN) -Q $(LOAD_PATH) --debug-init --eval "(progn\
+	@$(EMACS) -Q $(LOAD_PATH) --debug-init --eval "(progn\
 	(setq debug-on-error t)\
 	(require 'use-package))"
 
@@ -139,9 +138,6 @@ clean-stats:
 	@$(RMDIR) $(statsdir)
 
 ## Release management ################################################
-
-texi:
-	@$(MAKE) -f Makefile.doc texi
 
 stats:
 	@$(MAKE) -f Makefile.doc stats
