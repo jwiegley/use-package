@@ -232,14 +232,6 @@ The effect of this statement is to wait until `helm` has loaded, and then to
 bind the key `C-c h` to `helm-execute-persistent-action` within Helm's local
 keymap, `helm-command-map`.
 
-Multiple keymaps can be specified as a list:
-
-``` elisp
-(use-package helm
-  :bind (:map (lisp-mode-map emacs-lisp-mode-map)
-         ("C-c x" . eval-print-last-sexp)))
-```
-
 Multiple uses of `:map` may be specified. Any binding occurring before the
 first use of `:map` are applied to the global keymap:
 
