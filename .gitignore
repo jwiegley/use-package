@@ -9,3 +9,4 @@
 /doc/content/*
 /stats/
 /use-package/
+.dir-locals-2.el
