@@ -5,29 +5,27 @@
 ;; Author: John Wiegley <johnw@newartisans.com>
 ;; Maintainer: John Wiegley <johnw@newartisans.com>
 
-;; This program is free software; you can redistribute it and/or modify
+;; This file is part of GNU Emacs.
+
+;; GNU Emacs is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
 ;; (at your option) any later version.
 
-;; This program is distributed in the hope that it will be useful,
+;; GNU Emacs is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
+;; along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
-;; The `use-package' declaration macro allows you to isolate package
-;; configuration in your ".emacs" in a way that is performance-oriented and,
-;; well, just tidy.  I created it because I have over 80 packages that I use
-;; in Emacs, and things were getting difficult to manage.  Yet with this
-;; utility my total load time is just under 1 second, with no loss of
-;; functionality!
+;; This file contains the core implementation of the `use-package'
+;; macro.
 ;;
-;; Please see README.md from the same repository for documentation.
+;; See the `use-package' info manual for more information.
 
 ;;; Code:
 
@@ -63,7 +61,9 @@
 
 (defgroup use-package nil
   "A `use-package' declaration for simplifying your `.emacs'."
-  :group 'startup)
+  :group 'initialization
+  :link '(custom-manual "(use-package) Top")
+  :version "29.1")
 
 (defconst use-package-version "2.4.4"
   "This version of `use-package'.")
@@ -1609,8 +1609,8 @@ no keyword implies `:all'."
 (defmacro use-package (name &rest args)
   "Declare an Emacs package by specifying a group of configuration options.
 
-For full documentation, please see the README file that came with
-this file.  Usage:
+For the full documentation, see Info node `(use-package) top'.
+Usage:
 
   (use-package package-name
      [:keyword [option]]...)
@@ -1647,11 +1647,14 @@ this file.  Usage:
                  `:magic-fallback', or `:interpreter'.  This can be an integer,
                  to force loading after N seconds of idle time, if the package
                  has not already been loaded.
-:after           Delay the use-package declaration until after the named modules
-                 have loaded. Once load, it will be as though the use-package
-                 declaration (without `:after') had been seen at that moment.
 :demand          Prevent the automatic deferred loading introduced by constructs
                  such as `:bind' (see `:defer' for the complete list).
+
+:after           Delay the effect of the use-package declaration
+                 until after the named libraries have loaded.
+                 Before they have been loaded, no other keyword
+                 has any effect at all, and once they have been
+                 loaded it is as if `:after' was not specified.
 
 :if EXPR         Initialize and load only if EXPR evaluates to a non-nil value.
 :disabled        The package is ignored completely if this keyword is present.
