@@ -166,7 +166,8 @@ KEY-NAME may be a vector, in which case it is passed straight to
 spelled-out keystrokes, e.g., \"C-c C-z\".  See the documentation
 of `edmacro-mode' for details.
 
-COMMAND must be an interactive function or lambda form.
+COMMAND must be an interactive function, lambda form, or a cons
+`(STRING . DEFN)'.
 
 KEYMAP, if present, should be a keymap variable or symbol.
 For example:

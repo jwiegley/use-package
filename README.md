@@ -166,7 +166,21 @@ The `:bind` keyword takes either a cons or a list of conses:
          ("M-o w" . highlight-phrase)))
 ```
 
-The `:commands` keyword likewise takes either a symbol or a list of symbols.
+Alternatively, the command name may be replaced with a cons `(desc . command)`,
+where `desc` is a string describing `command`, which is the name of a command
+to bind to:
+
+```elisp
+(use-package avy
+  :bind ("C-:" ("Jump to char" . avy-goto-char)
+         "M-g f" ("Jump to line" . avy-goto-line)))
+```
+
+These descriptions can be used by other code that deals with key bindings.
+For example, the GNU ELPA package which-key displays them when showing key
+bindings, instead of the plain command names.
+
+The `:commands` keyword takes either a symbol or a list of symbols.
 
 **NOTE**: inside strings, special keys like `tab` or `F1`-`Fn` have to be written inside angle brackets, e.g. `"C-<up>"`.
 Standalone special keys (and some combinations) can be written in square brackets, e.g. `[tab]` instead of `"<tab>"`. The syntax for the keybindings is similar to

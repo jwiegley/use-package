@@ -575,7 +575,7 @@
 
 (ert-deftest use-package-test/:bind-1 ()
   (match-expansion
-   (use-package foo :bind ("C-k" . key1) ("C-u" . key2))
+   (use-package foo :bind ("C-k" . key1) ("C-u" ("Key 2" . key2)))
    `(progn
       (unless
           (fboundp 'key1)
@@ -585,11 +585,11 @@
         (autoload #'key2 "foo" nil t))
       (bind-keys :package foo
                  ("C-k" . key1)
-                 ("C-u" . key2)))))
+                 ("C-u" "Key 2" . key2)))))
 
 (ert-deftest use-package-test/:bind-2 ()
   (match-expansion
-   (use-package foo :bind (("C-k" . key1) ("C-u" . key2)))
+   (use-package foo :bind (("C-k" . key1) ("C-u" ("Key 2" . key2))))
    `(progn
       (unless (fboundp 'key1)
         (autoload #'key1 "foo" nil t))
@@ -597,7 +597,7 @@
         (autoload #'key2 "foo" nil t))
       (bind-keys :package foo
                  ("C-k" . key1)
-                 ("C-u" . key2)))))
+                 ("C-u" "Key 2" . key2)))))
 
 (ert-deftest use-package-test/:bind-3 ()
   (match-expansion

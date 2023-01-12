@@ -763,13 +763,16 @@ can simplify this using the @code{:bind} keyword.
 @subsection Global keybindings
 
 @findex :bind
-To bind keys globally, the @code{:bind} keyword takes either a single
-cons or a list of conses.  Every cons has the form @code{(@var{key}
-. @var{command}}, where @var{key} is a string indicating the key to
-bind, and @var{command} is the name of a command (a symbol).  The
-syntax for the keys is similar to the syntax used by the @code{kbd}
-function (@pxref{Init Rebinding,,, emacs, GNU Emacs Manual} for more
-information).
+To bind keys globally, the @code{:bind} keyword takes as its argument
+either a single cons or a list of conses.  Each cons has the form
+@w{@code{(@var{key} . @var{definition})}}, where @var{key} is a string
+indicating the key to bind, and @var{definition} is the name of a
+command (a symbol).  Alternatively, @var{definition} may be a cons
+@w{@code{(@var{desc} . @var{command})}}, where @var{desc} is a string
+describing @var{command}, which is the name of a command to bind
+@var{key} to.  The syntax for the keys is similar to the syntax used
+by the @code{kbd} function (see @ref{Init Rebinding,,, emacs, GNU
+Emacs Manual}, for more information).
 
 @subheading Using @code{:bind} with a single cons
 
@@ -812,6 +815,27 @@ Examples:
          ([f10] . helm-buffers-list)
          ([S-f10] . helm-recentf)))
 @end lisp
+
+@subheading Providing custom descriptions of commands
+
+When binding keys to commands with @code{:bind}, custom descriptions
+of the commands may optionally be provided.
+
+Examples:
+
+@lisp
+@group
+(use-package avy
+  :bind ("C-:" ("Jump to char" . avy-goto-char)
+         "M-g f" ("Jump to line" . avy-goto-line)))
+@end group
+@end lisp
+
+@noindent
+These descriptions can be used by other code that deals with key
+bindings.  For example, the @acronym{GNU} @acronym{ELPA} package
+@file{which-key} displays them when showing key bindings, instead of
+the plain command names.
 
 @subheading Remapping commands
 
