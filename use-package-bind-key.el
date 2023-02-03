@@ -69,8 +69,17 @@ deferred until the prefix key sequence is pressed."
   (let ((arg args)
         args*)
     (while arg
-      (let ((x (car arg)))
+      (let ((x (car arg))
+            (y (cadr arg)))
         (cond
+         ;; (KEY DESC . COMMAND), i.e. (KEY . (DESC . COMMAND))
+         ((and (or (stringp x)
+                   (vectorp x))
+               (consp y)
+               (stringp (car y))
+               (or (use-package-recognize-function (cdr y) t #'stringp)))
+          (setq args* (nconc args* (list (cons x y))))
+          (setq arg (cddr arg)))
          ;; (KEY . COMMAND)
          ((and (consp x)
                (or (stringp (car x))
