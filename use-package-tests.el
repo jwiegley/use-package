@@ -1926,9 +1926,9 @@
      (use-package nonexistent
        :hook lisp-mode)
      `(when (locate-library nonexistent)
-        (unless (fboundp 'nonexistent-mode)
-          (autoload #'nonexistent-mode "nonexistent" nil t))
-        (add-hook 'lisp-mode-hook #'nonexistent-mode)))))
+        (unless (fboundp 'nonexistent)
+          (autoload #'nonexistent "nonexistent" nil t))
+        (add-hook 'lisp-mode-hook #'nonexistent)))))
 
 (ert-deftest bind-key/:prefix-map ()
   (match-expansion
