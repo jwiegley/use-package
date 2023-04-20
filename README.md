@@ -494,7 +494,7 @@ The `:custom-face` keyword allows customization of package custom faces.
 (use-package example
   :custom-face
   (example-1-face ((t (:foreground "LightPink"))))
-  (example-2-face ((t (:foreground "LightGreen"))) face-defspec-spec))
+  (example-2-face ((t (:foreground "LightGreen"))) face-defface-spec))
 
 (use-package zenburn-theme
   :preface
