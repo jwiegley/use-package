@@ -987,7 +987,7 @@
                          'foopkg :hook args)))
     (should-error (norm nil))
     (should (equal (norm '(bar))
-                   '((bar . foopkg-mode))))
+                   '((bar . foopkg))))
     (should (equal (norm '((bar . foopkg)))
                    '((bar . foopkg))))
     (should (equal (norm '((bar . baz)))
@@ -995,9 +995,9 @@
     (should (equal (norm '(((bar baz) . quux)))
                    '(((bar baz) . quux))))
     (should (equal (norm '(bar baz))
-                   '(((bar baz) . foopkg-mode))))
+                   '(((bar baz) . foopkg))))
     (should (equal (norm '((bar baz) (quux bow)))
-                   '(((bar baz) . foopkg-mode) ((quux bow) . foopkg-mode))))
+                   '(((bar baz) . foopkg) ((quux bow) . foopkg))))
     (should (equal (norm '((bar . baz) (quux . bow)))
                    '((bar . baz) (quux . bow))))
     (should (equal (norm '(((bar1 bar2) . baz) ((quux1 quux2) . bow)))
@@ -1926,9 +1926,9 @@
      (use-package nonexistent
        :hook lisp-mode)
      `(when (locate-library nonexistent)
-        (unless (fboundp 'nonexistent-mode)
-          (autoload #'nonexistent-mode "nonexistent" nil t))
-        (add-hook 'lisp-mode-hook #'nonexistent-mode)))))
+        (unless (fboundp 'nonexistent)
+          (autoload #'nonexistent "nonexistent" nil t))
+        (add-hook 'lisp-mode-hook #'nonexistent)))))
 
 (ert-deftest bind-key/:prefix-map ()
   (match-expansion
