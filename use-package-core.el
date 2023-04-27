@@ -1671,7 +1671,7 @@ Usage:
 :custom          Call `Custom-set' or `set-default' with each variable
                  definition without modifying the Emacs `custom-file'.
                  (compare with `custom-set-variables').
-:custom-face     Call `custom-set-faces' with each face definition.
+:custom-face     Call `face-spec-set' with each face definition.
 :ensure          Loads the package using package.el if necessary.
 :pin             Pin the package to an archive."
   (declare (indent defun))

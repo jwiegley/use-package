@@ -1171,9 +1171,9 @@
 
 (ert-deftest use-package-test/:custom-face-3 ()
   (match-expansion
-   (use-package foo :custom-face (foo ((t (:background "#e4edfc"))) face-defspec-spec))
+   (use-package foo :custom-face (foo ((t (:background "#e4edfc"))) face-defface-spec))
    `(progn
-      (apply #'face-spec-set (backquote (foo ((t (:background "#e4edfc"))) face-defspec-spec)))
+      (apply #'face-spec-set (backquote (foo ((t (:background "#e4edfc"))) face-defface-spec)))
       (require 'foo nil nil))))
 
 (ert-deftest use-package-test/:init-1 ()
