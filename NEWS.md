@@ -1,5 +1,14 @@
 # Changes
 
+## 2.4.5
+
+This is mostly a bug-fix release:
+
+- When `:hook` is using in the form `(use-package foo :hook bar)`,
+  this is once again equivalent to
+  `(use-package foo :hook (bar . foo))` and no longer the same as
+  `(use-package foo :hook (bar . foo-mode))`.
+
 ## 2.4.4
 
 This release prepares for inclusion to GNU ELPA and includes no other changes
