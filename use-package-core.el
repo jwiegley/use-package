@@ -594,6 +594,15 @@ extending any keys already present."
         (setq result (cons (car x) (cons (cdr x) result))))
       result)))
 
+(defmacro use-package--eval-when-compile (&rest body)
+    "Evaluate BODY at compile time.
+When expanding the macro, evaluate (progn BODY) and substitute
+the macro call by the result of the evaluation.  If BODY
+is (require feature), then all the symbols declared in feature
+are visible to the compiler. This contrasts with standard
+`eval-when-compile', which only puts *variables* in scope."
+    (list 'quote (eval (cons 'progn body))))
+
 (defun use-package-normalize-keywords (name args)
   (let* ((name-symbol (if (stringp name) (intern name) name))
          (name-string (symbol-name name-symbol)))
@@ -664,7 +673,7 @@ extending any keys already present."
                       (plist-get args :defines))
               (mapcar #'(lambda (fn) `(declare-function ,fn ,name-string))
                       (plist-get args :functions))
-              `((eval-when-compile
+              `((use-package--eval-when-compile
                   (with-demoted-errors
                       ,(format "Cannot load %s: %%S" name-string)
                     ,(when (eq use-package-verbose 'debug)
