@@ -1510,22 +1510,25 @@ no keyword implies `:all'."
                  name-symbol)))
     (unless (listp arg)
       (use-package-error error-msg))
-    (cl-dolist (def arg arg)
-      (pcase def
-        ;; With doc-string
-        (`(,(and (pred symbolp) face)
-           ,(and (pred stringp) doc)
-           ,(and (pred (not null)) spec)
-           . ,spec-type)
-         (when (> (length spec-type) 1)
-           (use-package-error error-msg)))
-        ;; Without doc-string
-        (`(,(and (pred symbolp) face)
-           ,(and (pred (not null)) spec)
-           . ,spec-type)
-         (when (> (length spec-type) 1)
-           (use-package-error error-msg)))
-        (t (use-package-error error-msg))))))
+    (cl-flet ((check-spec-type (spec-type)
+                (when (or (> (length spec-type) 1)
+                          (and (car spec-type)
+                               (not (symbolp (car spec-type)))))
+                  (use-package-error error-msg))))
+      (cl-dolist (def arg arg)
+        (pcase def
+          ;; With doc-string
+          (`(,(and (pred symbolp) face)
+             ,(and (pred stringp) doc)
+             ,(and (pred (not null)) spec)
+             . ,spec-type)
+           (check-spec-type spec-type))
+          ;; Without doc-string
+          (`(,(and (pred symbolp) face)
+             ,(and (pred (not null)) spec)
+             . ,spec-type)
+           (check-spec-type spec-type))
+          (t (use-package-error error-msg)))))))
 
 (defun use-package-handler/:custom-face (name _keyword args rest state)
   "Generate use-package custom-face keyword code."
