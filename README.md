@@ -499,6 +499,14 @@ The `:custom-face` keyword allows customization of package custom faces.
   (example-1-face ((t (:foreground "LightPink"))))
   (example-2-face ((t (:foreground "LightGreen"))) face-defspec-spec))
 
+(use-package org
+  :custom-face
+  (favorite-keywords-face
+    "Face for my favorite keywords \o/"
+    ((t (:background "LightBlue"))))
+  (org-special-keyword
+    ((t (:inherit favorite-keywords-face)))))
+
 (use-package zenburn-theme
   :preface
   (setq my/zenburn-colors-alist
