@@ -594,7 +594,7 @@ use-package form itself.  For example, the following will also stop
 `:ensure` from happening on Mac systems:
 
 ``` elisp
-(when (memq window-system '(mac ns))
+(when (not (memq window-system '(mac ns)))
   (use-package exec-path-from-shell
     :ensure t
     :config
