@@ -61,6 +61,8 @@ and loading of packages.
 Either clone from this GitHub repository or install from
 [GNU ELPA](https://elpa.gnu.org/) (recommended).
 
+`use-package` has been included in Emacs since [version 29.1](https://www.gnu.org/software/emacs/news/NEWS.29.1).
+
 ## Getting started
 
 Here is the simplest `use-package` declaration:
