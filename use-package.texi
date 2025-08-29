@@ -906,6 +906,14 @@ and then to bind the key @code{C-c h} to
 @code{helm-execute-persistent-action} within Helm's local keymap,
 @code{helm-command-map}.
 
+Multiple keymaps can be specified as a list:
+
+@lisp
+(use-package helm
+  :bind (:map (lisp-mode-map emacs-lisp-mode-map)
+         ("C-c x" . eval-print-last-sexp)))
+@end lisp
+
 Multiple uses of @code{:map} may be specified. Any binding occurring
 before the first use of @code{:map} are applied to the global keymap:
 
