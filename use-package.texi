@@ -176,7 +176,7 @@ immediately.  In most cases, this is not necessary or desirable, as
 that will slow down Emacs startup.  Instead, you should try to set
 things up so that packages are only loaded when they are actually
 needed (autoloading).  If you have installed a package from
-@acronym{GNU ELPA} that provides it's own autoloads, it is often
+@acronym{GNU ELPA} that provides its own autoloads, it is often
 enough to say:
 
 @lisp
@@ -1654,7 +1654,7 @@ this after loading @code{use-package}, but before any
 
 @cindex disable package
 @findex :disabled
-The @code{:disabled} keyword inhibits loading a package, and all it's
+The @code{:disabled} keyword inhibits loading a package, and all its
 customizations.  It is equivalent to commenting out or deleting the
 definition.
 
