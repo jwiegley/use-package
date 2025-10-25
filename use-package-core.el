@@ -1506,24 +1506,42 @@ no keyword implies `:all'."
 (defun use-package-normalize/:custom-face (name-symbol _keyword arg)
   "Normalize use-package custom-face keyword."
   (let ((error-msg
-         (format "%s wants a (<symbol> <face-spec> [spec-type]) or list of these"
+         (format "%s wants a (<symbol> [<string>] <face-spec> [spec-type]) or list of these"
                  name-symbol)))
     (unless (listp arg)
       (use-package-error error-msg))
-    (cl-dolist (def arg arg)
-      (unless (listp def)
-        (use-package-error error-msg))
-      (let ((face (nth 0 def))
-            (spec (nth 1 def)))
-        (when (or (not face)
-                  (not spec)
-                  (> (length def) 3))
-          (use-package-error error-msg))))))
+    (cl-flet ((check-spec-type (spec-type)
+                (when (or (> (length spec-type) 1)
+                          (and (car spec-type)
+                               (not (symbolp (car spec-type)))))
+                  (use-package-error error-msg))))
+      (cl-dolist (def arg arg)
+        (pcase def
+          ;; With doc-string
+          (`(,(and (pred symbolp) face)
+             ,(and (pred stringp) doc)
+             ,(and (pred (not null)) spec)
+             . ,spec-type)
+           (check-spec-type spec-type))
+          ;; Without doc-string
+          (`(,(and (pred symbolp) face)
+             ,(and (pred (not null)) spec)
+             . ,spec-type)
+           (check-spec-type spec-type))
+          (t (use-package-error error-msg)))))))
 
 (defun use-package-handler/:custom-face (name _keyword args rest state)
   "Generate use-package custom-face keyword code."
   (use-package-concat
-   (mapcar #'(lambda (def) `(apply #'face-spec-set (backquote ,def))) args)
+   (mapcar #'(lambda (def)
+               (if (stringp (nth 1 def))
+                   `(progn
+                      (apply #'face-spec-set
+                        (backquote ,(cons (car def) (cddr def))))
+                      (set-face-doc-string (quote ,(car def))
+                        ,(nth 1 def)))
+                 `(apply #'face-spec-set (backquote ,def))))
+           args)
    (use-package-process-keywords name rest state)))
 
 ;;;; :init

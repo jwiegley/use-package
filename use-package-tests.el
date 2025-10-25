@@ -1176,6 +1176,24 @@
       (apply #'face-spec-set (backquote (foo ((t (:background "#e4edfc"))) face-defspec-spec)))
       (require 'foo nil nil))))
 
+(ert-deftest use-package-test/:custom-face-4 ()
+  (match-expansion
+   (use-package org
+     :custom-face
+     (favorite-keywords-face
+       "Face for my favorite keywords \o/"
+       ((t (:background "LightBlue"))))
+     (org-special-keyword
+       ((t (:inherit favorite-keywords-face)))))
+   `(progn
+      (progn
+        (apply #'face-spec-set
+          (backquote (favorite-keywords-face ((t (:background "LightBlue"))))))
+        (set-face-doc-string 'favorite-keywords-face "Face for my favorite keywords o/"))
+      (apply #'face-spec-set
+        (backquote (org-special-keyword ((t (:inherit favorite-keywords-face))))))
+      (require 'org nil nil))))
+
 (ert-deftest use-package-test/:init-1 ()
   (match-expansion
    (use-package foo :init (init))
